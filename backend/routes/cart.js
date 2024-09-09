@@ -1,5 +1,5 @@
 module.exports = app => {
-  const authenticate = require('../middlewares/middleware')
+  const {authenticate} = require('../middlewares/middleware')
   const cart = require('../controllers/cart')
   const r = require('express').Router()
 

@@ -49,10 +49,15 @@ exports.login = asyncHandler(async (req, res) => {
     const token = jwt.sign({
         _id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        isAdmin: user.isAdmin
     }, process.env.JWT_SECRET, { expiresIn: '1h' })
 
-    res.cookie('authToken', token, { httpOnly: true, maxAge: 3600000 }) // 1 jam
+    res.cookie('authToken', token, { 
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'development',
+        maxAge: 30 * 24 * 60 * 60 *1000 ,
+    }) 
 
     res.status(200).json({
         status: 'success',
@@ -63,5 +68,21 @@ exports.login = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email
         }
+    })
+})
+
+exports.logout = asyncHandler(async (req,res) =>{
+    res.cookie('jwt', '', {
+        httpOnly: true,
+        expires: new Date(0),
+    })
+    res.status(200).json({message: "Logout Berhasil"})
+})
+
+exports.getAllUsers = asyncHandler(async (req, res) => {
+    const users = await User.find().select('-password') // Mengambil semua pengguna tanpa password
+    res.status(200).json({
+        status: 'success',
+        users
     })
 })

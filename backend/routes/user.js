@@ -1,12 +1,11 @@
 module.exports = app => {
-    const userController = require('../controllers/user')
+    const user = require('../controllers/user')
     const r = require('express').Router()
+    const {authenticate, authorizeAdmin} = require('../middlewares/middleware')
 
-    // Rute untuk registrasi
-    r.post('/register', userController.register)
-
-    // Rute untuk login
-    r.post('/login', userController.login)
-
+    r.get('/all', authenticate, authorizeAdmin, user.getAllUsers)
+    r.post('/register', user.register)
+    r.post('/login', user.login)
+    r.post('/logout', user.logout)
     app.use("/user", r) 
 }

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
+const asyncHandler = require('express-async-handler')
 
-const authenticate = (req, res, next) => {
+exports.authenticate = asyncHandler(async(req, res, next) => {
     const authHeader = req.headers.authorization
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -22,6 +23,12 @@ const authenticate = (req, res, next) => {
             message: 'Invalid token.',
         })
     }
-}
+})
 
-module.exports = authenticate
+exports.authorizeAdmin = (req, res, next) => {
+    if (req.user && req.user.isAdmin) {
+        next()
+    } else {
+        res.status(401).json({ message: "Not authorized as an Admin" })
+    }
+}
