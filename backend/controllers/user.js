@@ -86,3 +86,40 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
         users
     })
 })
+
+exports.getUserProfile = asyncHandler(async (req, res) =>{
+    const user = await User.findById(req.user._id)
+
+    if(user){
+        res.json({
+            _id: user._id,
+            username: user.name,
+            email: user.email
+        })
+    } else{
+        res.status(404).send("pengguna tidak ditemukan")
+    }
+})
+
+exports.updateUserProfile = asyncHandler(async (req, res)=>{
+    const user = await User.findById(req.user._id)
+
+    if(user){
+        user.name = req.body.name || user.name
+        user.email = req.body.email || user.email
+
+        if(req.body.password){
+            user.password = req.body.password
+        }
+        const updatedUser = await user.save()
+
+        res.json({  
+            _id: updatedUser._id,
+            username: updatedUser.name,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin
+        })
+    } else{
+        res.status(404).json({message: "pengguna tidak ditemukkan"})
+    }
+})
