@@ -3,8 +3,7 @@ const bcrypt = require('bcrypt')
 module.exports = mongoose => {
   const schema = new mongoose.Schema({
     name: {
-        type: String,
-        required: [true, 'Nama harus diisi'],
+        type: String, required: [true, 'Nama harus diisi'],
         trim: true,
         minlength: [3, 'Nama harus memiliki setidaknya 3 karakter']
     },
@@ -27,9 +26,13 @@ module.exports = mongoose => {
         required: [true, 'Password harus diisi'],
         minlength: [6, 'Password harus memiliki setidaknya 6 karakter'],
         select: false // Menghindari password terpilih secara default
-    }
-})
-
+    },
+    isAdmin: {
+        type: Boolean,
+        require: true,
+        default: false, 
+      },
+    }, {timestamps: true})
 
   // Middleware untuk hashing password sebelum menyimpan user
   schema.pre('save', async function (next) {
