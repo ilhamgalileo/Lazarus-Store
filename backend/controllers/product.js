@@ -1,19 +1,15 @@
 const  Product  = require('../models/product')
+const asyncHandler = require('express-async-handler')
 
-exports.FindMany = async (req, res) => {
-    try {
+exports.FindMany = asyncHandler(async (req, res) => {
         const data = await Product.find()
-        if(data.length===0){
+        if(data.length === 0){
         return res.status(404).send({message: 'produk kosong'})
         }
         res.send(data)
-    } catch (err) {
-        res.status(500).send({ message: err.message })
-    }
-}
+})
 
-exports.findOne = async (req, res) => {
-    try {
+exports.findOne = asyncHandler(async (req, res) => {
         const id = req.params.id
         const data = await Product.findById(id)
 
@@ -22,25 +18,17 @@ exports.findOne = async (req, res) => {
         } else {
             res.status(500).send({ message: 'Product not found with id ' + id })
         }
-    } catch (err) {
-        res.status(500).send({ message: err.message })
-    }
-}
+})
 
-exports.create = async (req, res) => {
-    try {
+exports.create = asyncHandler(async (req, res) => {
         const product = new Product({...req.body})
         const savedProduct = await product.save()
         res.status(201).json({ message: 'Data Berhasil disimpan', savedProduct })
-    } catch (err) {
-        res.status(500).json({ message: err.message })
-    }
-}
+})
 
-exports.update = async (req, res) => {
+exports.update = asyncHandler(async (req, res) => {
     const id = req.params.id
 
-    try {
         const data = await Product.findByIdAndUpdate(id, req.body, {
             useFindAndModify: false,
             new: true
@@ -51,21 +39,14 @@ exports.update = async (req, res) => {
         }
     
         res.send({ message: "Update berhasil", data })
-    } catch (err) {
-        res.status(500).send({ message: err.message })
-    }
-}
+})
 
 
-exports.delete = async (req, res) => {
+exports.delete = asyncHandler(async (req, res) => {
     const id = req.params.id
-    try {
         const deletedProduct = await Product.findByIdAndDelete(id)
         if (!deletedProduct) {
             return res.status(404).send({ message: 'produk tidak ditemukan' })
         }
         res.send({ message: 'produk berhasil dihapus' })
-    } catch (err) {
-        res.status(500).send({ message: 'Terjadi kesalahan saat menghapus produk: ' + err.message })
-    }
-}
+})

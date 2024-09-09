@@ -18,13 +18,11 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
-// Routes
+// Menangani rute yang tidak ditemukan
 require('./routes/product')(app)
 require('./routes/cart')(app)
 require('./routes/order')(app)
 require('./routes/user')(app)
-
-// Menangani rute yang tidak ditemukan
 app.use((req, res) => {
     res.status(404).json({ message: `${req.method} ${req.originalUrl} not found` })
 })

@@ -1,8 +1,8 @@
 const Cart = require('../models/cart')
 const Product = require('../models/product')
+const asyncHandler = require('express-async-handler') 
 
-exports.getCart = async (req, res) => {
-  try {
+exports.getCart = asyncHandler(async (req, res) => {
     const userId = req.user._id
     const cart = await Cart.findOne({ userId }).populate('products.productId')
 
@@ -10,17 +10,13 @@ exports.getCart = async (req, res) => {
       return res.status(404).send({ message: 'anda belum memiliki keranjang' })
     }
     res.send(cart)
-  } catch (err) {
-    res.status(500).send({ message: err.message })
-  }
-}
+})
 
-exports.addProduct = async (req, res) => {
+exports.addProduct = asyncHandler(async (req, res) => {
   const { sku, quantity } = req.body
   const { _id } = req.user
   console.log("User ID:", _id)
 
-  try {
     const product = await Product.findOne({ sku })
     if (!product) {
       return res.status(404).send({ message: 'Produk tidak tersedia' })
@@ -55,16 +51,12 @@ exports.addProduct = async (req, res) => {
 
     await cart.save()
     res.status(201).send(cart)
-  } catch (err) {
-    res.status(500).send({ message: err.message })
-  }
-}
+})
 
-exports.removeCart = async (req, res) => {
+exports.removeCart = asyncHandler(async (req, res) => {
   const {_id} = req.user
   const { cartId } = req.params
 
-  try {
     const cart = await Cart.findOneAndDelete({ _id: cartId, userId: _id })
 
     if (!cart) {
@@ -72,7 +64,4 @@ exports.removeCart = async (req, res) => {
     }
 
     res.send({ message: 'Keranjang dan semua produk di dalamnya telah dihapus', cart })
-  } catch (err) {
-    res.status(500).send({ message: err.message })
-  }
-}
+})

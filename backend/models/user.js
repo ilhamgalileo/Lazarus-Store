@@ -1,7 +1,6 @@
+const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-
-module.exports = mongoose => {
-  const schema = new mongoose.Schema({
+  const userSchema = new mongoose.Schema({
     name: {
         type: String, required: [true, 'Nama harus diisi'],
         trim: true,
@@ -35,7 +34,7 @@ module.exports = mongoose => {
     }, {timestamps: true})
 
   // Middleware untuk hashing password sebelum menyimpan user
-  schema.pre('save', async function (next) {
+  userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         return next()
     }
@@ -50,11 +49,11 @@ module.exports = mongoose => {
 
 
   // Metode untuk mengubah representasi JSON dari dokumen
-  schema.method("toJSON", function () {
+  userSchema.method("toJSON", function () {
     const { __v, _id, password, ...object } = this.toObject()
     object.id = _id
     return object
   })
 
-  return mongoose.model("User", schema)
-}
+const User = mongoose.model("User", userSchema)
+module.exports = User
