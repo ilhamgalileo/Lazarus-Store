@@ -87,6 +87,16 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
     })
 })
 
+exports.getUserById = asyncHandler(async (req,res) =>{
+    const user = await User.findById(req.params.id)
+
+    if(user){
+    res.json({user})
+    }else{
+        res.status(404).json({message: 'pengguna tidak ditemukan'})
+    }
+})
+
 exports.getUserProfile = asyncHandler(async (req, res) =>{
     const user = await User.findById(req.user._id)
 
@@ -122,4 +132,19 @@ exports.updateUserProfile = asyncHandler(async (req, res)=>{
     } else{
         res.status(404).json({message: "pengguna tidak ditemukkan"})
     }
+})
+
+exports.deleteUserbyAdmin = asyncHandler( async (req,res) =>{
+    const user = await User.findById(req.params.id)
+
+    if(user){
+        if(user.isAdmin){
+            res.status(400).json({message: 'tidak bisa hapus akun admin'})
+        }
+        await User.findOneAndDelete({ _id: user._id,})
+        res.json({message: 'berhasil menghapus akun'})
+    }else{
+        res.status(404).json({message: 'pengguna tidak ditemukan'})
+    }
+
 })

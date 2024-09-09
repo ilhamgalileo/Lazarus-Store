@@ -4,10 +4,13 @@ module.exports = app => {
     const {authenticate, authorizeAdmin} = require('../middlewares/middleware')
 
     r.get('/all', authenticate, authorizeAdmin, user.getAllUsers)
-    r.put('/update', authenticate, user.updateUserProfile)
     r.get('/profile', authenticate, user.getUserProfile)
+    r.get('/:id', authenticate, authorizeAdmin, user.getUserById)
+    r.put('/update', authenticate, user.updateUserProfile)
     r.post('/register', user.register)
     r.post('/login', user.login)
     r.post('/logout', user.logout)
+    r.delete('/delete/:id', authenticate, authorizeAdmin, user.deleteUserbyAdmin)
+
     app.use("/user", r) 
 }
