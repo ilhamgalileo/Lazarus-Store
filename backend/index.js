@@ -18,11 +18,13 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
+// Menambahkan prefix `/api` pada setiap rute
+app.use('/api/products', require('./routes/product'))
+app.use('/api/cart', require('./routes/cart'))
+app.use('/api/orders', require('./routes/order'))
+app.use('/api/users', require('./routes/user'))
+
 // Menangani rute yang tidak ditemukan
-require('./routes/product')(app)
-require('./routes/cart')(app)
-require('./routes/order')(app)
-require('./routes/user')(app)
 app.use((req, res) => {
     res.status(404).json({ message: `${req.method} ${req.originalUrl} not found` })
 })

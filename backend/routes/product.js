@@ -1,11 +1,11 @@
-module.exports = app =>{
+const express = require('express')
+const router = express.Router()
 const product = require('../controllers/product')
-const r = require ('express').Router()
 
-r.get('/', product.FindMany)
-r.get('/:id', product.findOne)
-r.post('/', product.create)
-r.put('/:id', product.update)
-r.delete('/:id', product.delete)
-app.use("/product",r)
-}
+router.get('/', product.FindMany)           // Mendapatkan semua produk
+router.get('/:id', product.findOne)         // Mendapatkan produk berdasarkan ID
+router.post('/', product.create)            // Menambahkan produk baru
+router.put('/:id', product.update)          // Memperbarui produk berdasarkan ID
+router.delete('/:id', product.delete)       // Menghapus produk berdasarkan ID
+
+module.exports = router

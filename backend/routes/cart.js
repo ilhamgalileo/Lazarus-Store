@@ -1,10 +1,10 @@
-module.exports = app => {
-  const {authenticate} = require('../middlewares/middleware')
-  const cart = require('../controllers/cart')
-  const r = require('express').Router()
+const express = require('express')
+const router = express.Router()
+const { authenticate } = require('../middlewares/middleware')
+const cart = require('../controllers/cart')
 
-  r.get('/', authenticate, cart.getCart)
-  r.post('/add', authenticate, cart.addProduct)
-  r.delete('/delete/:cartId', authenticate, cart.removeCart)
-  app.use("/cart", r)
-}
+router.get('/', authenticate, cart.getCart)            // Mendapatkan keranjang pengguna
+router.post('/add', authenticate, cart.addProduct)     // Menambahkan produk ke keranjang
+router.delete('/delete/:cartId', authenticate, cart.removeCart) // Menghapus keranjang berdasarkan cartId
+
+module.exports = router

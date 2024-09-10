@@ -1,8 +1,9 @@
-module.exports = app => {
-    const {authenticate} = require('../middlewares/middleware')
-    const { getOrdersByUserId, checkout } = require('../controllers/order')
-    const r = require('express').Router()
+const express = require('express')
+const router = express.Router()
+const { authenticate } = require('../middlewares/middleware')
+const { getOrdersByUserId, checkout } = require('../controllers/order')
 
-    r.post('/:cartId', authenticate, checkout)
-    app.use("/order", r)
-}
+
+router.post('/:cartId', authenticate, checkout) // Checkout menggunakan cartId
+
+module.exports = router

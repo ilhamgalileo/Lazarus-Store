@@ -1,16 +1,17 @@
-module.exports = app => {
-    const user = require('../controllers/user')
-    const r = require('express').Router()
-    const {authenticate, authorizeAdmin} = require('../middlewares/middleware')
+const express = require('express')
+const router = express.Router()
+const user = require('../controllers/user')
+const { authenticate, authorizeAdmin } = require('../middlewares/middleware')
 
-    r.get('/all', authenticate, authorizeAdmin, user.getAllUsers)
-    r.get('/profile', authenticate, user.getUserProfile)
-    r.get('/:id', authenticate, authorizeAdmin, user.getUserById)
-    r.put('/update', authenticate, user.updateUserProfile)
-    r.post('/register', user.register)
-    r.post('/login', user.login)
-    r.post('/logout', user.logout)
-    r.delete('/delete/:id', authenticate, authorizeAdmin, user.deleteUserbyAdmin)
+// Definisikan rute
+router.get('/all', authenticate, authorizeAdmin, user.getAllUsers)
+router.get('/profile', authenticate, user.getUserProfile)
+router.get('/:id', authenticate, authorizeAdmin, user.getUserById)
+router.put('/update', authenticate, user.updateUserProfile)
+router.post('/register', user.register)
+router.post('/login', user.login)
+router.post('/logout', user.logout)
+router.delete('/delete/:id', authenticate, authorizeAdmin, user.deleteUserbyAdmin)
 
-    app.use("/user", r) 
-}
+// Ekspor router
+module.exports = router
