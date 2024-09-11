@@ -1,8 +1,9 @@
-
 #navigation-container {
   width: 4%;
   transition: width 0.3s ease-in-out;
   overflow: hidden; /* Hide overflowing content during transition */
+  background-color: black; /* Set background to black */
+  color: white; /* Ensure text remains visible against black background */
 }
 
 #navigation-container:hover {
@@ -13,6 +14,7 @@
 .nav-item-name {
   display: none;
   transition: opacity 0.2s ease-in-out; /* Add opacity transition */
+  color: white; /* Ensure text remains visible against black background */
 }
 
 #navigation-container:hover .nav-item-name {
@@ -24,6 +26,8 @@
   display: none;
   opacity: 0;
   transition: opacity 0.2s ease-in-out; /* Add opacity transition */
+  background-color: white; /* Ensure input field is visible */
+  color: black; /* Ensure text in input is readable */
 }
 
 #navigation-container:hover .search-input {
