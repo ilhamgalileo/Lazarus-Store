@@ -15,7 +15,7 @@ import { logout } from '../../redux/features/auth/authSlice'
 
 const Navigation = () => {
   const { userInfo } = useSelector(state => state.auth)
-
+  console.log("userInfo:", userInfo)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [showSidebar, setShowSidebar] = useState(false)
 
@@ -88,14 +88,32 @@ const Navigation = () => {
       </div>
 
       <div className="realtive">
-        <button onClick={toggleDropdown} className="flex items-center
-        text-gray-800 focus:outline-none"
+        <button
+          onClick={toggleDropdown}
+          className="flex items-center text-gray-800 focus:outline-none"
         >
-          {userInfo ? (<span className="text-white">{userInfo.name}</span>
+          {userInfo ? (
+            <span className="text-white">{userInfo.user.username}</span>
           ) : (
-            <>
-
-            </>)}
+            <></>
+          )}
+          {userInfo && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className={`h-4 w-4 ml-1 ${dropdownOpen ? "transform rotate-180" : ""
+                }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="white"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d={dropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
+              />
+            </svg>
+          )}
         </button>
       </div>
 

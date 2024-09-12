@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
 
 exports.register = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body
+    const { username, email, password } = req.body
 
     const existingUser = await User.findOne({ email })
     if (existingUser) {
@@ -13,7 +13,7 @@ exports.register = asyncHandler(async (req, res) => {
             message: 'Email sudah ada'
         })
     }
-    const user = new User({ name, email, password })
+    const user = new User({ username, email, password })
     await user.save()
 
     res.status(201).json({
@@ -21,7 +21,7 @@ exports.register = asyncHandler(async (req, res) => {
         message: 'Pendaftaran berhasil',
         user: {
             id: user._id,
-            name: user.name,
+            username: user.username,
             email: user.email
         }
     })
@@ -48,7 +48,7 @@ exports.login = asyncHandler(async (req, res) => {
 
     const token = jwt.sign({
         _id: user._id,
-        name: user.name,
+        name: user.username,
         email: user.email,
         isAdmin: user.isAdmin
     }, process.env.JWT_SECRET, { expiresIn: '1h' })
@@ -65,8 +65,9 @@ exports.login = asyncHandler(async (req, res) => {
         token,
         user: {
             id: user._id,
-            name: user.name,
-            email: user.email
+            username: user.username,
+            email: user.email,
+            isAdmin: user.isAdmin
         }
     })
 })
@@ -103,7 +104,7 @@ exports.getUserProfile = asyncHandler(async (req, res) =>{
     if(user){
         res.json({
             _id: user._id,
-            username: user.name,
+            username: user.username,
             email: user.email
         })
     } else{
@@ -115,7 +116,7 @@ exports.updateUserProfile = asyncHandler(async (req, res)=>{
     const user = await User.findById(req.user._id)
 
     if(user){
-        user.name = req.body.name || user.name
+        user.name = req.body.username || user.username
         user.email = req.body.email || user.email
 
         if(req.body.password){
@@ -125,7 +126,7 @@ exports.updateUserProfile = asyncHandler(async (req, res)=>{
 
         res.json({  
             _id: updatedUser._id,
-            username: updatedUser.name,
+            username: updatedUser.username,
             email: updatedUser.email,
             isAdmin: updatedUser.isAdmin
         })

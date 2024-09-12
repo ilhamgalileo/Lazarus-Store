@@ -9,7 +9,7 @@ router.get('/profile', authenticate, user.getUserProfile)
 router.get('/:id', authenticate, authorizeAdmin, user.getUserById)
 router.put('/update', authenticate, user.updateUserProfile)
 router.post('/register', user.register)
-router.post('/login', user.login)
+router.post('/auth', user.login)
 router.post('/logout', user.logout)
 router.delete('/delete/:id', authenticate, authorizeAdmin, user.deleteUserbyAdmin)
 

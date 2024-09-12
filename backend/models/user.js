@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
   const userSchema = new mongoose.Schema({
-    name: {
+    username: {
         type: String, required: [true, 'Nama harus diisi'],
         trim: true,
         minlength: [3, 'Nama harus memiliki setidaknya 3 karakter']
