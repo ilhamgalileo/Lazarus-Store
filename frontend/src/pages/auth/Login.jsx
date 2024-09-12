@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { useLoginMutation } from "../../redux/api/usersApiSlice"
-import { setCredentials } from "../../redux/features/auth/authSlice"
+import { setCredientials } from "../../redux/features/auth/authSlice"
 import { toast } from "react-toastify"
 import Loader from "../../components/loader"
 
@@ -32,7 +32,7 @@ const Login = () => {
             try {
                 const res = await login({email, password}).unwrap()
                 console.log(res)
-                dispatch(setCredentials({...res}))
+                dispatch(setCredientials({...res}))
             } catch (error) {
                 toast.error(error?.data?.message || error.message)
             }
@@ -68,7 +68,7 @@ const Login = () => {
 
                     <button disabled={isLoading}
                         type="submit"
-                        className="bg-pink-500 
+                        className="bg-orange-600 
                             text-white px-4 
                             py-2 rounded 
                             cursor-pointer my-[1rem]"
@@ -81,7 +81,7 @@ const Login = () => {
                     <p className="text-white">
                         New Customer ? {" "}
                         <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}
-                        className="text-pink-500 hover:underline"> Register
+                        className="text-orange-600 hover:underline"> Register
                         </Link>
                     </p>
                 </div>
