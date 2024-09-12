@@ -13,7 +13,7 @@
 /* Initially hide nav-item-name */
 .nav-item-name {
   display: none;
-  transition: opacity 0.2s ease-in-out; /* Add opacity transition */
+  transition: opacity 0.3s ease-in-out; /* Add opacity transition */
   color: white; /* Ensure text remains visible against black background */
 }
 
