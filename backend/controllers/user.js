@@ -112,11 +112,11 @@ exports.getUserProfile = asyncHandler(async (req, res) =>{
     }
 })
 
-exports.updateUserProfile = asyncHandler(async (req, res)=>{
+exports.updateProfile = asyncHandler(async (req, res)=>{
     const user = await User.findById(req.user._id)
 
     if(user){
-        user.name = req.body.username || user.username
+        user.username = req.body.username || user.username
         user.email = req.body.email || user.email
 
         if(req.body.password){
@@ -125,10 +125,12 @@ exports.updateUserProfile = asyncHandler(async (req, res)=>{
         const updatedUser = await user.save()
 
         res.json({  
+           user: {
             _id: updatedUser._id,
             username: updatedUser.username,
             email: updatedUser.email,
             isAdmin: updatedUser.isAdmin
+           }
         })
     } else{
         res.status(404).json({message: "pengguna tidak ditemukkan"})

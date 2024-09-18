@@ -32,7 +32,7 @@ const Login = () => {
             try {
                 const res = await login({email, password}).unwrap()
                 console.log(res)
-                dispatch(setCredientials({...res}))
+                dispatch(setCredientials({user: res.user, token: res.token}))
             } catch (error) {
                 toast.error(error?.data?.message || error.message)
             }

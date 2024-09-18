@@ -1,20 +1,19 @@
 #navigation-container {
   width: 4%;
   transition: width 0.3s ease-in-out;
-  overflow: hidden; /* Hide overflowing content during transition */
-  background-color: black; /* Set background to black */
-  color: white; /* Ensure text remains visible against black background */
+  overflow: hidden; 
+  background-color: black; 
+  color: white; 
 }
 
 #navigation-container:hover {
   width: 15%;
 }
 
-/* Initially hide nav-item-name */
 .nav-item-name {
   display: none;
-  transition: opacity 0.3s ease-in-out; /* Add opacity transition */
-  color: white; /* Ensure text remains visible against black background */
+  transition: opacity 0.3s ease-in-out; 
+  color: white;
 }
 
 #navigation-container:hover .nav-item-name {
@@ -25,9 +24,9 @@
 .search-input {
   display: none;
   opacity: 0;
-  transition: opacity 0.2s ease-in-out; /* Add opacity transition */
-  background-color: white; /* Ensure input field is visible */
-  color: black; /* Ensure text in input is readable */
+  transition: opacity 0.2s ease-in-out;
+  background-color: white;
+  color: black; 
 }
 
 #navigation-container:hover .search-input {
@@ -37,5 +36,5 @@
 
 #navigation-container:hover .search-icon {
   display: none;
-  transition: opacity 0.2s ease-in-out; /* Add opacity transition */
+  transition: opacity 0.2s ease-in-out; 
 }
