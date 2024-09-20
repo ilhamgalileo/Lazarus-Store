@@ -3,7 +3,6 @@ const asyncHandler = require('express-async-handler');
 
 exports.authenticate = asyncHandler(async (req, res, next) => {
     const token = req.cookies.authToken;
-    console.log("Token from cookie:", token);
 
     if (!token) {
         return res.status(401).json({

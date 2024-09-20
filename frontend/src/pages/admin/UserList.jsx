@@ -12,8 +12,6 @@ import Message from "../../components/Message"
 
 const UserList = () => {
     const { data: users, refetch, isLoading, error } = useGetUsersQuery()
-    console.log('Users data:', users);
-    console.log(error)
     const [deleteUser] = useDeleteUserMutation()
 
     const [editableUserId, setEditableUserId] = useState(null);
@@ -58,12 +56,11 @@ const UserList = () => {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-semibold mb-4">Users</h1>
             {isLoading ? (
                 <Loader />
             ) : error ? (
                 <Message variant='danger'>
-                    {error?.data?.message || error.error || 'An unexpected error occurred'}
+                    {error?.data.message || error.error || 'An unexpected error occurred'}
                 </Message>
             ) : (
                 <div className="flex flex-col md:flex-row">
@@ -78,8 +75,8 @@ const UserList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map(user => (
-                                <tr key={user.id}>
+                            {users?.map(user => (
+                                <tr key={user._id}>
                                     <td className="px-4 py-2">{user._id}</td>
                                     <td className="px-4 py-2">
                                         {editableUserId === user._id ? (

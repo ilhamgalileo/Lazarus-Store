@@ -5,7 +5,7 @@ const { authenticate, authorizeAdmin } = require('../middlewares/middleware')
 
 // Definisikan rute
 // Route untuk mendapatkan semua user (admin only)
-router.get('/all', authenticate, authorizeAdmin, user.getAllUsers);
+router.get('/', authenticate, authorizeAdmin, user.getAllUsers);
 
 // Routes untuk login, logout, dan register
 router.post('/auth', user.login); // Login user

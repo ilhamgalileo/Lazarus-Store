@@ -81,7 +81,7 @@ exports.logout = asyncHandler(async (req,res) =>{
 })
 
 exports.getAllUsers = asyncHandler(async (req, res) => {
-    const users = await User.find({}).select('-password')
+    const users = await User.find({})
     res.json(users)
 })
 
