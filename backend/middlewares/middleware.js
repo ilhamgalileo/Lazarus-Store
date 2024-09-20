@@ -19,7 +19,7 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
         console.error("Token verification error:", error);
         return res.status(403).json({
             status: 'error',
-            message: 'Invalid token.',
+            message: 'Token expired.',
         });
     }
 });

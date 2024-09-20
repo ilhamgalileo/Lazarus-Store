@@ -38,13 +38,17 @@
 
         const logoutHandler = async () => {
           try {
-            await logoutApiCall().unwrap()
-            dispatch(logout())
-            navigate("/login")
+            await logoutApiCall().unwrap();
+            dispatch(logout());
+            navigate("/login");
           } catch (error) {
-            console.error(error)
+            console.error(error);
+            if (error?.status === 403 || error?.status === 401) { 
+              dispatch(logout());
+              navigate("/login");
+            }
           }
-        }
+        };
 
         return (
           <div
