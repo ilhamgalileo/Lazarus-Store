@@ -5,8 +5,10 @@ const { authenticate, authorizeAdmin } = require('../middlewares/middleware')
 
 // Definisikan rute
 router.get('/all', authenticate, authorizeAdmin, user.getAllUsers)
+
 router.get('/profile', authenticate, user.getUserProfile)
 router.get('/:id', authenticate, authorizeAdmin, user.getUserById)
+router.put('/:id', authenticate, authorizeAdmin, user.updateUserById)
 router.put('/profile', authenticate, user.updateProfile)
 router.post('/register', user.register)
 router.post('/auth', user.login)
