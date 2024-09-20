@@ -31,9 +31,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/profile`,
         method: "PUT",
         body: data,
-        headers: {
-          'Content-Type': 'application/json',
-        },
         prepareHeaders: (headers, { getState }) => {
           const token = getState().auth.userInfo?.token;
           if (token) {
@@ -46,10 +43,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
 
     getUsers: builder.query({
       query: () => ({
-        url: `${USERS_URL}/all`,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        url: `${USERS_URL}/all`, 
       }),
       providesTags: ['User'],
       keepUnusedDataFor: 5,

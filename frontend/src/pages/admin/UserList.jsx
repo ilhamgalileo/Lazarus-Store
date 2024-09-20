@@ -80,9 +80,9 @@ const UserList = () => {
                         <tbody>
                             {users.map(user => (
                                 <tr key={user.id}>
-                                    <td className="px-4 py-2">{user.id}</td>
+                                    <td className="px-4 py-2">{user._id}</td>
                                     <td className="px-4 py-2">
-                                        {editableUserId === user.id ? (
+                                        {editableUserId === user._id ? (
                                             <div className="flex items-center">
                                                 <input type="text" value={editableUserName} onChange={e =>
                                                     setEditableUserName(e.target.value)} className="w-full p-2 border

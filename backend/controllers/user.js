@@ -87,7 +87,6 @@ exports.getAllUsers = asyncHandler(async (req, res) => {
 
 exports.getUserById = asyncHandler(async (req,res) =>{
     const user = await User.findById(req.params.id)
-
     if(user){
     res.json({user})
     }else{
