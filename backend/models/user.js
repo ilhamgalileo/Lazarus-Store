@@ -47,13 +47,5 @@ const bcrypt = require('bcrypt')
     }
 })
 
-
-  // Metode untuk mengubah representasi JSON dari dokumen
-  userSchema.method("toJSON", function () {
-    const { __v, _id, password, ...object } = this.toObject()
-    object.id = _id
-    return object
-  })
-
 const User = mongoose.model("User", userSchema)
 module.exports = User

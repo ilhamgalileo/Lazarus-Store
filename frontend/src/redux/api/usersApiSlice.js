@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-import { USERS_URL } from "../constants";
+import { BASE_URL, USERS_URL } from "../constants";
 
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -31,13 +31,7 @@ export const userApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/profile`,
         method: "PUT",
         body: data,
-        prepareHeaders: (headers, { getState }) => {
-          const token = getState().auth.userInfo?.token;
-          if (token) {
-            headers.set('authorization', `Bearer ${token}`);
-          }
-          return headers;
-        },
+
       }),
     }),
 
@@ -49,21 +43,21 @@ export const userApiSlice = apiSlice.injectEndpoints({
 
     deleteUser: builder.mutation({
       query: userId => ({
-        url: `${USERS_URL}/${userId}`,
+        url: `${BASE_URL}api/users/${userId}`,
         method: "DELETE",
       }),
     }),
 
     getUserDetails: builder.query({
       query: (id) => ({
-        url: `${USERS_URL}/${id}`,
+        url: `${BASE_URL}api/users/${id}`,
       }),
       keepUnusedDataFor: 5,
     }),
 
     updateUser: builder.mutation({
-      query: data =>({
-        url:`${USERS_URL}/${data.userId}`,
+      query: (data) =>({
+        url:`${BASE_URL}/api/users/${data.userId}`,
         method: 'PUT',
         body: data,
       }),

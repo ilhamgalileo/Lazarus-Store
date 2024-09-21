@@ -20,7 +20,7 @@ exports.register = asyncHandler(async (req, res) => {
         status: 'success',
         message: 'Pendaftaran berhasil',
         user: {
-            id: user._id,
+            _id: user._id,
             username: user.username,
             email: user.email
         }
@@ -47,7 +47,7 @@ exports.login = asyncHandler(async (req, res) => {
     }
 
     const token = jwt.sign({
-        _id: user.id,
+        _id: user._id,
         name: user.username,
         email: user.email,
         isAdmin: user.isAdmin
@@ -64,7 +64,7 @@ exports.login = asyncHandler(async (req, res) => {
         message: 'Login berhasil',
         token,
         user: {
-            _id: user.id,
+            _id: user._id,
             username: user.username,
             email: user.email,
             isAdmin: user.isAdmin
