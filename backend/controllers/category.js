@@ -20,3 +20,25 @@ exports.createCate = asyncHandler(async (req, res) => {
         return res.status(400).json(error)
     }
 })
+
+exports.updateCate = asyncHandler( async (req,res) =>{
+    try {
+        const { name } = req.body
+        const { categoryId } = req.params
+
+        const category = await Category.findOne({_id: categoryId})
+
+        if (!category) {
+            return res.status(404).json({error: "Category tidak ditemukan"})
+        }
+
+        category.name = name
+        
+        const updatedCate = await category.save()
+        res.status(201).json({ message: "Berhasil mengupdate data", updatedCate})
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({error: 'Internal server error'})
+    }
+})
