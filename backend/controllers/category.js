@@ -56,3 +56,13 @@ exports.removeCate = asyncHandler(async (req,res) => {
     res.status(500).json({error: 'Internal server error'})
   }  
 })
+
+exports.categoryList = asyncHandler(async (req, res) => {
+    try {
+        const all = await Category.find({})
+        res.json(all)
+    } catch (error) {
+    console.error(error)
+    res.status(500).json({error: 'Internal server error'})
+    }
+})
