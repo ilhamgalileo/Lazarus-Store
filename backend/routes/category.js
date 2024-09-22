@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const { authenticate, authorizeAdmin } = require('../middlewares/middleware')
-const { createCate } = require('../controllers/cart')
+const category = require('../controllers/category')
 
-
-router.post('/', authenticate,authorizeAdmin, createCate )
+router.post('/', authenticate,authorizeAdmin, category.createCate )
 
 module.exports = router
