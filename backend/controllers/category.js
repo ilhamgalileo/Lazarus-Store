@@ -66,3 +66,13 @@ exports.categoryList = asyncHandler(async (req, res) => {
     res.status(500).json({error: 'Internal server error'})
     }
 })
+
+exports.findOne = asyncHandler(async (req, res) => {
+    try {
+        const category = await Category.findOne({_id: req.params.id})
+        res.json(category)
+    } catch (error) {
+    console.error(error)
+    res.status(500).json({error: 'Internal server error'})
+    }
+})
