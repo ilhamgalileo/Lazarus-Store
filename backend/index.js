@@ -23,6 +23,7 @@ app.use('/api/products', require('./routes/product'))
 app.use('/api/cart', require('./routes/cart'))
 app.use('/api/orders', require('./routes/order'))
 app.use('/api/users', require('./routes/user'))
+app.use('/api/category', require('./routes/category'))
 
 // Menangani rute yang tidak ditemukan
 app.use((req, res) => {
