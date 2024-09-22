@@ -42,3 +42,17 @@ exports.updateCate = asyncHandler( async (req,res) =>{
         res.status(500).json({error: 'Internal server error'})
     }
 })
+
+exports.removeCate = asyncHandler(async (req,res) => {
+  try {
+        const removeCate = await Category.findByIdAndDelete(req.params.categoryId)
+    if (!removeCate) {
+        return res.json('Data tidak ditemukan')
+    }
+    res.json(removeCate)
+    
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({error: 'Internal server error'})
+  }  
+})

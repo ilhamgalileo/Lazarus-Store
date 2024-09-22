@@ -5,6 +5,7 @@ const category = require('../controllers/category')
 
 router.post('/', authenticate,authorizeAdmin, category.createCate )
 router.put('/:categoryId', authenticate,authorizeAdmin, category.updateCate )
+router.delete('/:categoryId', authenticate,authorizeAdmin, category.removeCate )
 
 
 module.exports = router
