@@ -1,5 +1,3 @@
-
-
 const CategoryForm = ({
     value,
     setvalue,
@@ -15,24 +13,35 @@ const CategoryForm = ({
                 placeholder="Write category name"
                 value={value}
                 onChange={(e) => setvalue(e.target.value)} 
-                />
+            />
 
             <div className="flex justify-between">
-                <button className="bg-orange-500 text-white py-2 px-4 rounded-lg 
-                hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500
-                focus:ring-opacity-50">{buttonText}</button>
+                <button 
+                    type="submit"
+                    className="bg-orange-500 text-white py-2 px-4 rounded-lg 
+                    hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500
+                    focus:ring-opacity-50"
+                >
+                    {buttonText}
+                </button>
 
-            {handleDelete && (
-                <button
-                onClick={handleDelete} 
-                className="bg-red-500 text-white py-2 px-4 rounded-lg
-                hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500
-                focus:ring-opacity-50"> Delete </button>
-            )}
+                {handleDelete && (
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleDelete();
+                        }}
+                        className="bg-red-500 text-white py-2 px-4 rounded-lg
+                        hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500
+                        focus:ring-opacity-50"
+                    > 
+                        Delete 
+                    </button>
+                )}
             </div>
         </form>
     </div>
-
 }
 
 export default CategoryForm

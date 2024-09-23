@@ -48,20 +48,20 @@ const CategoryList = () => {
 
     const handleUpdateCate = async (e) => {
         e.preventDefault()
-    
+
         if (!updatingName) {
             toast.error('Category name is required')
             return
         }
-    
+
         try {
             const result = await updateCate({
-                categoryId: selectedCate._id, 
+                categoryId: selectedCate._id,
                 updatedCate: {
                     name: updatingName
                 }
             }).unwrap()
-    
+
             if (result.error) {
                 toast.error(result.error)
             } else if (result.category && result.category.name) {
@@ -78,6 +78,29 @@ const CategoryList = () => {
         } catch (error) {
             console.error('Update category error:', error)
             toast.error('Failed to update category. Please try again.')
+        }
+    }
+
+    const handleDeleteCate = async () => {
+        try {
+            const result = await deleteCate(selectedCate._id).unwrap()
+            console.log('Delete result:', result)
+
+            if (result.error) {
+                toast.error(result.error)
+            } else {
+                toast.success('Category deleted successfully')
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000)
+            }
+
+            setSelectedCate(null)
+            setModalVisible(false)
+
+        } catch (error) {
+            console.error('Category deletion error:', error)
+            toast.error('Category deletion failed. Try again.')
         }
     }
 
@@ -102,8 +125,6 @@ const CategoryList = () => {
                                         setUpdatingName(category.name)
                                     }
                                 }}>{category.name}
-
-
                             </button>
                         </div>
                     ))}
@@ -115,7 +136,7 @@ const CategoryList = () => {
                         setvalue={(value) => setUpdatingName(value)}
                         handleSubmit={handleUpdateCate}
                         buttonText="Update"
-                    // handleDelete={handleDeleteCate}
+                        handleDelete={handleDeleteCate}
                     />
                 </Modal>
             </div>
