@@ -105,31 +105,40 @@ const CategoryList = () => {
     }
 
     return (
-        <div className="ml-[10rem] flex-col md:flex-row">
-            <div className="md:w-3/4 py-3">
-                <div className="h-12">Manage Categories</div>
-                <CategoryForm value={name} setvalue={setName} handleSubmit={handleCreateCate} />
+        <div className="ml-[10rem] flex flex-col md:flex-row">
+            <div className="md:w-3/4 py-5">
+                <h2 className="text-2xl font-semibold text-orange-500 mb-5 text-center">Manage Categories</h2>
+    
+                {/* Form untuk menambahkan kategori */}
+                <CategoryForm 
+                    value={name} 
+                    setvalue={setName} 
+                    handleSubmit={handleCreateCate} 
+                />
                 <br />
-                <hr />
-
-                <div className="flex flex-wrap">
+                <hr className="border-orange-500 my-4" />
+    
+                {/* Daftar kategori */}
+                <div className="flex flex-wrap gap-3">
                     {categories?.map((category) => (
                         <div key={category._id}>
                             <button
-                                className="bg-black border border-orange-500 text-white py-2 px-4 rounded-lg m-3
-                    hover:bg-orange-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-orange-500
-                    focus:ring-opacity-50" onClick={() => {
-                                    {
-                                        setModalVisible(true)
-                                        setSelectedCate(category)
-                                        setUpdatingName(category.name)
-                                    }
-                                }}>{category.name}
+                                className="bg-black border border-orange-500 text-orange-500 py-2 px-4 rounded-lg 
+                                hover:bg-orange-500 hover:text-white focus:outline-none focus:ring-2 
+                                focus:ring-orange-500 focus:ring-opacity-50 transition duration-300"
+                                onClick={() => {
+                                    setModalVisible(true);
+                                    setSelectedCate(category);
+                                    setUpdatingName(category.name);
+                                }}
+                            >
+                                {category.name}
                             </button>
                         </div>
                     ))}
                 </div>
-
+    
+                {/* Modal untuk mengedit kategori */}
                 <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
                     <CategoryForm
                         value={updatingName}
