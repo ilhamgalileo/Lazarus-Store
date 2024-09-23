@@ -36,6 +36,9 @@ const CategoryList = () => {
             } else {
                 setName("")
                 toast.success(`${result.category.name} is created.`)
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000)
             }
         } catch (error) {
             console.log(error)
@@ -59,8 +62,6 @@ const CategoryList = () => {
                 }
             }).unwrap()
     
-            console.log(result)
-    
             if (result.error) {
                 toast.error(result.error)
             } else if (result.category && result.category.name) {
@@ -68,11 +69,11 @@ const CategoryList = () => {
                 setSelectedCate(null)
                 setUpdatingName("")
                 setModalVisible(false)
-            } else if (result.Message) {
-                // Jika ingin menampilkan pesan dari server
-                toast.success(result.Message)
             } else {
                 toast.success("Category updated successfully")
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000)
             }
         } catch (error) {
             console.error('Update category error:', error)
