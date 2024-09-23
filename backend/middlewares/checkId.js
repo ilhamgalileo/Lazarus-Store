@@ -6,4 +6,4 @@ function checkId(req, res, next) {
     }
     next()
 }
-export default checkId
+module.exports = checkId
