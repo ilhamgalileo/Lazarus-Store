@@ -74,10 +74,9 @@ exports.update = asyncHandler(async (req, res) => {
 
 
 exports.delete = asyncHandler(async (req, res) => {
-    const id = req.params.id
-    const deletedProduct = await Product.findByIdAndDelete(id)
+    const deletedProduct = await Product.findByIdAndDelete(req.params.id)
     if (!deletedProduct) {
-        return res.status(404).send({ message: 'produk tidak ditemukan' })
+        return res.status(404).json({ message: 'produk tidak ditemukan' })
     }
-    res.send({ message: 'produk berhasil dihapus' })
+    res.json({ message: 'produk berhasil dihapus', deletedProduct })
 })

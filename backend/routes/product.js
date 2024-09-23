@@ -9,6 +9,6 @@ router.get('/', product.FindMany)
 router.get('/:id', product.findOne)         
 router.post('/', authenticate, authorizeAdmin, formidable(), product.create)           
 router.put('/:id', authenticate, authorizeAdmin,formidable(), product.update)        
-router.delete('/:id', product.delete)
+router.delete('/:id', authenticate, authorizeAdmin, product.delete)
 
 module.exports = router
