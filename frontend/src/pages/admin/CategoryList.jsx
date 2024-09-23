@@ -7,12 +7,13 @@ import {
     useFetchCateQuery
 } from "../../redux/api/categoryApiSlice"
 import CategoryForm from "../../components/CategoryForm"
+import Modal from "../../components/Modal"
 
 const CategoryList = () => {
     const { data: categories } = useFetchCateQuery()
     const [name, setName] = useState('')
-    const [selectedCate, useSelectedCate] = useState(null)
-    const [updateName, useUpdateName] = useState('')
+    const [selectedCate, setSelectedCate] = useState(null)
+    const [updatingName, setUpdatingName] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
 
     const [createCate] = useCreateCateMutation()
@@ -28,7 +29,7 @@ const CategoryList = () => {
         }
 
         try {
-            const result = await createCate({name}).unwrap()
+            const result = await createCate({ name }).unwrap()
             console.log(result)
             if (result.error) {
                 toast.error(result.error)
@@ -42,7 +43,44 @@ const CategoryList = () => {
         }
     }
 
-    return (    
+    const handleUpdateCate = async (e) => {
+        e.preventDefault()
+    
+        if (!updatingName) {
+            toast.error('Category name is required')
+            return
+        }
+    
+        try {
+            const result = await updateCate({
+                categoryId: selectedCate._id, 
+                updatedCate: {
+                    name: updatingName
+                }
+            }).unwrap()
+    
+            console.log(result)
+    
+            if (result.error) {
+                toast.error(result.error)
+            } else if (result.category && result.category.name) {
+                toast.success(`${result.category.name} is updated`)
+                setSelectedCate(null)
+                setUpdatingName("")
+                setModalVisible(false)
+            } else if (result.Message) {
+                // Jika ingin menampilkan pesan dari server
+                toast.success(result.Message)
+            } else {
+                toast.success("Category updated successfully")
+            }
+        } catch (error) {
+            console.error('Update category error:', error)
+            toast.error('Failed to update category. Please try again.')
+        }
+    }
+
+    return (
         <div className="ml-[10rem] flex-col md:flex-row">
             <div className="md:w-3/4 py-3">
                 <div className="h-12">Manage Categories</div>
@@ -53,14 +91,14 @@ const CategoryList = () => {
                 <div className="flex flex-wrap">
                     {categories?.map((category) => (
                         <div key={category._id}>
-                            <button 
-                        className="bg-black border border-orange-500 text-white py-2 px-4 rounded-lg m-3
+                            <button
+                                className="bg-black border border-orange-500 text-white py-2 px-4 rounded-lg m-3
                     hover:bg-orange-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-orange-500
                     focus:ring-opacity-50" onClick={() => {
                                     {
-                                        setModalVisible(true)   
-                                        setSelectedCategory(category)
-                                        setUpdateName(category.name)
+                                        setModalVisible(true)
+                                        setSelectedCate(category)
+                                        setUpdatingName(category.name)
                                     }
                                 }}>{category.name}
 
@@ -70,6 +108,15 @@ const CategoryList = () => {
                     ))}
                 </div>
 
+                <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
+                    <CategoryForm
+                        value={updatingName}
+                        setvalue={(value) => setUpdatingName(value)}
+                        handleSubmit={handleUpdateCate}
+                        buttonText="Update"
+                    // handleDelete={handleDeleteCate}
+                    />
+                </Modal>
             </div>
         </div>
     )
