@@ -47,19 +47,30 @@ exports.create = asyncHandler(async (req, res) => {
 })
 
 exports.update = asyncHandler(async (req, res) => {
-    const id = req.params.id
-
-    const data = await Product.findByIdAndUpdate(id, req.body, {
-        useFindAndModify: false,
-        new: true
+        try {
+            const { name, brand, quantity, category, description, price, image } = req.fields
+            switch (true) {
+                case !name:
+                    return res.json({ error: "Name is required" })
+                case !brand:
+                    return res.json({ error: "Brand is required" })
+                case !quantity:
+                    return res.json({ error: "Quantity is required" })
+                case !category:
+                    return res.json({ error: "Category is required" })
+                case !description:
+                    return res.json({ error: "Description is required" })
+                case !price:
+                    return res.json({ error: "Price is required" })
+                case !image:
+                    return res.json({ error: "Image is required" })
+            }
+            const product = await Product.findByIdAndUpdate(req.params.id, { ...req.fields }, {new: true})
+            await product.save()
+            res.status(201).json({ message: 'Data Berhasil diperbarui', product })
+        } catch (error) {
+        }
     })
-
-    if (!data) {
-        return res.status(404).send({ message: 'Produk tidak ditemukan' })
-    }
-
-    res.send({ message: "Update berhasil", data })
-})
 
 
 exports.delete = asyncHandler(async (req, res) => {
