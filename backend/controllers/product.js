@@ -7,8 +7,8 @@ exports.FindMany = asyncHandler(async (req, res) => {
         const keyword = req.query.keyword
             ? { name: { $regex: req.query.keyword, $options: "i" } }
             : {}
-        const count = await Product.countDocuments({...keyword})
-        const products = await Product.find({...keyword}).limit(pageSize)
+        const count = await Product.countDocuments({ ...keyword })
+        const products = await Product.find({ ...keyword }).limit(pageSize)
 
         res.json({
             products,
@@ -19,7 +19,7 @@ exports.FindMany = asyncHandler(async (req, res) => {
 
     } catch (error) {
         console.error(error)
-        res.status(500).json({error: "server error"})
+        res.status(500).json({ error: "server error" })
     }
 })
 
@@ -31,6 +31,19 @@ exports.findOne = asyncHandler(async (req, res) => {
         res.send(data)
     } else {
         res.status(500).send({ message: 'Product not found with id ' + id })
+    }
+})
+
+exports.fetchAllProducts = asyncHandler(async (req, res) => {
+    try {
+        const products = await Product.find({})
+            .populate("category")
+            .limit(12)
+            .sort({ createAt: -1 })
+        res.json(products)
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: "Server error" })
     }
 })
 
