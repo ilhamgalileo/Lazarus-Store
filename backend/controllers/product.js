@@ -44,6 +44,16 @@ exports.fetchTopProducts = asyncHandler(async (req, res) => {
     }
 })
 
+exports.fetchNewProducts = asyncHandler(async (req, res) => {
+    try {
+        const products = await Product.find().sort({_id: -1}).limit(5)
+        res.json(products)
+    } catch (error) {
+        console.error(error)
+        res.status(400).json(error.message)
+    }
+})
+
 exports.fetchAllProducts = asyncHandler(async (req, res) => {
     try {
         const products = await Product.find({})
