@@ -38,7 +38,7 @@ const CategoryList = () => {
                 toast.success(`${result.category.name} is created.`)
                 setTimeout(() => {
                     window.location.reload()
-                }, 2000)
+                }, 5500)
             }
         } catch (error) {
             console.log(error)
@@ -73,7 +73,7 @@ const CategoryList = () => {
                 toast.success("Category updated successfully")
                 setTimeout(() => {
                     window.location.reload()
-                }, 2000)
+                }, 5500)
             }
         } catch (error) {
             console.error('Update category error:', error)
@@ -92,7 +92,7 @@ const CategoryList = () => {
                 toast.success('Category deleted successfully')
                 setTimeout(() => {
                     window.location.reload()
-                }, 2000)
+                }, 5000)
             }
 
             setSelectedCate(null)
