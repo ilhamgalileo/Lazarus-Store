@@ -21,6 +21,27 @@ exports.createCate = asyncHandler(async (req, res) => {
     }
 })
 
+exports.updateCate = asyncHandler(async (req, res) => {
+    try {
+      const { name } = req.body
+      const { categoryId } = req.params
+  
+      const category = await Category.findOne({ _id: categoryId })
+  
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" })
+      }
+  
+      category.name = name
+  
+      const updatedCategory = await category.save()
+      res.json(updatedCategory);
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ error: "Internal server error" })
+    }
+  })
+
 exports.removeCate = asyncHandler(async (req, res) => {
     try {
         const removeCate = await Category.findByIdAndDelete(req.params.categoryId)

@@ -31,4 +31,3 @@ app.use((req, res) => {
 })
 
 // Mengatur port dan memulai server
-app.listen(port, () => console.log(`Server running on port ${port}...`))

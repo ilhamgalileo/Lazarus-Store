@@ -25,4 +25,4 @@ const db = {
     order: require('../models/order')(mongoose)
 }
 
-module.exports = { db, connectDB }
+module.exports = { db, connectDB, connectDBtesting}
