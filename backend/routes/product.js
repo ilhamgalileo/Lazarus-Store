@@ -6,6 +6,7 @@ const checkId = require('../middlewares/checkId')
 const formidable = require('express-formidable')
 
 router.get('/', authenticate, authorizeAdmin, product.FindMany)
+router.post('/:id/review', authenticate, product.addProductReview)
 router.get('/all', authenticate, product.fetchAllProducts)
 router.get('/:id', authenticate, authorizeAdmin, product.findOne)
 router.post('/', authenticate, authorizeAdmin, formidable(), product.create)
