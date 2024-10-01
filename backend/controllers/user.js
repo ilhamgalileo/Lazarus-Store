@@ -157,7 +157,11 @@ exports.updateProfile = asyncHandler(async (req, res)=>{
 
 exports.deleteUserbyAdmin = asyncHandler( async (req,res) =>{
     const user = await User.findById(req.params.id)
-
+        res.clearCookie("token", {
+            httpOnly: true,
+            sameSite: "strict",
+            secure: process.env.NODE_ENV === "production"
+        });
     if(user){
         if(user.isAdmin){
             res.status(400).json({message: 'tidak bisa hapus akun admin'})
