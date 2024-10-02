@@ -44,33 +44,36 @@ const ProductList = () => {
             productData.append("quantity", quantity);
             productData.append("brand", brand);
             productData.append("countInStock", stock);
-      
+
             const { data } = await createProduct(productData);
-      
-            if (data.error) {
-              toast.error("Product create failed. Try Again.");
+
+            if (data) {
+                toast.success(`${data.name} is created`);
+                navigate("/");
+                console.log(data)
             } else {
-              toast.success(`${data.name} is created`);
-              navigate("/");
+                toast.error("Creating profuct failed")
+                return
             }
-          } catch (error) {
+        } catch (error) {
             console.error(error);
             toast.error("Product create failed. Try Again.");
-          }
-        };      
-        const uploadFileHandler = async (e) => {
-            const formData = new FormData();
-            formData.append("image", e.target.files[0]);
-        
-            try {
-              const res = await uploadProductImage(formData).unwrap();
-              toast.success(res.message);
-              setImage(res.image);
-              setImageUrl(res.image);
-            } catch (error) {
-              toast.error(error?.data?.message || error.error);
-            }
-          };
+        }
+    };
+
+    const uploadFileHandler = async (e) => {
+        const formData = new FormData();
+        formData.append("image", e.target.files[0]);
+
+        try {
+            const res = await uploadProductImage(formData).unwrap();
+            toast.success(res.message);
+            setImage(res.image);
+            setImageUrl(res.image);
+        } catch (error) {
+            toast.error(error?.data?.message || error.error);
+        }
+    };
 
     return (
         <div className=" container xl:mx-[9rem] sm:mx-[0]">
@@ -82,7 +85,7 @@ const ProductList = () => {
                     {imageUrl && (
                         <div className="text-center">
                             <img
-                                src= {imageUrl}
+                                src={imageUrl}
                                 alt="product"
                                 className="block mx-auto max-h-[200px]"
                             />
@@ -170,7 +173,11 @@ const ProductList = () => {
                                     placeholder="Choose Category"
                                     className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
                                     onChange={e => setCategory(e.target.value)}
+                                    defaultValue=""
                                 >
+                                    <option value="" disabled>
+                                        Choose Category
+                                    </option>
                                     {isLoading ? (
                                         <option>Loading categories...</option>
                                     ) : isError ? (
@@ -188,7 +195,7 @@ const ProductList = () => {
                             </div>
                         </div>
                         <button
-                            onClick={submitHandler} 
+                            onClick={submitHandler}
                             className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-orange-600"
                         > Submit
                         </button>
