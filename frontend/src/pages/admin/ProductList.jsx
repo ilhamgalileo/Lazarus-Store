@@ -16,7 +16,7 @@ import { useFetchCateQuery } from "../../redux/api/categoryApiSlice"
 import { toast } from "react-toastify"
 
 const ProductList = () => {
-    const [image, setImage] = useState('')
+    const [image, setImage] = useState("");
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [price, setPrice] = useState('')
@@ -24,27 +24,53 @@ const ProductList = () => {
     const [quantity, setQuantity] = useState('')
     const [brand, setBrand] = useState('')
     const [stock, setStock] = useState(0)
-    const [imageUrl, setImageUrl] = useState(null)
+    const [imageUrl, setImageUrl] = useState(null);
     const navigate = useNavigate()
 
     const [uploadProductImage] = useUploadProductImageMutation()
     const [createProduct] = useCreateProductMutation()
     const { data: categories, isLoading, isError } = useFetchCateQuery()
 
-    const uploadFileHandler = async (e) => {
-        const formData = new FormData();
-        formData.append("image", e.target.files[0]);
-    
+    const submitHandler = async (e) => {
+        e.preventDefault();
+
         try {
-          const res = await uploadProductImage(formData).unwrap();
-          toast.success(res.message);
-          console.log('Upload response:', res);
-          setImage(res.image);
-          setImageUrl(res.image);
-        } catch (error) {
-          toast.error(error?.data?.message || error.error);
-        }
-      };
+            const productData = new FormData();
+            productData.append("image", image);
+            productData.append("name", name);
+            productData.append("description", description);
+            productData.append("price", price);
+            productData.append("category", category);
+            productData.append("quantity", quantity);
+            productData.append("brand", brand);
+            productData.append("countInStock", stock);
+      
+            const { data } = await createProduct(productData);
+      
+            if (data.error) {
+              toast.error("Product create failed. Try Again.");
+            } else {
+              toast.success(`${data.name} is created`);
+              navigate("/");
+            }
+          } catch (error) {
+            console.error(error);
+            toast.error("Product create failed. Try Again.");
+          }
+        };      
+        const uploadFileHandler = async (e) => {
+            const formData = new FormData();
+            formData.append("image", e.target.files[0]);
+        
+            try {
+              const res = await uploadProductImage(formData).unwrap();
+              toast.success(res.message);
+              setImage(res.image);
+              setImageUrl(res.image);
+            } catch (error) {
+              toast.error(error?.data?.message || error.error);
+            }
+          };
 
     return (
         <div className=" container xl:mx-[9rem] sm:mx-[0]">
@@ -56,7 +82,7 @@ const ProductList = () => {
                     {imageUrl && (
                         <div className="text-center">
                             <img
-                                src={imageUrl}
+                                src= {imageUrl}
                                 alt="product"
                                 className="block mx-auto max-h-[200px]"
                             />
@@ -64,8 +90,7 @@ const ProductList = () => {
                     )}
 
                     <div className="mb-3">
-                        <label className="border text-white px-4 block w-full text-center
-                    rounded-lg cursor-pointer font-bold py-11">
+                        <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
                             {image ? image.name : "Upload Image"}
 
                             <input
@@ -163,7 +188,7 @@ const ProductList = () => {
                             </div>
                         </div>
                         <button
-                            // onClick={handleSubmit} 
+                            onClick={submitHandler} 
                             className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-orange-600"
                         > Submit
                         </button>

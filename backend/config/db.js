@@ -1,28 +1,37 @@
-const mongoose = require('mongoose')
-require('dotenv').config()
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+
+dotenv.config();
 
 const connectDB = async () => {
     try {
-        const uri = process.env.MONGO_URI
+        const uri = process.env.MONGO_URI;
         if (!uri) {
-            throw new Error('MONGO_URI is not defined in environment variables')
+            throw new Error('MONGO_URI is not defined in environment variables');
         }
 
-        await mongoose.connect(uri)
-        console.log('MongoDB connected successfully')
+        await mongoose.connect(uri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log('MongoDB connected successfully');
     } catch (error) {
-        console.error('MongoDB connection error:', error)
-        process.exit(1)
+        console.error('MongoDB connection error:', error);
+        process.exit(1);
     }
-}
+};
 
-// Inisialisasi model-model
+import User from '../models/user.js';
+import Product from '../models/product.js';
+import Cart from '../models/cart.js';
+import Order from '../models/order.js';
+
 const db = {
     mongoose,
-    user: require('../models/user')(mongoose),
-    product: require('../models/product')(mongoose),
-    cart: require('../models/cart')(mongoose),
-    order: require('../models/order')(mongoose)
-}
+    user: User(mongoose),
+    product: Product(mongoose),
+    cart: Cart(mongoose),
+    order: Order(mongoose),
+};
 
-module.exports = { db, connectDB }
+export default connectDB

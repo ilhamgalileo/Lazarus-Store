@@ -2,6 +2,7 @@
   "name": "lazarus-store",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "backend": "nodemon backend/index.js",
     "frontend": "npm run dev --prefix frontend",

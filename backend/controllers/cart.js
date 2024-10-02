@@ -1,8 +1,8 @@
-const Cart = require('../models/cart')
-const Product = require('../models/product')
-const asyncHandler = require('express-async-handler') 
+import Cart from '../models/cart.js'
+import Product from '../models/product.js'
+import asyncHandler from 'express-async-handler'
 
-exports.getCart = asyncHandler(async (req, res) => {
+export const getCart = asyncHandler(async (req, res) => {
     const userId = req.user._id
     const cart = await Cart.findOne({ userId }).populate('products.productId')
 
@@ -12,7 +12,7 @@ exports.getCart = asyncHandler(async (req, res) => {
     res.send(cart)
 })
 
-exports.addProduct = asyncHandler(async (req, res) => {
+export const addProduct = asyncHandler(async (req, res) => {
   const { sku, quantity } = req.body
   const { _id } = req.user
   console.log("User ID:", _id)
@@ -53,7 +53,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
     res.status(201).send(cart)
 })
 
-exports.removeCart = asyncHandler(async (req, res) => {
+export const removeCart = asyncHandler(async (req, res) => {
   const {_id} = req.user
   const { cartId } = req.params
 

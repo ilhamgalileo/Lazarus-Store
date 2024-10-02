@@ -1,12 +1,13 @@
-const express = require('express')
-const router = express.Router()
-const { authenticate, authorizeAdmin } = require('../middlewares/middleware')
-const category = require('../controllers/category')
+import express from 'express';
+import { authenticate, authorizeAdmin } from '../middlewares/middleware.js'; // Pastikan untuk menggunakan .js
+import * as category from '../controllers/category.js'; 
 
-router.post('/', authenticate,authorizeAdmin, category.createCate )
-router.put('/:categoryId', authenticate,authorizeAdmin, category.updateCate )
-router.delete('/:categoryId', authenticate,authorizeAdmin, category.removeCate )
-router.get('/list', authenticate,authorizeAdmin, category.categoryList )
-router.get('/:id', authenticate,authorizeAdmin, category.findOne )
+const router = express.Router();
 
-module.exports = router
+router.post('/', authenticate, authorizeAdmin, category.createCate);
+router.put('/:categoryId', authenticate, authorizeAdmin, category.updateCate);
+router.delete('/:categoryId', authenticate, authorizeAdmin, category.removeCate);
+router.get('/list', authenticate, authorizeAdmin, category.categoryList);
+router.get('/:id', authenticate, authorizeAdmin, category.findOne);
+
+export default router;

@@ -1,9 +1,9 @@
-const express = require('express')
+import express  from 'express'
 const router = express.Router()
-const { authenticate } = require('../middlewares/middleware')
-const { checkout } = require('../controllers/order')
+import { authenticate } from '../middlewares/middleware.js'
+import * as order  from '../controllers/order.js'
 
 
-router.post('/:cartId', authenticate, checkout) // Checkout menggunakan cartId
+router.post('/:cartId', authenticate, order.checkout) // Checkout menggunakan cartId
 
-module.exports = router
+export default router

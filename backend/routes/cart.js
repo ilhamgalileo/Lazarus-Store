@@ -1,10 +1,10 @@
-const express = require('express')
+import express from 'express'
 const router = express.Router()
-const { authenticate } = require('../middlewares/middleware')
-const cart = require('../controllers/cart')
+import { authenticate } from '../middlewares/middleware.js'
+import * as category from '../controllers/cart.js'
 
-router.get('/', authenticate, cart.getCart)            // Mendapatkan keranjang pengguna
-router.post('/add', authenticate, cart.addProduct)     // Menambahkan produk ke keranjang
-router.delete('/delete/:cartId', authenticate, cart.removeCart) // Menghapus keranjang berdasarkan cartId
+router.get('/', authenticate, category.getCart)
+router.post('/add', authenticate, categotry. addProduct)
+router.delete('/delete/:cartId', authenticate, category.removeCart) 
 
-module.exports = router
+export default router

@@ -1,18 +1,19 @@
-const express = require('express')
-const router = express.Router()
-const product = require('../controllers/product')
-const { authenticate, authorizeAdmin } = require('../middlewares/middleware')
-const checkId = require('../middlewares/checkId')
-const formidable = require('express-formidable')
+import express from 'express';
+import * as product from '../controllers/product.js'; // Pastikan untuk menggunakan .js
+import { authenticate, authorizeAdmin } from '../middlewares/middleware.js'; // Pastikan untuk menggunakan .js
+import checkId from '../middlewares/checkId.js'; // Pastikan untuk menggunakan .js
+import formidable from 'express-formidable';
 
-router.get('/', authenticate, authorizeAdmin, product.FindMany)
-router.get('/top', product.fetchTopProducts)
-router.get('/new', product.fetchNewProducts)
-router.post('/:id/reviews', authenticate, checkId, product.addProductReview)
-router.get('/all', authenticate, product.fetchAllProducts)
-router.get('/:id', authenticate, authorizeAdmin, product.findOne)
-router.post('/', authenticate, authorizeAdmin, formidable(), product.create)
-router.put('/:id', authenticate, authorizeAdmin, formidable(), product.update)
-router.delete('/:id', authenticate, authorizeAdmin, product.delete)
+const router = express.Router();
 
-module.exports = router
+router.get('/', authenticate, authorizeAdmin, product.FindMany);
+router.get('/top', product.fetchTopProducts);
+router.get('/new', product.fetchNewProducts);
+router.post('/:id/reviews', authenticate, checkId, product.addProductReview);
+router.get('/all', authenticate, product.fetchAllProducts);
+router.get('/:id', authenticate, authorizeAdmin, product.findOne);
+router.post('/', authenticate, authorizeAdmin, formidable(), product.create);
+router.put('/:id', authenticate, authorizeAdmin, formidable(), product.update);
+router.delete('/:id', authenticate, authorizeAdmin, product.deleteProduct);
+
+export default router;

@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const asyncHandler = require('express-async-handler');
+import jwt from 'jsonwebtoken';
+import asyncHandler from 'express-async-handler';
 
-exports.authenticate = asyncHandler(async (req, res, next) => {
+export const authenticate = asyncHandler(async (req, res, next) => {
     const token = req.cookies.authToken;
 
     if (!token) {
@@ -24,10 +24,10 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
     }
 });
 
-exports.authorizeAdmin = (req, res, next) => {
+export const authorizeAdmin = (req, res, next) => {
     if (req.user && req.user.isAdmin) {
-        next()
+        next();
     } else {
-        res.status(401).json({ message: "Not authorized as an Admin" })
+        res.status(401).json({ message: "Not authorized as an Admin" });
     }
-}
+};

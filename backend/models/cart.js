@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from "mongoose"
 
 const schema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -11,4 +11,4 @@ const schema = new mongoose.Schema({
         timestamps: true
     })
 const Cart = mongoose.model("Cart", schema)
-module.exports = Cart
+export default Cart
