@@ -13,7 +13,7 @@ export const productApiSlice = apiSlice.injectEndpoints({
         }),
 
         getProductById: builder.query({
-            query: (prductId) => `${PRODUCT_URL}/${productId}`,
+            query: (productId) => `${PRODUCT_URL}/${productId}`,
             providesTags: (result, error, productId) => [
                 { type: "productId", id: productId }
             ],
@@ -43,7 +43,7 @@ export const productApiSlice = apiSlice.injectEndpoints({
             query: ({ productId, formData }) => ({
                 url: `${PRODUCT_URL}/${productId}`,
                 method: "PUT",
-                body: formData
+                body: formData,
             }),
         }),
 

@@ -49,10 +49,10 @@ const ProductList = () => {
             const { data } = await createProduct(productData);
 
             if (data) {
-                toast.success(`${data.name} is created`);
+                toast.success(`${data.product.name} is created`);
                 navigate("/");
                 console.log(data)
-            } else {
+            } else if(!data) {
                 toast.error("Creating profuct failed")
                 return
             }
@@ -133,8 +133,7 @@ const ProductList = () => {
                                 <label htmlFor="name block"> Quantity</label>< br />
                                 <input
                                     type="number"
-                                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] 
-                                text-white"
+                                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
                                     value={quantity}
                                     onChange={e => setQuantity(e.target.value)}
                                 />
@@ -179,11 +178,7 @@ const ProductList = () => {
                                     <option value="" disabled>
                                         Choose Category
                                     </option>
-                                    {isLoading ? (
-                                        <option>Loading categories...</option>
-                                    ) : isError ? (
-                                        <option>Error loading categories</option>
-                                    ) : categories && categories.length > 0 ? (
+                                    {categories && categories.length > 0 ? (
                                         categories.map((e) => (
                                             <option key={e._id} value={e._id}>
                                                 {e.name}

@@ -119,9 +119,9 @@ export const create = asyncHandler(async (req, res) => {
 export const update = asyncHandler(async (req, res) => {
     try {
         const { name, brand, quantity, category, description, price, image } = req.fields;
-        if (!name || !brand || !quantity || !category || !description || !price || !image) {
-            return res.json({ error: "All fields are required" });
-        }
+        // if (!name || !brand || !quantity || !category || !description || !price || !image) {
+        //     return res.json({ error: "All fields are required" });
+        // }
 
         const product = await Product.findByIdAndUpdate(req.params.id, { ...req.fields }, { new: true });
         if (!product) {
