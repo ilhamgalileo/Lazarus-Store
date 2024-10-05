@@ -14,6 +14,7 @@ const ProductUpdate = () => {
     const params = useParams()
 
     const { data: productData } = useGetProductByIdQuery(params.id)
+    console.log(productData)
 
     const [image, setImage] = useState(productData?.image || '')
     const [name, setName] = useState(productData?.name || '')
@@ -22,7 +23,7 @@ const ProductUpdate = () => {
     const [category, setCategory] = useState(productData?.category || '')
     const [brand, setBrand] = useState(productData?.brand || '')
     const [quantity, setQuantity] = useState(productData?.quantity || '')
-    const [stock, setStock] = useState(productData?.countInStock)
+    const [stock, setStock] = useState(productData?.countInStock || '')
 
     const navigate = useNavigate()
 
@@ -38,26 +39,22 @@ const ProductUpdate = () => {
             setPrice(productData.price)
             setCategory(productData.category)
             setBrand(productData.brand)
+            setImage(productData.image)
             setQuantity(productData.quantity)
             setStock(productData.countInStock)
         }
     }, [productData])
 
     const uploadFileHandler = async (e) => {
-        const formData = new FormData();
+        const formData = new FormData()
         formData.append("image", e.target.files[0])
         try {
           const res = await uploadProductImage(formData).unwrap()
           toast.success("Item added successfully", {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 2000,
           })
           setImage(res.image)
-        } catch (err) {
-          toast.success("Item added successfully", {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 2000,
-          })
+        } catch (error) {
+            toast.error(error?.data?.message || error.error);
         }
       }
 
@@ -74,11 +71,14 @@ const ProductUpdate = () => {
             formData.append("brand", brand)
             formData.append("countInStock", stock)
 
-            const data = await updateProduct({ productId: params._id, formData });
+            const data = await updateProduct({ productId: params.id, formData }).unwrap()
 
             if (data) {
                 toast.success('susscessfully updated')
-                navigate("/admin/allproductslist")
+                setTimeout(() => {
+                    navigate('/admin/allproductslist')
+                    window.location.reload()
+                }, 1500)
             } else if(!data) {
                 toast.error(data.error)
                 return
@@ -99,7 +99,7 @@ const ProductUpdate = () => {
             setTimeout(() => {
                 navigate('/admin/allproductslist')
                 window.location.reload()
-            }, 1000)
+            }, 1500)
 
         } catch (error) {
             console.log(error)

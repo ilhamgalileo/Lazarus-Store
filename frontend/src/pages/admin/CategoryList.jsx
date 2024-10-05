@@ -111,7 +111,6 @@ const CategoryList = () => {
             <div className="md:w-3/4 py-5">
                 <h2 className="text-2xl font-semibold text-orange-500 mb-5 text-center">Manage Categories</h2>
     
-                {/* Form untuk menambahkan kategori */}
                 <CategoryForm 
                     value={name} 
                     setvalue={setName} 
@@ -120,7 +119,6 @@ const CategoryList = () => {
                 <br />
                 <hr className="border-orange-500 my-4" />
     
-                {/* Daftar kategori */}
                 <div className="flex flex-wrap gap-3">
                     {categories?.map((category) => (
                         <div key={category._id}>
@@ -140,7 +138,6 @@ const CategoryList = () => {
                     ))}
                 </div>
     
-                {/* Modal untuk mengedit kategori */}
                 <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
                     <CategoryForm
                         value={updatingName}
