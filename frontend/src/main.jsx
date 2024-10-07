@@ -15,31 +15,31 @@ import CategoryList from './pages/admin/CategoryList.jsx'
 import ProductList from './pages/admin/ProductList.jsx'
 import ProductUpdate from './pages/admin/ProductUpdate.jsx'
 import AllProducts from './pages/admin/AllProducts.jsx'
+import Home from './Home.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
-
+      <Route index={true} path='/' element={<Home />} />
 
       <Route path='' element={<PrivateRoute />} >
-      <Route path='/profile' element={<Profile />} />
+        <Route path='/profile' element={<Profile />} />
       </Route>
 
       {/* admin */}
       <Route path='/admin' element={<AdminRoute />}>
-      <Route path='userlist' element={<UserList />}/>
-      <Route path='categorylist' element={<CategoryList />}/>
-      <Route path='productlist' element={<ProductList />}/>
-      <Route path='allproductslist'element={<AllProducts />}/>
-      <Route path='product/update/:id' element={<ProductUpdate />}/>
-      
+        <Route path='userlist' element={<UserList />} />
+        <Route path='categorylist' element={<CategoryList />} />
+        <Route path='productlist' element={<ProductList />} />
+        <Route path='allproductslist' element={<AllProducts />} />
+        <Route path='product/update/:id' element={<ProductUpdate />} />
+
       </Route>
     </Route>
   )
 )
-
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   < Provider store={store}>

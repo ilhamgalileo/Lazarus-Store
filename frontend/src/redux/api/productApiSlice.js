@@ -87,6 +87,7 @@ export const {
     useCreateProductMutation,
     useGetProductByIdQuery,
     useAllProductsQuery,
+    useGetProductsQuery,
     useDeleteProductMutation,
     useUpdateProductMutation,
     useGetTopProductsQuery,
