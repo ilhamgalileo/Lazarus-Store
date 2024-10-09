@@ -17,6 +17,7 @@ import ProductUpdate from './pages/admin/ProductUpdate.jsx'
 import AllProducts from './pages/admin/AllProducts.jsx'
 import Home from './Home.jsx'
 import Favorites from './pages/Products/Favorites.jsx'
+import ProductDetail from './pages/Products/ProductDetail.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
       <Route path='/register' element={<Register />} />
       <Route index={true} path='/' element={<Home />} />
       <Route path='/favorite' element={<Favorites />} />
+      <Route path='/product/:id' element={<ProductDetail />} />
 
       <Route path='' element={<PrivateRoute />} >
         <Route path='/profile' element={<Profile />} />
