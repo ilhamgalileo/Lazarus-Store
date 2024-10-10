@@ -1,28 +1,45 @@
 import { Link, useParams, useNavigate } from "react-router-dom"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { toast } from "react-toastify"
 import { useState } from "react"
 import { useGetProductDetailsQuery, useCreateReviewMutation } from "../../redux/api/productApiSlice"
-import Loader from "../../components/loader"
+import Loader from "../../components/Loader"
 import Message from "../../components/Message"
 import { FaBox, FaClock, FaShoppingCart, FaStar, FaStore } from "react-icons/fa"
 import moment from "moment"
 import HeartIcon from "./HeartIcon"
+import Ratings from "./Ratings"
+import ProductTabs from "./ProductTabs"
 
 const ProductDetail = () => {
     const { id: productId } = useParams()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const [qty, setQty] = useState(1)
     const [rating, setRating] = useState(0)
     const [comment, setComment] = useState('')
+    const [activeTab, setActiveTab] = useState(1)
 
     const { data: product, isLoading, refetch, error } = useGetProductDetailsQuery(productId)
-
-    const { userInfo } = useSelector(state => state.auth)
-
+    const { userInfo } = useSelector((state) => state.auth)
     const [createReview, { isLoading: loadingProductReview }] = useCreateReviewMutation()
 
+    const submitHandler = async (e) => {
+        e.preventDefault()
+        try {
+            await createReview({
+                productId,
+                rating,
+                comment,
+            }).unwrap()
+            refetch()
+            setActiveTab(2)
+            toast.success("Review created successfully")
+        } catch (error) {
+            toast.error(error?.data || error.message)
+        }
+    }
 
     return (
         <>
@@ -47,7 +64,6 @@ const ProductDetail = () => {
                                 alt={product.name}
                                 className="w-full xl:w-[50rem] lg:w-[45rem] md:w-[30rem] sm:w-[20rem] mr-[2rem]"
                             />
-
                             <HeartIcon product={product} />
                         </div>
 
@@ -56,37 +72,80 @@ const ProductDetail = () => {
                             <p className="my-4 xl:w-[35rem] lg:w-[35rem] md:w-[30rem] text-[#B0B0B0]">
                                 {product.description}
                             </p>
-
-                            <p className="text-5xl my-4 font-extrabold">$ {product.price}</p>
+                            <p className="text-5xl my-4 font-extrabold text-orange-500">$ {product.price}</p>
                             <div className="flex items-center justify-between w-[20rem]">
                                 <div className="one">
                                     <h1 className="flex items-center mb-6">
-                                        <FaStore className="mr-2 text-white" /> Brand: {product.brand} 
+                                        <FaStore className="mr-2 text-white" /> Brand: {product.brand}
                                     </h1>
                                     <h1 className="flex items-center mb-6">
-                                        <FaClock className="mr-2 text-white" /> Added: {moment(product.createAt).fromNow()} 
+                                        <FaClock className="mr-2 text-white" /> Added: {moment(product.createAt).fromNow()}
                                     </h1>
-
                                     <h1 className="flex items-center mb-6">
                                         <FaStore className="mr-2 text-white" /> Reviews: {" "}
-                                        {product.numReviews} 
+                                        {product.numReviews}
                                     </h1>
                                 </div>
                                 <div className="two">
                                     <h1 className="flex items-center mb-6">
-                                        <FaStar className="mr-2 text-white" /> Ratings: {rating}
+                                        <FaStar className="mr-2 text-white" /> Ratings: {product.rating}
                                     </h1>
                                     <h1 className="flex items-center mb-6">
                                         <FaShoppingCart className="mr-2 text-white" /> Quantity: {product.quantity}
                                     </h1>
                                     <h1 className="flex items-center mb-6">
-                                        <FaBox className="mr-2 text-white" /> CountInStock: {product.countInStock}
+                                        <FaBox className="mr-2 text-white" /> Count In Stock: {product.countInStock}
                                     </h1>
                                 </div>
                             </div>
                             <div className="flex justify-between flex-wrap">
-                                
+                                <Ratings
+                                    value={product.rating}
+                                    text={`${product.numReviews} reviews`}
+                                />
+                                {product.countInStock > 0 && (
+                                    <div>
+                                        <select
+                                            value={qty}
+                                            onChange={(e) => setQty(e.target.value)}
+                                            className="p-2 w-[6rem] rounded-lg text-black"
+                                        >
+                                            {[...Array(product.countInStock).keys()].map((x) => (
+                                                <option
+                                                    key={x + 1}
+                                                    value={x + 1}
+                                                > {x + 1}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
                             </div>
+                            <div className="btn-container">
+                                <button
+                                    // onClick={addToCartHandler}
+                                    disabled={product.countInStock === 0}
+                                    className="bg-orange-600 text-white py-2 px-4 rounded-lg mf:mt-0"
+                                >
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                        <div
+                            className="mt-[5rem] container flex flex-wrap items-start justify-between ml-[10rem]"
+                        >
+                            <ProductTabs
+                                activeTab={activeTab} 
+                                setActiveTab={setActiveTab} 
+                                loadingProductReview={loadingProductReview}
+                                userInfo={userInfo}
+                                submitHandler={submitHandler}
+                                rating={rating}
+                                setRating={setRating}
+                                comment={comment}
+                                setComment={setComment}
+                                product={product}
+                            />
                         </div>
                     </div>
                 </>

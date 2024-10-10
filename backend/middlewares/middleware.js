@@ -3,7 +3,6 @@ import asyncHandler from 'express-async-handler';
 
 export const authenticate = asyncHandler(async (req, res, next) => {
     const token = req.cookies.authToken;
-
     if (!token) {
         return res.status(401).json({
             status: 'error',
@@ -13,7 +12,11 @@ export const authenticate = asyncHandler(async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+        req.user = {
+            _id: decoded._id,
+            username: decoded.name, 
+            isAdmin: decoded.isAdmin,
+        }
         next();
     } catch (error) {
         console.error("Token verification error:", error);

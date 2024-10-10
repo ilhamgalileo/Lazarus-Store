@@ -2,15 +2,15 @@ import mongoose from "mongoose"
 const { ObjectId } = mongoose.Schema
 
 const reviewSchema = mongoose.Schema({
-    name: { type: String, require: true },
-    rating: { type: Number, require: true },
-    comment: { type: String, require: true },
+    name: { type: String, required: true },
+    rating: { type: Number, required: true },
+    comment: { type: String, required: true },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        require: true,
+        required: true,
         ref: "User",
     }
-}, {
+}, {    
     timestamps: true
 })
 
