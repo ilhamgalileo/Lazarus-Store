@@ -79,7 +79,8 @@ const ProductDetail = () => {
                                         <FaStore className="mr-2 text-white" /> Brand: {product.brand}
                                     </h1>
                                     <h1 className="flex items-center mb-6">
-                                        <FaClock className="mr-2 text-white" /> Added: {moment(product.createAt).fromNow()}
+                                        <FaClock className="mr-2 text-white" /> Added: {" "}
+                                        {moment(product.createdAt).fromNow()}
                                     </h1>
                                     <h1 className="flex items-center mb-6">
                                         <FaStore className="mr-2 text-white" /> Reviews: {" "}
