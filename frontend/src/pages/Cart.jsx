@@ -10,8 +10,23 @@ const Cart = () => {
   const cart = useSelector((state) => state.cart)
   const { cartItems } = cart
 
+  const userLogin = useSelector((state) => state.auth)
+  const { userInfo } = userLogin
+
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }))
+  }
+
+  const removeFromCartHandler = (id) => {
+    dispatch(removeFromCart(id))
+  }
+
+  const checkoutHandler = () => {
+    if (userInfo) {
+      navigate("/shipping")
+    } else {
+      navigate("/login?redirect=/shipping")
+    }
   }
 
   return (
@@ -90,7 +105,7 @@ const Cart = () => {
                   <button
                     className="bg-orange-500 mt-4 py-2 px-4 rounded-full text-lg w-full"
                     disabled={cartItems.length === 0}
-                  // onClick={checkoutHandler}
+                    onClick={checkoutHandler}
                   >
                     Proceed To Checkout
                   </button>

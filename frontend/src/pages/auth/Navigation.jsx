@@ -15,8 +15,9 @@ import { logout } from '../../redux/features/auth/authSlice'
 import FavoritesCount from "../Products/favoritesCount"
 
 const Navigation = () => {
-  const { userInfo } = useSelector(state => state.auth)
+  const { userInfo } = useSelector((state) => state.auth)
   console.log("userInfo:", userInfo)
+  const { cartItems } = useSelector((state) => state.cart)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [showSidebar, setShowSidebar] = useState(false)
 
@@ -25,7 +26,7 @@ const Navigation = () => {
   }
 
   const toggleSidebar = () => {
-    setShowSidebar(!showSidebar) // Diperbaiki dari setDropdownOpen
+    setShowSidebar(!showSidebar)
   }
 
   const closeSidebar = () => {
@@ -61,35 +62,48 @@ const Navigation = () => {
       <div className="flex flex-col justify-center space-y-4">
         <Link
           to="/"
-          className="flex items-center transition-transform transform hover:translate-x-2"
-        >
-          <AiOutlineHome className="mr-2 mt-[3rem]" size={26} />
-          <span className="hidden nav-item-name mt-[3rem]"> Home </span>{" "}
+          className="flex relative">
+          <div className="flex items-center transition-transform transform hover:translate-x-2">
+            <AiOutlineHome className="mr-2 mt-[3rem]" size={26} />
+            <span className="hidden nav-item-name mt-[3rem]"> Home </span>{" "}
+          </div>
         </Link>
 
         <Link
           to="/shop"
-          className="flex items-center transition-transform transform hover:translate-x-2"
-        >
-          <AiOutlineShopping className="mr-2 mt-[3rem]" size={26} />
-          <span className="hidden nav-item-name mt-[3rem]"> Shopping </span>{" "}
+          className="flex relative">
+          <div className="flex items-center transition-transform transform hover:translate-x-2">
+            <AiOutlineShopping className="mr-2 mt-[3rem]" size={26} />
+            <span className="hidden nav-item-name mt-[3rem]"> Shop </span>{" "}
+          </div>
         </Link>
 
         <Link
           to="/cart"
-          className="flex items-center transition-transform transform hover:translate-x-2"
-        >
-          <AiOutlineShoppingCart className="mr-2 mt-[3rem]" size={26} />
-          <span className="hidden nav-item-name mt-[3rem]"> Cart </span>{" "}
+          className="flex relative">
+          <div className="flex items-center transition-transform transform hover:translate-x-2">
+            <AiOutlineShoppingCart className="mr-2 mt-[3rem]" size={26} />
+            <span className="hidden nav-item-name mt-[3rem]"> Cart </span>{" "}
+          </div>
+          <div className="absolute top-9">
+            {cartItems.length > 0 && (
+              <span>
+                <span className="px-1 py-0 text-sm text-white bg-orange-500 rounded-full">
+                  {cartItems.reduce((a, c) => a + c.qty, 0 )}
+                </span>
+              </span>
+            )}
+          </div>
         </Link>
 
-        <Link
-          to="/favorite"
-          className="flex items-center transition-transform transform hover:translate-x-2"
-        >
-          <FaHeart className="mr-2 mt-[3rem]" size={26} />
-          <span className="hidden nav-item-name mt-[3rem]"> Favorites </span>{" "}
-          <FavoritesCount />
+        <Link to="/favorite" className="flex relative">
+          <div className="flex justify-center items-center transition-transform transform hover:translate-x-2">
+            <FaHeart className="mt-[3rem] mr-2" size={26} />
+            <span className="hidden nav-item-name mt-[3rem]">
+              Favorites
+            </span>{" "}
+            <FavoritesCount />
+          </div>
         </Link>
       </div>
 
