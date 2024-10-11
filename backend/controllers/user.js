@@ -55,7 +55,7 @@ export const login = asyncHandler(async (req, res) => {
             isAdmin: user.isAdmin,
         },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: '7d' }
     );
 
     res.cookie('authToken', token, {

@@ -80,7 +80,7 @@ const ProductDetail = () => {
                                     </h1>
                                     <h1 className="flex items-center mb-6">
                                         <FaClock className="mr-2 text-white" /> Added: {" "}
-                                        {moment(product.createdAt).fromNow()}
+                                        {moment(product.createdAt).format('DD MMMM YYYY')}
                                     </h1>
                                     <h1 className="flex items-center mb-6">
                                         <FaStore className="mr-2 text-white" /> Reviews: {" "}
