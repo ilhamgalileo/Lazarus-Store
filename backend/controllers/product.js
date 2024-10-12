@@ -3,12 +3,12 @@ import asyncHandler from 'express-async-handler';
 
 export const FindMany = asyncHandler(async (req, res) => {
     try {
-        const pageSize = 6;
+        const pageSize = 6
         const keyword = req.query.keyword
             ? { name: { $regex: req.query.keyword, $options: "i" } }
-            : {};
-        const count = await Product.countDocuments({ ...keyword });
-        const products = await Product.find({ ...keyword }).limit(pageSize);
+            : {}
+        const count = await Product.countDocuments({ ...keyword })
+        const products = await Product.find({ ...keyword }).limit(pageSize)
 
         res.json({
             products,
@@ -17,54 +17,54 @@ export const FindMany = asyncHandler(async (req, res) => {
             hasMore: false,
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "server error" });
+        console.error(error)
+        res.status(500).json({ error: "server error" })
     }
 });
 
 export const findOne = asyncHandler(async (req, res) => {
-    const id = req.params.id;
-    const data = await Product.findById(id);
+    const id = req.params.id
+    const data = await Product.findById(id)
 
     if (data) {
-        res.send(data);
+        res.send(data)
     } else {
-        res.status(500).send({ message: 'Product not found with id ' + id });
+        res.status(500).send({ message: 'Product not found with id ' + id })
     }
-});
+})
 
 export const fetchTopProducts = asyncHandler(async (req, res) => {
     try {
-        const products = await Product.find({}).sort({ rating: -1 }).limit(4);
+        const products = await Product.find({}).sort({ rating: -1 }).limit(4)
         res.json(products)
     } catch (error) {
         console.error(error)
         res.status(400).json(error.message)
     }
-});
+})
 
 export const fetchNewProducts = asyncHandler(async (req, res) => {
     try {
-        const products = await Product.find().sort({ _id: -1 }).limit(5);
-        res.json(products);
+        const products = await Product.find().sort({ _id: -1 }).limit(5)
+        res.json(products)
     } catch (error) {
-        console.error(error);
-        res.status(400).json(error.message);
+        console.error(error)
+        res.status(400).json(error.message)
     }
-});
+})
 
 export const fetchAllProducts = asyncHandler(async (req, res) => {
     try {
         const products = await Product.find({})
             .populate("category")
             .limit(12)
-            .sort({ createdAt: -1 });
-        res.json(products);
+            .sort({ createdAt: -1 })
+        res.json(products)
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Server error" });
+        console.error(error)
+        res.status(500).json({ error: "Server error" })
     }
-});
+})
 
 export const addProductReview = asyncHandler(async (req, res) => {
     try {
@@ -98,7 +98,7 @@ export const addProductReview = asyncHandler(async (req, res) => {
         console.error(error)
         res.status(400).json(error.message)
     }
-});
+})
 
 export const create = asyncHandler(async (req, res) => {
     try {
@@ -114,14 +114,11 @@ export const create = asyncHandler(async (req, res) => {
         console.error(error)
         res.status(500).json({ error: "Server error" })
     }
-});
+})
 
 export const update = asyncHandler(async (req, res) => {
     try {
         const { name, brand, quantity, category, description, price, image } = req.fields;
-        // if (!name || !brand || !quantity || !category || !description || !price || !image) {
-        //     return res.json({ error: "All fields are required" });
-        // }
 
         const product = await Product.findByIdAndUpdate(req.params.id, { ...req.fields }, { new: true })
         if (!product) {
@@ -134,12 +131,29 @@ export const update = asyncHandler(async (req, res) => {
         console.error(error)
         res.status(500).json({ error: "Server error" })
     }
-});
+})
 
 export const deleteProduct = asyncHandler(async (req, res) => {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    const deletedProduct = await Product.findByIdAndDelete(req.params.id)
     if (!deletedProduct) {
-        return res.status(404).json({ message: 'Produk tidak ditemukan' });
+        return res.status(404).json({ message: 'Produk tidak ditemukan' })
     }
-    res.json({ message: 'Produk berhasil dihapus', deletedProduct });
-});
+    res.json({ message: 'Produk berhasil dihapus', deletedProduct })
+})
+
+export const filterProducts = asyncHandler(async (req, res) => {
+    try {
+        const { checked, radio } = req.body
+
+        let args = {}
+        if (checked.length > 0) args.category = checked
+        if (radio.length)args.price = { $gte: radio[0], $lte: radio[1]}
+        
+        const products = await Product.find(args)
+        res.json(products)
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: "Server error" })
+    }
+})

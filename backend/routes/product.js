@@ -15,5 +15,6 @@ router.get('/:id', authenticate, product.findOne);
 router.post('/', authenticate, authorizeAdmin, formidable(), product.create);
 router.put('/:id', authenticate, authorizeAdmin, formidable(), product.update);
 router.delete('/:id', authenticate, authorizeAdmin, product.deleteProduct);
+router.post('/filtered-products', product.filterProducts)
 
 export default router
