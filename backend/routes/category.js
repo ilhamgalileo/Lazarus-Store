@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/', authenticate, authorizeAdmin, category.createCate);
 router.put('/:categoryId', authenticate, authorizeAdmin, category.updateCate);
 router.delete('/:categoryId', authenticate, authorizeAdmin, category.removeCate);
-router.get('/list', authenticate, authorizeAdmin, category.categoryList);
+router.get('/list', authenticate, category.categoryList);
 router.get('/:id', authenticate, authorizeAdmin, category.findOne);
 
 export default router;
