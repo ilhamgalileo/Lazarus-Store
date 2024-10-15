@@ -1,10 +1,10 @@
 import express  from 'express'
 const router = express.Router()
-import { authenticate } from '../middlewares/middleware.js'
+import { authenticate, authorizeAdmin } from '../middlewares/middleware.js'
 import * as order  from '../controllers/order.js'
-
-
-router.post('/:cartId', authenticate, order.checkout) 
-router.post('/', authenticate, order.createOrder)
+ 
+router.post('/checkout', authenticate, order.createOrder)
+router.get("/", authenticate, authorizeAdmin, order.getAllOrder)
+router.get("/mine", authenticate, order.getMyOrder)
 
 export default router

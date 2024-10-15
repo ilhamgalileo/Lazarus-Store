@@ -53,65 +53,40 @@ export const createOrder = asyncHandler(async (req, res) => {
         })
         const { itemsPrice, taxPrice, shippingPrice, totalPrice } = calcPrice(dbOrderItems)
 
-    const order = new Order({
-        orderItems: dbOrderItems,
-        user: req.user._id,
-        shippingAddress,
-        paymentMethod,
-        itemsPrice,
-        taxPrice,
-        shippingPrice,
-        totalPrice
-    })
-    const createOrder = await order.save()
-    res.status(201).json(createOrder)
+        const order = new Order({
+            orderItems: dbOrderItems,
+            user: req.user._id,
+            shippingAddress,
+            paymentMethod,
+            itemsPrice,
+            taxPrice,
+            shippingPrice,
+            totalPrice
+        })
+        const createOrder = await order.save()
+        res.status(201).json(createOrder)
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
 
 })
 
-export const checkout = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
-    const { cartId } = req.params;
+export const getAllOrder = asyncHandler(async (req, res) => {
+    try {
+        const orders = await Order.find({}).populate("user", "id username")
+        res.json(orders)
 
-    const cart = await Cart.findOne({ _id: cartId, userId }).populate('products.productId', 'name price stock');
-    if (!cart || cart.products.length === 0) {
-        return res.status(404).send({ message: 'Cart is empty or not found' });
+    } catch (error) {
+        res.status(500).json({ error: error.message })
     }
+})
 
-    const products = cart.products.map(p => ({
-        productId: p.productId._id,
-        name: p.productId.name,
-        quantity: p.quantity,
-        price: p.productId.price,
-    }));
-
-    const totalAmount = products.reduce((total, p) => total + p.price * p.quantity, 0);
-
-    for (const p of cart.products) {
-        const product = await Product.findById(p.productId._id);
-        if (product.stock < p.quantity) {
-
-            return res.status(400).send({ message: `Stok ${product.name} tidak mencukupi` });
-        }
+export const getMyOrder = asyncHandler(async (req, res) => {
+    try {
+        const id = req.user._id
+        const myOder = await Order.find({ user: id })
+        res.json(myOder)
+    } catch (error) {
+        res.status(500).json({ error: error.message })
     }
-
-    const order = new Order({
-        userId,
-        products,
-        totalAmount,
-    });
-
-    await order.save();
-
-    for (const p of cart.products) {
-        const product = await Product.findById(p.productId._id);
-        product.stock -= p.quantity;
-        await product.save();
-    }
-
-    await Cart.findByIdAndDelete(cart._id);
-
-    res.status(201).send({ message: 'Checkout successful', order });
-});
+})
