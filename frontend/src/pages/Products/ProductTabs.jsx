@@ -25,21 +25,22 @@ const ProductTabs = ({
     }
 
     const handleTabClick = (tabNumber) => {
-        setActiveTab(tabNumber)
+        setActiveTab(tabNumber);
     };
 
     return (
         <div className="flex flex-col md:flex-row">
             <section className="mr-[5rem]">
+                {/* Tab All Reviews menjadi tab pertama */}
                 <div
                     className={`flex-1 p-4 cursor-pointer text-lg ${activeTab === 1 ? "font-bold" : ""}`}
                     onClick={() => handleTabClick(1)}
-                > Write Your Review
+                > All Reviews
                 </div>
                 <div
                     className={`flex-1 p-4 cursor-pointer text-lg ${activeTab === 2 ? "font-bold" : ""}`}
                     onClick={() => handleTabClick(2)}
-                > All Reviews
+                > Write Your Review
                 </div>
                 <div
                     className={`flex-1 p-4 cursor-pointer text-lg ${activeTab === 3 ? "font-bold" : ""}`}
@@ -49,7 +50,36 @@ const ProductTabs = ({
             </section>
 
             <section>
+                {/* Konten untuk Tab All Reviews (sekarang tab pertama) */}
                 {activeTab === 1 && (
+                    <>
+                        <div>{product.reviews.length === 0 && <p>No review yet</p>}</div>
+                        <div>
+                            {product.reviews.map((review) => (
+                                <div
+                                    key={review._id}
+                                    className="bg-[#1A1A1A] p-4 rounded-lg xl:ml-[2rem] sm:ml-w[0rem] xl:w-[50rem] sm:w-[24rem] mb-5"
+                                >
+                                    <div className="flex justify-between">
+                                        <strong className="text-[#B0B0B0]">{review.name}</strong>
+                                        <p className="text-[#B0B0B0]">
+                                            {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ""}
+                                        </p>
+                                    </div>
+                                    <p className="my-4">{review.comment || "No comment yet"}</p>
+                                    <div className="flex items-center">
+                                        <Ratings value={review.rating || 0} />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
+            </section>
+
+            <section>
+                {/* Konten untuk Tab Write Your Review (sekarang tab kedua) */}
+                {activeTab === 2 && (
                     <div className="mt-4">
                         {userInfo ? (
                             <form onSubmit={submitHandler}>
@@ -95,33 +125,9 @@ const ProductTabs = ({
                     </div>
                 )}
             </section>
+
             <section>
-                {activeTab === 2 && (
-                    <>
-                        <div>{product.reviews.length === 0 && <p>No review yet</p>}</div>
-                        <div>
-                            {product.reviews.map((review) => (
-                                <div
-                                    key={review._id}
-                                    className="bg-[#1A1A1A] p-4 rounded-lg xl:ml-[2rem] sm:ml-w[0rem] xl:w-[50rem] sm:w-[24rem] mb-5"
-                                >
-                                    <div className="flex justify-between">
-                                        <strong className="text-[#B0B0B0]">{review.name}</strong>
-                                        <p className="text-[#B0B0B0]">
-                                            {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ""}
-                                        </p>
-                                    </div>
-                                    <p className="my-4">{review.comment || "No comment yet"}</p>
-                                    <div className="flex items-center">
-                                        <Ratings value={review.rating || 0} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </>
-                )}
-            </section>
-            <section>
+                {/* Konten untuk Tab Related Products */}
                 {activeTab === 3 && (
                     <section className="ml-4[rem] flex flex-wrap">
                         {!data ? (
@@ -137,7 +143,7 @@ const ProductTabs = ({
                 )}
             </section>
         </div>
-    )
-}
+    );
+};
 
-export default ProductTabs
+export default ProductTabs;

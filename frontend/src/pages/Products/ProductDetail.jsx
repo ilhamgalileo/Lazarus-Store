@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux"
 import { toast } from "react-toastify"
 import { useState } from "react"
 import { useGetProductDetailsQuery, useCreateReviewMutation } from "../../redux/api/productApiSlice"
-import Loader from "../../components/Loader"
+import Loader from "../../components/loader"
 import Message from "../../components/Message"
-import { FaBox, FaClock, FaShoppingCart, FaStar, FaStore } from "react-icons/fa"
+import { FaBox, FaClock, FaShoppingCart, FaStar, FaStore, FaMinus, FaPlus } from "react-icons/fa"
 import moment from "moment"
 import HeartIcon from "./HeartIcon"
 import Ratings from "./Ratings"
@@ -111,21 +111,23 @@ const ProductDetail = () => {
                                     text={`${product.numReviews} reviews`}
                                 />
                                 {product.countInStock > 0 && (
-                                    <div>
-                                        <select
-                                            value={qty}
-                                            onChange={(e) => setQty(e.target.value)}
-                                            className="p-2 w-[6rem] rounded-lg text-black"
-                                        >
-                                            {[...Array(product.countInStock).keys()].map((x) => (
-                                                <option
-                                                    key={x + 1}
-                                                    value={x + 1}
-                                                > {x + 1}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                   <div className="flex items-center">
+                                   <button
+                                       onClick={() => setQty(qty > 1 ? qty - 1 : 1)}
+                                       className="bg-[#0f0f10] text-white px-4 py-2 rounded-l-lg"
+                                   >
+                                      < FaMinus />
+                                   </button>
+                                   <div className="bg-[#0f0f10] text-white text-center px-4 py-2">
+                                       {qty}
+                                   </div>
+                                   <button
+                                       onClick={() => setQty(qty < product.countInStock ? qty + 1 : qty)}
+                                       className="bg-[#0f0f10] text-white px-4 py-2 rounded-r-lg"
+                                   >
+                                       <FaPlus/>
+                                   </button>
+                               </div>
                                 )}
                             </div>
                             <div className="btn-container">

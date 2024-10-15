@@ -56,6 +56,7 @@ const Shop = () => {
   const handleReset = () => {
     setPriceFilter("")
     dispatch(setChecked([]))
+    dispatch(setSelectedBrand(null))
     dispatch(setProducts([]))
   }
 
