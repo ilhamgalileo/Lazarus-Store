@@ -12,24 +12,28 @@ import product from "./routes/product.js";
 import upload from "./routes/upload.js";
 import order from "./routes/order.js";
 
-dotenv.config();
-const port = process.env.PORT || 5000;
+dotenv.config()
+const port = process.env.PORT || 5000
 
-connectDB();
+connectDB()
 
-const app = express();
+const app = express()
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
 
-app.use("/api/users", user);
-app.use("/api/category", category);
-app.use("/api/products", product);
-app.use("/api/upload", upload);
-app.use("/api/orders", order);
+app.use("/api/users", user)
+app.use("/api/category", category)
+app.use("/api/products", product)
+app.use("/api/upload", upload)
+app.use("/api/orders", order)
 
-const __dirname = path.resolve();
-app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
+app.get("/api/config/paypal", (req, res) => {
+    res.send({clientId: process.env.PAYPAL_CLIENT_ID})
+})
 
-app.listen(port, () => console.log(`Server running on port: ${port}`));
+const __dirname = path.resolve()
+app.use("/uploads", express.static(path.join(__dirname + "/uploads")))
+
+app.listen(port, () => console.log(`Server running on port: ${port}`))

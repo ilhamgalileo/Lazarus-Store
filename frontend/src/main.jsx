@@ -20,6 +20,8 @@ import Favorites from './pages/Products/Favorites.jsx'
 import ProductDetail from './pages/Products/ProductDetail.jsx'
 import Cart from './pages/Cart.jsx'
 import Shop from './pages/Shop.jsx'
+import Shipping from './pages/orders/Shipping.jsx'
+import PlaceOrder from './pages/orders/PlaceOrder.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,6 +36,8 @@ const router = createBrowserRouter(
 
       <Route path='' element={<PrivateRoute />} >
         <Route path='/profile' element={<Profile />} />
+        <Route path='/shipping' element={<Shipping />} />
+        <Route path='/placeorder' element={<PlaceOrder />} />
       </Route>
 
       {/* admin */}
