@@ -4,23 +4,37 @@ import Product from '../models/product.js';
 import asyncHandler from 'express-async-handler';
 
 function calcPrice(orderItems) {
-    const itemsPrice = orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
-
-    const shippingPrice = itemsPrice > 100 ? 0 : 10
-    const taxRate = 0.15
-    const taxPrice = (itemsPrice * taxRate).toFixed(2)
-
-    const totalPrice = (
-        itemsPrice + shippingPrice + parseFloat(taxPrice).toFixed(2)
+    const itemsPrice = orderItems.reduce(
+      (acc, item) => acc + item.price * item.qty,
+      0
     )
+  
+    const shippingPrice = itemsPrice > 100 ? 0 : 10;
 
-    return {
-        itemsPrice: itemsPrice.toFixed(2),
-        shippingPrice: shippingPrice.toFixed(2),
-        taxPrice,
-        totalPrice
+    let taxPrice;
+    if (itemsPrice <= 100) {
+      taxPrice = 1
+    } else if (itemsPrice <= 500) {
+      taxPrice = 5
+    } else if (itemsPrice < 1000) {
+      taxPrice = 8
+    } else {
+      taxPrice = 10
     }
-}
+  
+    const totalPrice = (
+      itemsPrice +
+      shippingPrice +
+      taxPrice
+    ).toFixed(2)
+  
+    return {
+      itemsPrice: itemsPrice.toFixed(2),
+      shippingPrice: shippingPrice.toFixed(2),
+      taxPrice: taxPrice.toFixed(2),
+      totalPrice,
+    }
+  }
 
 export const createOrder = asyncHandler(async (req, res) => {
     const { orderItems, shippingAddress, paymentMethod } = req.body
@@ -40,7 +54,7 @@ export const createOrder = asyncHandler(async (req, res) => {
 
         if (!matchingItemFromDB) {
             res.status(404)
-            throw new Error(`Product not found: ${itemFromClient._id}`)
+            throw new Error(`Product not found: ${itemsFromClient._id}`)
         }
 
         return {
