@@ -26,7 +26,7 @@ const Profile = () => {
     const dispatch = useDispatch()
     const submitHandler = async (e) => {
         e.preventDefault();
-    
+
         if (password !== confirmPassword) {
             toast.error("Password does not match");
             return
@@ -91,18 +91,19 @@ const Profile = () => {
                                 onChange={e => setConfirmPassword(e.target.value)}
                             />
                         </div>
-                        
+
                         <div className="flex justify-between">
-                            <button 
-                            type="submit" 
-                            className="bg-orange-600 text-black py-2 px-4 rounded hover:bg-orange-700"
-                            > 
-                            Update
+                            <button
+                                type="submit"
+                                className="bg-orange-600 text-black py-2 px-4 rounded hover:bg-orange-700"
+                            >
+                                Update
                             </button>
-                            <Link 
-                            to='/user-orders' 
-                            className="bg-orange-600 text-black py-2 px-4 rounded hover:bg-orange-700"
-                            > My Orders
+                            <Link
+                                to='/user-orders'
+                                className="bg-orange-600 text-black py-2 px-4 rounded hover:bg-orange-700"
+                            >
+                                My Orders
 
                             </Link>
                         </div>

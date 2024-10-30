@@ -9,7 +9,8 @@ import {
   useGetOrderDetailsQuery,
   useDeliverOrderMutation,
   useGetPaypalClientIdQuery,
-  usePayOrderMutation
+  usePayOrderMutation,
+  useGetMidtransTokenMutation
 }
   from "../../redux/api/orderApiSlice"
 
@@ -20,37 +21,61 @@ const Order = () => {
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation()
   const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation()
+  const [getMidtransToken, { isLoading: loadingMidtrans }] = useGetMidtransTokenMutation()
   const { userInfo } = useSelector((state) => state.auth)
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer()
 
-  const { data: paypal, isLoading: loadingPaypal, error: errorPaypal } = useGetPaypalClientIdQuery()
-
   useEffect(() => {
-    if (!errorPaypal && !loadingPaypal && paypal.clientId) {
-      const loadingPayPalScript = async () => {
-        paypalDispatch({
-          type: "resetOptions",
-          value: {
-            "client-Id": paypal.clientId,
-            currency: "USD",
+    const fetchMidtransToken = async () => {
+      try {
+        const midtransRes = await getMidtransToken({
+          orderId,
+          customer_details: {
+            first_name: req.user.username,
+            email: req.user.email,
+            billing_address: {
+              address: shippingAddress.address,
+              city: shippingAddress.city,
+            },
+            shipping_address: {
+              first_name: req.user.username,
+              address: shippingAddress.address,
+              city: shippingAddress.city,
+              postal_code: shippingAddress.postalCode,
+            },
           },
-        })
-        paypalDispatch({ type: "setLoadingStatus", value: "pending" })
-      }
-      if (order && !order.isPaid) {
-        if (!window.paypal) {
-          loadingPayPalScript()
-        }
+        }).unwrap()
+        console.log('res mmidtrans', midtransRes)
+        const { token } = midtransRes
+        
+        window.snap.pay(token)
+      } catch (error) {
+        toast.error("Failed to fetch Midtrans token")
       }
     }
-  }, [errorPaypal, loadingPaypal, order, paypal, paypalDispatch])
+    if (order && !order.isPaid && order.paymentMethod === 'Midtrans') {
+      if (!window.snap) {
+        const script = document.createElement('script');
+        script.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
+        script.async = true
+        script.onload = fetchMidtransToken
+        document.body.appendChild(script)
+
+        return () => {
+          document.body.removeChild(script)
+        }
+      } else {
+        fetchMidtransToken()
+      }
+    }
+  }, [order, getMidtransToken, payOrder, refetch])
 
   function createOrder(data, actions) {
     return actions.order.create({
       purchase_units: [{ amount: { value: order.totalPrice } }]
-    }).then((orderID) => {
-      return orderID
+    }).then((orderId) => {
+      return orderId
     })
   }
 
@@ -205,9 +230,9 @@ const Order = () => {
         {userInfo && userInfo.isAdmin && order.isPaid && (
           <div>
             <button
-            type="button"
-            className="bg-orange-500 text-white w-full py-2"
-            onClick={deliverHandler}
+              type="button"
+              className="bg-orange-500 text-white w-full py-2"
+              onClick={deliverHandler}
             >
               Mark As Deliver
             </button>

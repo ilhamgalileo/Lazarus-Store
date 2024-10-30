@@ -4,8 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { useLoginMutation } from "../../redux/api/usersApiSlice"
 import { setCredientials } from "../../redux/features/auth/authSlice"
 import { toast } from "react-toastify"
-import Loader from "../../components/Loader"
-
+import Loader from "../../components/loader"
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')

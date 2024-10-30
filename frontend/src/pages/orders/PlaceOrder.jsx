@@ -7,13 +7,16 @@ import ProgressSteps from "../../components/ProgressSteps"
 import Loader from "../../components/loader"
 import { useCreateOrderMutation } from "../../redux/api/orderApiSlice"
 import { clearCartItems } from "../../redux/features/cart/cartSlice"
+import { usePayOrderMutation } from "../../redux/api/orderApiSlice"
 
 const PlaceOrder = () => {
     const navigate = useNavigate()
 
     const cart = useSelector(state => state.cart)
+    console.log(cart)
 
     const [createOrder, { isLoading, error }] = useCreateOrderMutation()
+    const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation()
 
     useEffect(() => {
         if (!cart.shippingAddress.address) {
@@ -25,19 +28,63 @@ const PlaceOrder = () => {
 
     const placeOrderHandler = async () => {
         try {
-            const res = await createOrder({
-                orderItems: cart.cartItems,
-                shippingAddress: cart.shippingAddress,
-                paymentMethod: cart.paymentMethod,
-                itemsPrice: cart.itemsPrice,
-                shippingPrice: cart.shippingPrice,
-                taxPrice: cart.taxPrice,
-                totalPrice: cart.totalPrice
-            }).unwrap()
-            dispatch(clearCartItems())
-            navigate(`/order/${res._id}`)
+            if (!window.snap) {
+                const script = document.createElement('script')
+                script.src = 'https://app.sandbox.midtrans.com/snap/snap.js'
+                script.async = true
+                script.onload = async () => {
+                    await handlePaymentProcess()
+                }
+                document.body.appendChild(script)
+            } else {
+                await handlePaymentProcess()
+            }
         } catch (error) {
-            toast.error(error)
+            toast.error(error.message || 'Payment failed. Please try again.');
+        }
+    }
+
+    const handlePaymentProcess = async () => {
+        const res = await createOrder({
+            orderItems: cart.cartItems,
+            shippingAddress: cart.shippingAddress,
+            paymentMethod: cart.paymentMethod,
+            itemsPrice: cart.itemsPrice,
+            shippingPrice: cart.shippingPrice,
+            taxPrice: cart.taxPrice,
+            totalPrice: cart.totalPrice,
+        }).unwrap()
+        console.log(res)
+
+        const token = res.token
+        dispatch(clearCartItems())
+        if (token) {
+            window.snap.pay(token, {
+                onSuccess: async (result) => {
+                    try {
+                        await payOrder({ orderId: res.order._id, result }).unwrap()
+                        toast.success('payment successfully')
+                        navigate(`/order/${res.order._id}`);
+                    } catch (error) {
+                        toast.error(error?.data?.message || error.message);
+                    }
+                    navigate(`/order/${res.order._id}`)
+                },
+                onPending: function (result) {
+                    console.log('Payment pending:', result)
+                    navigate(`/order/${res.order._id}`)
+                },
+                onError: function (result) {
+                    console.error('Payment error:', result)
+                    toast.error('Payment failed. Please try again.')
+                },
+                onClose: function () {
+                    console.log('Customer closed the popup without finishing the payment')
+                    toast.warn('Payment cancelled. Please try again.')
+                }
+            })
+        } else {
+            throw new Error('Payment token not found');
         }
     }
 
