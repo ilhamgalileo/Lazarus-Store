@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js"
 import { useSelector } from "react-redux"
 import { toast } from "react-toastify"
@@ -18,6 +18,7 @@ const Order = () => {
   const { id: orderId } = useParams()
 
   const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)
+  const navigate = useNavigate()
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation()
   const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation()
@@ -48,7 +49,7 @@ const Order = () => {
         }).unwrap()
         console.log('res mmidtrans', midtransRes)
         const { token } = midtransRes
-        
+
         window.snap.pay(token)
       } catch (error) {
         toast.error("Failed to fetch Midtrans token")
@@ -97,6 +98,15 @@ const Order = () => {
 
   const deliverHandler = async () => {
     await deliverOrder(orderId)
+    try {
+      toast.success('deliver sucess')
+      setTimeout(() => {
+        navigate('/user-orders')
+        window.location.reload()
+      }, 3000)
+    } catch (error) {
+
+    }
     refetch()
   }
 
@@ -227,7 +237,7 @@ const Order = () => {
           </div>
         )}
         {loadingDeliver && <Loader />}
-        {userInfo && userInfo.isAdmin && order.isPaid && (
+        {userInfo && userInfo.user.isAdmin && order.isPaid && !order.isDelivered && (
           <div>
             <button
               type="button"

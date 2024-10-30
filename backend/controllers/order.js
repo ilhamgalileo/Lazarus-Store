@@ -222,7 +222,7 @@ export const markOrderIsDeliver = asyncHandler(async (req, res) => {
 
     const order = await Order.findById(id)
     if (order) {
-        order.isDelivered = false
+        order.isDelivered = true
         order.deliveredAt = Date.now()
 
         const updatedOrder = await order.save()
