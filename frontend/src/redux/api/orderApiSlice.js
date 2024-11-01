@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-import { PAYPAL_URL, ORDERS_URL } from "../constants";
+import { PAYPAL_URL, ORDERS_URL, MIDTRANS_URL } from "../constants";
 
 export const orderApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -18,16 +18,27 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         }),
 
         payOrder: builder.mutation({
-            query: ({ orderId, details }) => ({
+            query: ({ orderId, result }) => ({
                 url: `${ORDERS_URL}/${orderId}/pay`,
                 method: "PUT",
-                body: details
+                body: {
+                    status: result.status,
+                    updatedAt: result.updatedAt,
+                    id: result.id,
+                }
             }),
         }),
 
         getPaypalClientId: builder.query({
             query: () => ({
                 url: PAYPAL_URL
+            }),
+        }),
+
+        getMidtransToken: builder.mutation({
+            query: (orderId) => ({
+                url: `${MIDTRANS_URL}/${orderId}/token`,
+                method: 'POST'
             }),
         }),
 
@@ -45,7 +56,8 @@ export const orderApiSlice = apiSlice.injectEndpoints({
 
         deliverOrder: builder.mutation({
             query: (orderId) => ({
-                url: `${ORDERS_URL}/${orderId}/deliver`
+                url: `${ORDERS_URL}/${orderId}/deliver`,
+                method: "PUT",
             }),
         }),
 
@@ -57,7 +69,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
             query: () => `${ORDERS_URL}/total-sales`
         }),
 
-        getOrdersSalesByDate: builder.query({
+        getTotalSalesByDate: builder.query({
             query: () => `${ORDERS_URL}/total-sales-by-date`
         }),
     }),
@@ -67,11 +79,13 @@ export const {
     useCreateOrderMutation,
     useDeliverOrderMutation,
     useGetMyOrdersQuery,
+    useGetMidtransTokenMutation,
     useGetOrderDetailsQuery,
     useGetOrdersSalesByDateQuery,
     useGetPaypalClientIdQuery,
     useGetTotalOrderQuery,
     useGetTotalSalesQuery,
+    useGetTotalSalesByDateQuery,
     usePayOrderMutation,
     useGetOrdersQuery
 } = orderApiSlice
