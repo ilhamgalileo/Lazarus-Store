@@ -8,7 +8,6 @@ import Loader from "../../components/loader"
 import {
   useGetOrderDetailsQuery,
   useDeliverOrderMutation,
-  useGetPaypalClientIdQuery,
   usePayOrderMutation,
   useGetMidtransTokenMutation
 }
@@ -24,8 +23,6 @@ const Order = () => {
   const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation()
   const [getMidtransToken, { isLoading: loadingMidtrans }] = useGetMidtransTokenMutation()
   const { userInfo } = useSelector((state) => state.auth)
-
-  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer()
 
   useEffect(() => {
     const fetchMidtransToken = async () => {
@@ -223,17 +220,6 @@ const Order = () => {
         {!order.isPaid && (
           <div>
             {loadingPay && <Loader />}
-            {isPending ?
-              (<Loader />
-              ) : (
-                <div>
-                  <PayPalButtons createOrder={createOrder} onApprove={onApprove} onError={onError}>
-
-                  </PayPalButtons>
-                  <div>
-                  </div>
-                </div>
-              )}
           </div>
         )}
         {loadingDeliver && <Loader />}

@@ -2,7 +2,6 @@ import Order from '../models/order.js'
 import Product from '../models/product.js'
 import asyncHandler from 'express-async-handler'
 import snap from '../config/midtrans.js';
-import moment from 'moment'
 
 function calcPrice(orderItems) {
     const itemsPrice = orderItems.reduce(
@@ -22,8 +21,7 @@ function calcPrice(orderItems) {
 }
 
 export const createOrder = asyncHandler(async (req, res) => {
-    const { orderItems, shippingAddress, paymentMethod } = req.body;
-    console.log('Request Body:', req.body);
+    const { orderItems, shippingAddress, paymentMethod } = req.body
 
     if (!orderItems || orderItems.length === 0) {
         res.status(400);
@@ -57,19 +55,19 @@ export const createOrder = asyncHandler(async (req, res) => {
 
     const order = new Order({
         orderItems: dbOrderItems,
-        user: req.user._id,
+        user: req.user._id,   
         shippingAddress,
         paymentMethod,
         itemsPrice,
         taxPrice,
         shippingPrice,
         totalPrice,
-        paymentStatus: 'pending'
-    })
+    });
 
-    const createdOrder = await order.save()
-    const orderId = createdOrder.id
-    console.log('orderid:', orderId)
+    const createdOrder = await order.save();
+    const orderId = createdOrder.id;
+    console.log('orderid:', orderId);
+
     const orderDetails = {
         transaction_details: {
             order_id: orderId,
@@ -114,17 +112,15 @@ export const createOrder = asyncHandler(async (req, res) => {
 
     try {
         const response = await snap.createTransaction(orderDetails);
-        console.log('Midtrans Response:', response);
 
         if (!response.token) {
             throw new Error('Midtrans did not return a payment token');
         }
 
-        createdOrder.paymentToken = response.token
-        createdOrder.paymentUrl = response.redirect_url
+        createdOrder.paymentToken = response.token;
+        createdOrder.paymentUrl = response.redirect_url;
         await createdOrder.save();
-
-        console.log('Order Created:', createdOrder)
+        console.log('createorder',createdOrder);
 
         await Promise.all(dbOrderItems.map(item =>
             Product.findByIdAndUpdate(item.product, {
@@ -198,20 +194,18 @@ export const markOrderIsPay = asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
 
     if (order) {
-        const { status, updatedAt, id } = req.body; 
+        const { status, updatedAt, id, payment_type } = req.body; 
 
         order.isPaid = true
         order.paidAt = Date.now()
+        order.paymentMethod = payment_type
         order.paymentResult = {
             status,
             update_time: updatedAt,
             id,
-        };
-
-        const updatedOrder = await order.save();
-        console.log('updatedORder', updatedOrder);
-        
-        res.json(updatedOrder);
+        }
+        const updatedOrder = await order.save()
+        res.json(updatedOrder)
     } else {
         res.status(404);
         throw new Error('Order not found');
@@ -232,36 +226,3 @@ export const markOrderIsDeliver = asyncHandler(async (req, res) => {
         res.status(404).json('order not found')
     }
 })
-
-// export const callbackPayment = asyncHandler(async (req, res) => {
-//     try {
-//         const statusResponse = await snap.transaction.notification(req.body);
-
-//         const orderId = statusResponse.order_id;
-//         const transactionStatus = statusResponse.transaction_status;
-//         const fraudStatus = statusResponse.fraud_status;
-
-//         const orderData = await Order.findById(orderId);
-//         if (!orderData) {
-//             res.status(404);
-//             throw new Error("Order not found");
-//         }
-
-//         if (transactionStatus === 'capture' || transactionStatus === 'settlement') {
-//             if (fraudStatus === 'accept') {
-//                 orderData.status = 'success';
-//             }
-//         } else if (['cancel', 'deny', 'expire'].includes(transactionStatus)) {
-//             orderData.status = 'failed';
-//         } else if (transactionStatus === 'pending') {
-//             orderData.status = 'pending';
-//         }
-
-//         await orderData.save();
-
-//         return res.status(200).json({ message: 'Payment status updated', status: orderData.status });
-//     } catch (error) {
-//         console.error("Error handling Midtrans callback:", error);
-//         return res.status(500).json({ message: 'Payment callback failed', error: error.message });
-//     }
-// });

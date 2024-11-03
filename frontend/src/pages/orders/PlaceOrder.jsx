@@ -62,7 +62,11 @@ const PlaceOrder = () => {
             window.snap.pay(token, {
                 onSuccess: async (result) => {
                     try {
-                        await payOrder({ orderId: res.order._id, result }).unwrap()
+                        await payOrder({
+                            orderId: res.order._id,
+                            result,
+                            payment_type: result.payment_type
+                        }).unwrap()
                         toast.success('payment successfully')
                         navigate(`/order/${res.order._id}`);
                     } catch (error) {
