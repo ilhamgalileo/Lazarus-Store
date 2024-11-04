@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useGetMyOrdersQuery } from "../../redux/api/orderApiSlice";
 
 const UserOrder = () => {
-  const { data: orders, isLoading, error } = useGetMyOrdersQuery();
+  const { data: orders, isLoading, error } = useGetMyOrdersQuery()
 
   return (
     <div className="container mx-auto">
@@ -80,7 +80,7 @@ const UserOrder = () => {
         </table>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default UserOrder;
+export default UserOrder
