@@ -9,11 +9,16 @@ function calcPrice(orderItems) {
         0
     );
     const shippingPrice = itemsPrice > 100 ? 0 : 10;
-    const taxPrice = itemsPrice <= 100 ? 1 : itemsPrice <= 500 ? 5 : itemsPrice < 1000 ? 8 : 10;
+    const taxPrice =
+        itemsPrice >= 10000 && itemsPrice < 1000000 ? 1000 :
+            itemsPrice >= 1000000 ? 100000 :
+                itemsPrice <= 100 ? 1 :
+                    itemsPrice <= 500 ? 5 :
+                        itemsPrice < 1000 ? 8 : 10;
     const totalPrice = Math.round(itemsPrice + shippingPrice + taxPrice)
 
     return {
-        itemsPrice: Math.round(itemsPrice), 
+        itemsPrice: Math.round(itemsPrice),
         shippingPrice: Math.round(shippingPrice),
         taxPrice: Math.round(taxPrice),
         totalPrice,
@@ -25,17 +30,17 @@ export const createOrder = asyncHandler(async (req, res) => {
 
     if (!orderItems || orderItems.length === 0) {
         res.status(400);
-        throw new Error("No order items");
+        throw new Error("No order items")
     }
 
     const itemsFromDB = await Product.find({
         _id: { $in: orderItems.map((x) => x._id) },
-    });
+    })
 
     const dbOrderItems = orderItems.map((itemsFromClient) => {
         const matchingItemFromDB = itemsFromDB.find(
             (item) => item._id.toString() === itemsFromClient._id
-        );
+        )
 
         if (!matchingItemFromDB) {
             res.status(404);
@@ -48,25 +53,25 @@ export const createOrder = asyncHandler(async (req, res) => {
             price: matchingItemFromDB.price,
             _id: undefined,
         }
-    });
+    })
 
     const { itemsPrice, taxPrice, shippingPrice } = calcPrice(dbOrderItems);
     const totalPrice = itemsPrice + taxPrice + shippingPrice;
 
     const order = new Order({
         orderItems: dbOrderItems,
-        user: req.user._id,   
+        user: req.user._id,
         shippingAddress,
         paymentMethod,
         itemsPrice,
         taxPrice,
         shippingPrice,
         totalPrice,
-    });
+    })
 
-    const createdOrder = await order.save();
-    const orderId = createdOrder.id;
-    console.log('orderid:', orderId);
+    const createdOrder = await order.save()
+    const orderId = createdOrder.id
+    console.log('orderid:', orderId)
 
     const orderDetails = {
         transaction_details: {
@@ -97,7 +102,7 @@ export const createOrder = asyncHandler(async (req, res) => {
             })),
             ...(taxPrice > 0 ? [{
                 id: 'TAX',
-                price: taxPrice, 
+                price: taxPrice,
                 quantity: 1,
                 name: 'Tax'
             }] : []),
@@ -108,35 +113,35 @@ export const createOrder = asyncHandler(async (req, res) => {
                 name: 'Shipping Fee'
             }] : [])
         ]
-    };
+    }
 
     try {
-        const response = await snap.createTransaction(orderDetails);
+        const response = await snap.createTransaction(orderDetails)
 
         if (!response.token) {
-            throw new Error('Midtrans did not return a payment token');
+            throw new Error('Midtrans did not return a payment token')
         }
 
-        createdOrder.paymentToken = response.token;
-        createdOrder.paymentUrl = response.redirect_url;
-        await createdOrder.save();
-        console.log('createorder',createdOrder);
+        createdOrder.paymentToken = response.token
+        createdOrder.paymentUrl = response.redirect_url
+        await createdOrder.save()
+        console.log('createorder', createdOrder)
 
         await Promise.all(dbOrderItems.map(item =>
             Product.findByIdAndUpdate(item.product, {
                 $inc: { countInStock: -item.qty }
             })
-        ));
+        ))
 
         res.status(201).json({
             order: createdOrder,
             token: response.token,
-        });
+        })
     } catch (error) {
-        console.error('Error creating order:', error);
-        res.status(500).json({ message: 'Failed to create order', error: error.message });
+        console.error('Error creating order:', error)
+        res.status(500).json({ message: 'Failed to create order', error: error.message })
     }
-});
+})
 
 export const getAllOrder = asyncHandler(async (req, res) => {
     const orders = await Order.find({}).populate("user", "id username")
@@ -163,21 +168,21 @@ export const calcTotalSales = asyncHandler(async (req, res) => {
 export const calcTotalSalesByDate = asyncHandler(async (req, res) => {
     const salesByDate = await Order.aggregate([
         {
-          $match: {
-            isPaid: true,
-          },
+            $match: {
+                isPaid: true,
+            },
         },
         {
-          $group: {
-            _id: {
-              $dateToString: { format: "%Y-%m-%d", date: "$paidAt" },
+            $group: {
+                _id: {
+                    $dateToString: { format: "%Y-%m-%d", date: "$paidAt" },
+                },
+                totalSales: { $sum: "$totalPrice" },
             },
-            totalSales: { $sum: "$totalPrice" },
-          },
         },
-      ])
-  
-      res.json(salesByDate)
+    ])
+
+    res.json(salesByDate)
 })
 
 export const findOrderById = asyncHandler(async (req, res) => {
@@ -194,7 +199,7 @@ export const markOrderIsPay = asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
 
     if (order) {
-        const { status, updatedAt, id, payment_type } = req.body; 
+        const { status, updatedAt, id, payment_type } = req.body;
 
         order.isPaid = true
         order.paidAt = Date.now()

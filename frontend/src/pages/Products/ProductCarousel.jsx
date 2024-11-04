@@ -61,7 +61,7 @@ const ProductCarousel = () => {
                 <div className="mt-4 flex justify-between">
                   <div className="one">
                     <h2>{name}</h2>
-                    <p> $ {price}</p> <br /> <br />
+                    <p className="text-orange-500 font-bold">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(price)}</p> <br /> <br />
                     <p className="w-[25rem]">
                       {description}
                     </p>
@@ -104,7 +104,7 @@ const ProductCarousel = () => {
         </Slider>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ProductCarousel;
+export default ProductCarousel

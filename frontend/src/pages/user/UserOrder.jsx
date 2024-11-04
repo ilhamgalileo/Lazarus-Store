@@ -41,7 +41,7 @@ const UserOrder = () => {
 
                 <td className="py-2 text-center w-[6rem]">{order._id}</td>
                 <td className="py-2 text-center w-[6rem]">{new Date(order.createdAt).toLocaleDateString()}</td>
-                <td className="py-2 text-center w-[6rem]">$ {order.totalPrice.toFixed(2)}</td>
+                <td className="py-2 text-center w-[6rem]">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(order.totalPrice)}</td>
 
                 <td className="py-2 text-center w-[6rem]">
                   {order.isPaid ? (

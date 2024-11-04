@@ -11,12 +11,18 @@ import { usePayOrderMutation } from "../../redux/api/orderApiSlice"
 
 const PlaceOrder = () => {
     const navigate = useNavigate()
-
     const cart = useSelector(state => state.cart)
-    console.log(cart)
+    const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.qty * item.price, 0) || 0;
+    const shippingPrice = itemsPrice > 100 ? 0 : 10;
+    const taxPrice = itemsPrice >= 10000 && itemsPrice < 1000000 ? 1000 :
+        itemsPrice >= 1000000 ? 100000 :
+            itemsPrice <= 100 ? 1 :
+                itemsPrice <= 500 ? 5 :
+                    itemsPrice < 1000 ? 8 : 10;
+    const totalPrice = Math.round((itemsPrice + shippingPrice + taxPrice) || 0);
 
     const [createOrder, { isLoading, error }] = useCreateOrderMutation()
-    const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation()
+    const [payOrder] = usePayOrderMutation()
 
     useEffect(() => {
         if (!cart.shippingAddress.address) {
@@ -60,12 +66,12 @@ const PlaceOrder = () => {
         dispatch(clearCartItems())
         if (token) {
             window.snap.pay(token, {
-                onSuccess: async (result) => {
+                onSuccess: async (details) => {
                     try {
                         await payOrder({
                             orderId: res.order._id,
-                            result,
-                            payment_type: result.payment_type
+                            details,
+                            payment_type: details.payment_type
                         }).unwrap()
                         toast.success('payment successfully')
                         navigate(`/order/${res.order._id}`);
@@ -74,12 +80,12 @@ const PlaceOrder = () => {
                     }
                     navigate(`/order/${res.order._id}`)
                 },
-                onPending: function (result) {
-                    console.log('Payment pending:', result)
+                onPending: function (details) {
+                    console.log('Payment pending:', details)
                     navigate(`/order/${res.order._id}`)
                 },
-                onError: function (result) {
-                    console.error('Payment error:', result)
+                onError: function (details) {
+                    console.error('Payment error:', details)
                     toast.error('Payment failed. Please try again.')
                 },
                 onClose: function () {
@@ -124,9 +130,9 @@ const PlaceOrder = () => {
                                             <Link to={`/product/${item.product}`}>{item.name}</Link>
                                         </td>
                                         <td className="p-2">{item.qty}</td>
-                                        <td className="p-2">{item.price.toFixed(2)}</td>
+                                        <td className="p-2">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(item.price)}</td>
                                         <td className="p-2">
-                                            $ {(item.qty * item.price).toFixed(2)}
+                                            RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(item.qty * item.price)}
                                         </td>
                                     </tr>
                                 ))}
@@ -139,20 +145,20 @@ const PlaceOrder = () => {
                     <div className="flex justify-between flex-wrap p-8 bg-[#181818]">
                         <ul className="text-lg">
                             <li>
-                                <span className="font-semibold mb-4">items: {" "}</span>$
-                                {cart.itemsPrice}
+                                <span className="font-semibold mb-4">items: {" "}</span>
+                                RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(itemsPrice)}
                             </li>
                             <li>
-                                <span className="font-semibold mb-4">Shipping: {" "}</span>$
-                                {cart.shippingPrice}
+                                <span className="font-semibold mb-4">Shipping: {" "}</span>
+                                RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(shippingPrice)}
                             </li>
                             <li>
-                                <span className="font-semibold mb-4">Tax: {" "}</span>$
-                                {cart.taxPrice}
+                                <span className="font-semibold mb-4">Tax: {" "}</span>
+                                RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(taxPrice)}
                             </li>
                             <li>
-                                <span className="font-semibold mb-4">Total: {" "}</span>$
-                                {cart.totalPrice}
+                                <span className="font-semibold mb-4">Total: {" "}</span>
+                                RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(totalPrice)}
                             </li>
                         </ul>
 

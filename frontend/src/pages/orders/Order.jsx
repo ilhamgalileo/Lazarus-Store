@@ -1,110 +1,38 @@
-import { useEffect } from "react"
-import { Link, useParams, useNavigate } from "react-router-dom"
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js"
-import { useSelector } from "react-redux"
-import { toast } from "react-toastify"
-import Message from "../../components/Message"
-import Loader from "../../components/loader"
+import { useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import Message from "../../components/Message";
+import Loader from "../../components/loader";
 import {
   useGetOrderDetailsQuery,
   useDeliverOrderMutation,
-  usePayOrderMutation,
-  useGetMidtransTokenMutation
-}
-  from "../../redux/api/orderApiSlice"
+} from "../../redux/api/orderApiSlice";
 
 const Order = () => {
   const { id: orderId } = useParams()
-
-  const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)
   const navigate = useNavigate()
 
-  const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation()
+  const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)
   const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation()
-  const [getMidtransToken, { isLoading: loadingMidtrans }] = useGetMidtransTokenMutation()
   const { userInfo } = useSelector((state) => state.auth)
 
   useEffect(() => {
-    const fetchMidtransToken = async () => {
-      try {
-        const midtransRes = await getMidtransToken({
-          orderId,
-          customer_details: {
-            first_name: req.user.username,
-            email: req.user.email,
-            billing_address: {
-              address: shippingAddress.address,
-              city: shippingAddress.city,
-            },
-            shipping_address: {
-              first_name: req.user.username,
-              address: shippingAddress.address,
-              city: shippingAddress.city,
-              postal_code: shippingAddress.postalCode,
-            },
-          },
-        }).unwrap()
-        console.log('res mmidtrans', midtransRes)
-        const { token } = midtransRes
-
-        window.snap.pay(token)
-      } catch (error) {
-        toast.error("Failed to fetch Midtrans token")
-      }
-    }
-    if (order && !order.isPaid && order.paymentMethod === 'Midtrans') {
-      if (!window.snap) {
-        const script = document.createElement('script');
-        script.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
-        script.async = true
-        script.onload = fetchMidtransToken
-        document.body.appendChild(script)
-
-        return () => {
-          document.body.removeChild(script)
-        }
-      } else {
-        fetchMidtransToken()
-      }
-    }
-  }, [order, getMidtransToken, payOrder, refetch])
-
-  function createOrder(data, actions) {
-    return actions.order.create({
-      purchase_units: [{ amount: { value: order.totalPrice } }]
-    }).then((orderId) => {
-      return orderId
-    })
-  }
-
-  function onApprove(data, actions) {
-    return actions.order.capture().then(async function (details) {
-      try {
-        await payOrder({ orderId, details })
-        refetch()
-        toast.success("Order is paid")
-      } catch (error) {
-        toast.error(error?.data?.message || error.message)
-      }
-    })
-  }
-
-  function onError(err) {
-    toast.error(err.message)
-  }
+    refetch()
+  }, [refetch])
 
   const deliverHandler = async () => {
-    await deliverOrder(orderId)
     try {
-      toast.success('deliver sucess')
+      await deliverOrder(orderId).unwrap()
+      toast.success('Deliver successful')
       setTimeout(() => {
         navigate('/user-orders')
         window.location.reload()
-      }, 3000)
+      }, 3000);
+      refetch();
     } catch (error) {
-
+      toast.error('Failed to mark as delivered');
     }
-    refetch()
   }
 
   return isLoading ? (
@@ -140,14 +68,11 @@ const Order = () => {
                         />
                       </td>
                       <td className="p-2 text-center">
-                        <Link to={`/product/${item.product}`}>
-                          {item.name}
-                        </Link>
+                        <Link to={`/product/${item.product}`}>{item.name}</Link>
                       </td>
                       <td className="p-2 text-center">{item.qty}</td>
-                      <td className="p-2 text-center">{item.price}</td>
-                      <td className="p-2 text-center"> ${(item.qty * item.price).toFixed(2)}
-                      </td>
+                      <td className="p-2 text-center">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                      <td className="p-2 text-center">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -159,78 +84,64 @@ const Order = () => {
 
       <div className="md:w-1/3">
         <div className="mt-5 border-gray-300 pb-4 mb-4">
-          <h2 className="text-xl font-bold mb-2">
-            Shipping
-          </h2>
+          <h2 className="text-xl font-bold mb-2">Shipping</h2>
 
           <p className="mb-4 mt-4">
-            <strong className="text-orange-500">Order:</strong>{" "}{order._id}
+            <strong className="text-orange-500">Order:</strong> {order._id}
           </p>
 
           <p className="mb-4 mt-4">
-            <strong className="text-orange-500">Name:</strong>{" "}{order.user.username}
+            <strong className="text-orange-500">Name:</strong> {order.user.username}
           </p>
 
           <p className="mb-4 mt-4">
-            <strong className="text-orange-500">Email:</strong>{" "}{order.user.email}
+            <strong className="text-orange-500">Email:</strong> {order.user.email}
           </p>
 
           <p className="mb-4">
-            <strong className="text-orange-500">Address:</strong>{" "}
-            {order.shippingAddress.address}, {" "}
-            {order.shippingAddress.city}, {" "}
-            {order.shippingAddress.postalCode}, {' '}
-            {order.shippingAddress.country}
+            <strong className="text-orange-500">Address:</strong> {order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}
           </p>
 
           <p className="mb-4 mt-4">
-            <strong className="text-orange-500">Method:</strong>{" "}{order.paymentMethod}
+            <strong className="text-orange-500">Method:</strong> {order.paymentMethod}
           </p>
 
           {order.isPaid ? (
-            <Message variant="success" className='text-orange-500'>
-              Paid on {order.paidAt}
-            </Message>
+            <Message variant="success" className='text-orange-500'>Paid on {order.paidAt}</Message>
           ) : (
-            <Message variant="danger" className='text-orange-500'>
-              Not paid
-            </Message>
+            <Message variant="danger" className='text-orange-500'>Not paid</Message>
           )}
         </div>
         <h2 className="text-xl font-bold mb-2 mt-[3rem]">Order Summary</h2>
         <div className="flex justify-between mb-2">
           <span>Items</span>
-          <span>${order.itemsPrice}</span>
+          <span>RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</span>
         </div>
 
         <div className="flex justify-between mb-2">
           <span>Shipping</span>
-          <span>${order.shippingPrice}</span>
+          <span>RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(order.shippingPrice)}</span>
         </div>
 
         <div className="flex justify-between mb-2">
           <span>Tax</span>
-          <span>${order.taxPrice}</span>
+          <span>RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(order.taxPrice)}</span>
         </div>
 
         <div className="flex justify-between mb-2">
           <span>Total</span>
-          <span>${order.totalPrice}</span>
+          <span>RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(order.totalPrice)}</span>
         </div>
-        {!order.isPaid && (
-          <div>
-            {loadingPay && <Loader />}
-          </div>
-        )}
+        
         {loadingDeliver && <Loader />}
-        {userInfo && userInfo.user.isAdmin && order.isPaid && !order.isDelivered && (
+        {userInfo && userInfo.user?.isAdmin && order.isPaid && !order.isDelivered && (
           <div>
             <button
               type="button"
               className="bg-orange-500 text-white w-full py-2"
               onClick={deliverHandler}
             >
-              Mark As Deliver
+              Mark As Delivered
             </button>
           </div>
         )}

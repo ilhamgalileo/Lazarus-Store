@@ -43,7 +43,7 @@ const ProductDetail = () => {
     }
 
     const addToCartHandler = () => {
-        dispatch(addToCart({...product, qty}))
+        dispatch(addToCart({ ...product, qty }))
         navigate('/cart')
     }
 
@@ -78,7 +78,7 @@ const ProductDetail = () => {
                             <p className="my-4 xl:w-[35rem] lg:w-[35rem] md:w-[30rem] text-[#B0B0B0]">
                                 {product.description}
                             </p>
-                            <p className="text-5xl my-4 font-extrabold text-orange-500">$ {product.price}</p>
+                            <p className="text-5xl my-4 font-extrabold text-orange-500">RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(product.price)}</p>
                             <div className="flex items-center justify-between w-[20rem]">
                                 <div className="one">
                                     <h1 className="flex items-center mb-6">
@@ -111,23 +111,23 @@ const ProductDetail = () => {
                                     text={`${product.numReviews} reviews`}
                                 />
                                 {product.countInStock > 0 && (
-                                   <div className="flex items-center">
-                                   <button
-                                       onClick={() => setQty(qty > 1 ? qty - 1 : 1)}
-                                       className="bg-[#0f0f10] text-white px-4 py-2 rounded-l-lg"
-                                   >
-                                      < FaMinus />
-                                   </button>
-                                   <div className="bg-[#0f0f10] text-white text-center px-4 py-2">
-                                       {qty}
-                                   </div>
-                                   <button
-                                       onClick={() => setQty(qty < product.countInStock ? qty + 1 : qty)}
-                                       className="bg-[#0f0f10] text-white px-4 py-2 rounded-r-lg"
-                                   >
-                                       <FaPlus/>
-                                   </button>
-                               </div>
+                                    <div className="flex items-center">
+                                        <button
+                                            onClick={() => setQty(qty > 1 ? qty - 1 : 1)}
+                                            className="bg-[#0f0f10] text-white px-4 py-2 rounded-l-lg"
+                                        >
+                                            < FaMinus />
+                                        </button>
+                                        <div className="bg-[#0f0f10] text-white text-center px-4 py-2">
+                                            {qty}
+                                        </div>
+                                        <button
+                                            onClick={() => setQty(qty < product.countInStock ? qty + 1 : qty)}
+                                            className="bg-[#0f0f10] text-white px-4 py-2 rounded-r-lg"
+                                        >
+                                            <FaPlus />
+                                        </button>
+                                    </div>
                                 )}
                             </div>
                             <div className="btn-container">
@@ -144,8 +144,8 @@ const ProductDetail = () => {
                             className="mt-[5rem] container flex flex-wrap items-start justify-between ml-[10rem]"
                         >
                             <ProductTabs
-                                activeTab={activeTab} 
-                                setActiveTab={setActiveTab} 
+                                activeTab={activeTab}
+                                setActiveTab={setActiveTab}
                                 loadingProductReview={loadingProductReview}
                                 userInfo={userInfo}
                                 submitHandler={submitHandler}

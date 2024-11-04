@@ -17,7 +17,7 @@ const SmallProduct = ({ product }) => {
                         <h2 className="flex justify-between items-center">
                             <div>{product.name}</div>
                             <span className="bg-orange-100 text-orange-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-orange-900 dark:text-orange-300">
-                                ${product.price}
+                            RP. { new Intl.NumberFormat('id-ID').format(product.price)}
                             </span>
                         </h2>
                     </Link>
