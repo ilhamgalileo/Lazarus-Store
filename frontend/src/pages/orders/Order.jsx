@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import moment from "moment";
 import Message from "../../components/Message";
 import Loader from "../../components/loader";
 import {
@@ -107,7 +108,7 @@ const Order = () => {
           </p>
 
           {order.isPaid ? (
-            <Message variant="success" className='text-orange-500'>Paid on {order.paidAt}</Message>
+            <Message variant="success" className='text-orange-500'>Paid on {moment(order.paidAt).format('DD MMMM YYYY')}</Message>
           ) : (
             <Message variant="danger" className='text-orange-500'>Not paid</Message>
           )}

@@ -52,7 +52,7 @@ const ProductList = () => {
                 toast.success(`${data.product.name} is created`)
                 navigate("/");
                 console.log(data)
-            } else if(!data) {
+            } else if (!data) {
                 toast.error("Creating profuct failed")
                 return
             }
