@@ -41,16 +41,16 @@ const Navigation = () => {
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
-      dispatch(logout());
-      navigate("/login");
+      dispatch(logout())
+      navigate("/login")
     } catch (error) {
-      console.error(error);
+      console.error(error)
       if (error?.status === 403 || error?.status === 401) {
-        dispatch(logout());
-        navigate("/login");
+        dispatch(logout())
+        navigate("/login")
       }
     }
-  };
+  }
 
   return (
     <div
@@ -85,10 +85,10 @@ const Navigation = () => {
             <AiOutlineShoppingCart className="mr-2 mt-[3rem]" size={26} />
             <span className="hidden nav-item-name mt-[3rem]"> Cart </span>{" "}
           </div>
-          <div className="absolute top-9">
+          <div className="absolute left-6 top-10">
             {cartItems.length > 0 && (
               <span>
-                <span className="px-1 py-0 text-sm text-white bg-orange-500 rounded-full">
+                <span className="px-1 py-0 text-xs text-white bg-orange-500 rounded-full w-4 h-4 flex items-center justify-center">
                   {cartItems.reduce((a, c) => a + c.qty, 0 )}
                 </span>
               </span>
@@ -232,4 +232,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+export default Navigation
