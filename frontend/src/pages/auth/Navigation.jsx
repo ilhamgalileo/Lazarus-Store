@@ -84,15 +84,15 @@ const Navigation = () => {
           <div className="flex items-center transition-transform transform hover:translate-x-2">
             <AiOutlineShoppingCart className="mr-2 mt-[3rem]" size={26} />
             <span className="hidden nav-item-name mt-[3rem]"> Cart </span>{" "}
-          </div>
-          <div className="absolute left-6 top-10">
-            {cartItems.length > 0 && (
-              <span>
-                <span className="px-1 py-0 text-xs text-white bg-orange-500 rounded-full w-4 h-4 flex items-center justify-center">
-                  {cartItems.reduce((a, c) => a + c.qty, 0 )}
+            <div className="absolute left-6 top-10">
+              {cartItems.length > 0 && (
+                <span>
+                  <span className="px-1 py-0 text-xs text-white bg-orange-500 rounded-full w-4 h-4 flex items-center justify-center">
+                    {cartItems.reduce((a, c) => a + c.qty, 0)}
+                  </span>
                 </span>
-              </span>
-            )}
+              )}
+            </div>
           </div>
         </Link>
 
