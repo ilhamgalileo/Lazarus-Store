@@ -22,33 +22,34 @@ const AllProducts = () => {
                         <div className="ml-[2rem] text-xl font-bold h-12">
                             All Products ({products.length})
                         </div>
-                        <div className="flex flex-wrap justify-around items-center">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {products.map((product) => (
-                                <div key={product._id} className="block mb-4 overflow-hidden">
+                                <div
+                                    key={product._id}
+                                    className="border rounded-lg shadow-lg p-4 mb-4 overflow-hidden"
+                                >
                                     <div className="flex">
                                         <img
                                             src={product.image}
                                             alt={product.name}
-                                            className="w-[10rem] object-cover"
+                                            className="w-[5rem] h-[5rem] object-cover mr-4"
                                         />
-
-                                        <div className="p-4 flex-col justify-around">
-                                            <div className="flex justify-between">
-                                                <h5 className="text-xl font-semibold mb-2">
+                                        <div className="flex flex-col justify-between">
+                                            <div>
+                                                <h5 className="text-xl font-semibold mb-1">
                                                     {product?.name}
                                                 </h5>
-
                                                 <p className="text-gray-400 text-sm">
                                                     {moment(product.createAt).format("MMMM Do YYYY")}
                                                 </p>
                                             </div>
-                                            <p className="text-gray-400 xl:w-[30rem] md:w-[20rem] sm:w-[10rem] text-sm mb-4">
+                                            <p className="text-gray-400 text-sm mb-4">
                                                 {product?.description?.substring(0, 160)}...
                                             </p>
-                                            <div className="flex justify-between">
+                                            <div className="flex justify-between items-center">
                                                 <Link
                                                     to={`/admin/product/update/${product._id}`}
-                                                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-700 rounded-lg hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800"
+                                                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-orange-700 rounded-lg hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
                                                 >
                                                     Update Product
                                                     <svg
@@ -67,7 +68,7 @@ const AllProducts = () => {
                                                         />
                                                     </svg>
                                                 </Link>
-                                                <p>$ {product?.price}</p>
+                                                <p>Rp {new Intl.NumberFormat('id-ID').format(product?.price)}</p>
                                             </div>
                                         </div>
                                     </div>

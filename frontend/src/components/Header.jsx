@@ -1,11 +1,11 @@
 import ProductCarousel from "../pages/Products/ProductCarousel"
 import SmallProduct from "../pages/Products/SmallProduct"
-import { useGetTopProductsQuery } from "../redux/api/productApiSlice"
+import { useGetNewProductsQuery } from "../redux/api/productApiSlice"
 import Loader from "./loader"
 
 
 const Header = () => {
-    const { data, isLoading, error } = useGetTopProductsQuery()
+    const { data, isLoading, error } = useGetNewProductsQuery()
 
     if (isLoading) {
         return <Loader />

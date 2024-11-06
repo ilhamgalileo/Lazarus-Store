@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 
 const ProductCarousel = () => {
-  const { data: products, isLoading, error } = useGetTopProductsQuery();
+  const { data: products, isLoading, error } = useGetTopProductsQuery()
 
   const settings = {
     dots: false,
@@ -59,11 +59,11 @@ const ProductCarousel = () => {
                 />
 
                 <div className="mt-4 flex justify-between">
-                  <div className="one">
+                  <div className="one text-lg">
                     <h2>{name}</h2>
                     <p className="text-orange-500 font-bold">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(price)}</p> <br /> <br />
                     <p className="w-[25rem]">
-                      {description}
+                      {description.substring(0, 45)}...
                     </p>
                   </div>
 
@@ -77,7 +77,7 @@ const ProductCarousel = () => {
                         {moment(createdAt).fromNow()}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                        <FaStar className="mr-2 text-white" /> Reviews:
+                        <FaStar className="mr-2 text-white" /> Reviews: {" "}
                         {numReviews}
                       </h1>
                     </div>

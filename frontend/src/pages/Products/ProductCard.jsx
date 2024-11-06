@@ -20,7 +20,7 @@ const ProductCard = ({ p }) => {
           <span className="absolute bottom-3 right-3 bg-orange-100 text-orange-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-orange-900 dark:text-orange-300">
             {p?.brand}
           </span>
-          <div className="overflow-hidden rounded-t-lg"> {/* Kontainer untuk gambar */}
+          <div className="overflow-hidden rounded-t-lg">
             <img
               className="cursor-pointer w-full hover:scale-105 transition-transform duration-300 ease-in-out"
               src={p.image}

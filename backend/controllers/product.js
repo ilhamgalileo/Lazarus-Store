@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 
 export const FindMany = asyncHandler(async (req, res) => {
     try {
-        const pageSize = 6
+        const pageSize = 9
         const keyword = req.query.keyword
             ? { name: { $regex: req.query.keyword, $options: "i" } }
             : {}
@@ -45,7 +45,7 @@ export const fetchTopProducts = asyncHandler(async (req, res) => {
 
 export const fetchNewProducts = asyncHandler(async (req, res) => {
     try {
-        const products = await Product.find().sort({ _id: -1 }).limit(5)
+        const products = await Product.find().sort({ _id: -1 }).limit(4)
         res.json(products)
     } catch (error) {
         console.error(error)
