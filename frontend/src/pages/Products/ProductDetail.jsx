@@ -71,6 +71,16 @@ const ProductDetail = () => {
                                 className="w-full xl:w-[50rem] lg:w-[45rem] md:w-[30rem] sm:w-[20rem] mr-[2rem]"
                             />
                             <HeartIcon product={product} />
+                            <div className="flex mt-4 space-x-2">
+                                {[product.image, product.image, product.image].map((imgSrc, index) => (
+                                    <img
+                                        key={index}
+                                        src={imgSrc}
+                                        alt={`${product.name} thumbnail ${index + 1}`}
+                                        className="w-16 h-16 border border-gray-300 rounded"
+                                    />
+                                ))}
+                            </div>
                         </div>
 
                         <div className="flex flex-col justify-between">

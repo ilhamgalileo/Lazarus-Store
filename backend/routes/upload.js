@@ -30,19 +30,20 @@ const fileFilter = (req, file, cb) => {
 }
 
 const upload = multer({ storage, fileFilter })
-const uploadSingleImage = upload.single("image")
+const uploadImages = upload.array("images", 5)
 
 router.post("/", (req, res) => {
-  uploadSingleImage(req, res, (err) => {
+  uploadImages(req, res, (err) => {
     if (err) {
       res.status(400).send({ message: err.message });
-    } else if (req.file) {
+    } else if (!req.files || req.files.length === 0) {
+      res.status(400).send({ message: "No image file provided" });
+    } else {
+      const filePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'));      
       res.status(200).send({
         message: "Image uploaded successfully",
-        image: `/${req.file.path}`,
+        images: filePaths,
       })
-    } else {
-      res.status(400).send({ message: "No image file provided" });
     }
   })
 })

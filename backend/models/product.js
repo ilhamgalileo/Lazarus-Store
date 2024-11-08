@@ -25,7 +25,7 @@ const productSchema = mongoose.Schema({
     numReviews: { type: Number, required: true, default: 0 },
     price: { type: Number, required: true },
     countInStock: { type: Number, required: true, default: 0 },
-    image: { type: String, required: true }
+    images: [{type: String}]
 }, {
     timestamps: true
 })

@@ -26,7 +26,7 @@ app.use(cookieParser())
 app.use("/api/users", user)
 app.use("/api/category", category)
 app.use("/api/products", product)
-app.use("/api/upload", upload)
+app.use("/api/uploads", upload)
 app.use("/api/orders", order)
 
 app.get("/api/config/paypal", (req, res) => {

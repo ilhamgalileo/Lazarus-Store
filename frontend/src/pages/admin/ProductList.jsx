@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router"
 import {
     useCreateProductMutation,
@@ -15,9 +15,11 @@ import {
 import { useFetchCateQuery } from "../../redux/api/categoryApiSlice"
 import { toast } from "react-toastify"
 import AdminMenu from "./AdminMenu"
+import Loader from "../../components/loader"
 
 const ProductList = () => {
-    const [image, setImage] = useState("");
+    const [images, setImages] = useState([]) // For preview
+    const [imageFiles, setImageFiles] = useState([])
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [price, setPrice] = useState('')
@@ -25,7 +27,7 @@ const ProductList = () => {
     const [quantity, setQuantity] = useState('')
     const [brand, setBrand] = useState('')
     const [stock, setStock] = useState(0)
-    const [imageUrl, setImageUrl] = useState(null);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate()
 
     const [uploadProductImage] = useUploadProductImageMutation()
@@ -36,76 +38,116 @@ const ProductList = () => {
         e.preventDefault();
 
         try {
-            const productData = new FormData()
-            productData.append("image", image)
-            productData.append("name", name)
-            productData.append("description", description)
-            productData.append("price", price)
-            productData.append("category", category)
-            productData.append("quantity", quantity)
-            productData.append("brand", brand)
-            productData.append("countInStock", stock)
+            const formData = new FormData();
+            imageFiles.forEach((file) => {
+                formData.append("images", file);
+            })
 
-            const { data } = await createProduct(productData)
+            const uploadResult = await uploadProductImage(formData).unwrap();
+
+            if (!uploadResult.images) {
+                toast.error("Image upload failed");
+                setLoading(false);
+                return
+            }
+
+            // Kemudian buat produk dengan URL gambar yang sudah diunggah
+            const productData = new FormData();
+            productData.append("name", name);
+            productData.append("description", description);
+            productData.append("price", price);
+            productData.append("category", category);
+            productData.append("quantity", quantity);
+            productData.append("brand", brand);
+            productData.append("countInStock", stock);
+
+            uploadResult.images.forEach((imgUrl) => {
+                productData.append("images", imgUrl);
+            })
+
+            const { data } = await createProduct(productData);
 
             if (data) {
-                toast.success(`${data.product.name} is created`)
+                toast.success(`${data.product.name} is created`);
                 navigate("/");
-                console.log(data)
             } else if (!data) {
-                toast.error("Creating profuct failed")
+                toast.error("Creating product failed");
                 return
             }
         } catch (error) {
             console.error(error);
-            toast.error("Product create failed. Try Again.")
+            toast.error("Product create failed. Try Again.");
         }
-    };
+    }
 
-    const uploadFileHandler = async (e) => {
-        const formData = new FormData();
-        formData.append("image", e.target.files[0])
+    const uploadFileHandler = (e) => {
+        const files = Array.from(e.target.files);
+        const newImagePreviews = files.map((file) => URL.createObjectURL(file));
 
-        try {
-            const res = await uploadProductImage(formData).unwrap();
-            toast.success(res.message)
-            setImage(res.image)
-            setImageUrl(res.image)
-        } catch (error) {
-            toast.error(error?.data?.message || error.error);
-        }
+        // Gabungkan file baru dengan file yang sudah ada
+        setImages((prevImages) => [...prevImages, ...newImagePreviews]);
+        setImageFiles((prevFiles) => [...prevFiles, ...files]);
+    }
+
+    useEffect(() => {
+        return () => {
+            images.forEach((url) => URL.revokeObjectURL(url));
+        };
+    }, [images]);
+
+    const removeImage = (index) => {
+        const newImages = images.filter((_, i) => i !== index);
+        const newImageFiles = imageFiles.filter((_, i) => i !== index);
+        setImages(newImages);
+        setImageFiles(newImageFiles);
     };
 
     return (
-        <div className=" container xl:mx-[9rem] sm:mx-[0]">
+        <div className="container xl:mx-[9rem] sm:mx-[0]">
             <div className="flex flex-col md:flex-row">
                 <AdminMenu />
                 <div className="md:w-3/4 p-3">
-                    <div className="h-12"> Create Product</div>
-
-                    {imageUrl && (
-                        <div className="text-center">
-                            <img
-                                src={imageUrl}
-                                alt="product"
-                                className="block mx-auto max-h-[200px]"
-                            />
-                        </div>
-                    )}
-
+                    <div className="h-12">Create Product</div>
                     <div className="mb-3">
-                        <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
-                            {image ? image.name : "Upload Image"}
-
+                        <label
+                            className={`border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11 ${loading ? 'opacity-50' : ''}`}
+                        >
+                            {loading ? <Loader /> :
+                                images.length > 0 ? "Preview Images" : "Upload Images"}
                             <input
                                 type="file"
-                                name="image"
+                                name="images"
                                 accept="image/*"
+                                multiple
                                 onChange={uploadFileHandler}
-                                className={!image ? "hidden" : "text-white"}
+                                className="hidden"
+                                disabled={loading}
                             />
                         </label>
                     </div>
+
+                    {images.length > 0 && (
+                        <div className="grid grid-cols-3 gap-4 mt-4">
+                            {images.map((image, index) => (
+                                <div key={index} className="relative w-[10rem] h-[10rem]">
+                                    <img
+                                        src={image}
+                                        alt={`Preview ${index + 1}`}
+                                        className="w-full h-full object-cover rounded-lg"
+                                    />
+                                    {!loading && (
+                                        <button
+                                            onClick={() => removeImage(index)}
+                                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                                            type="button"
+                                        >
+                                            ×
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
                     <div className="p-3">
                         <div className="flex flex-wrap">
@@ -193,7 +235,8 @@ const ProductList = () => {
                         <button
                             onClick={submitHandler}
                             className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-orange-600"
-                        > Submit
+                        >
+                            Submit
                         </button>
                     </div>
                 </div>
