@@ -10,9 +10,9 @@ const storage = multer.diskStorage({
   },
 
   filename: (req, file, cb) => {
-    const extname = path.extname(file.originalname)
-    cb(null, `${file.fieldname}-${Date.now()}${extname}`)
-  },
+    const originalName = file.originalname.toLowerCase().replace(/\s+/g, '-'); // Mengubah nama file menjadi lowercase dan mengganti spasi dengan tanda hubung
+    cb(null, originalName)
+  }
 })
 
 const fileFilter = (req, file, cb) => {

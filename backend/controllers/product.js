@@ -100,21 +100,38 @@ export const addProductReview = asyncHandler(async (req, res) => {
     }
 })
 
-export const create = asyncHandler(async (req, res) => {
+export const createProduct = asyncHandler(async (req, res) => {
     try {
-        const { name, brand, quantity, category, description, price, image } = req.fields;
-        if (!name || !brand || !quantity || !category || !description || !price || !image) {
-            return res.json({ error: "All fields are required" })
-        }
+      const { name, brand, quantity, category, description, price } = req.body;
 
-        const product = new Product({ ...req.fields })
-        await product.save()
-        res.status(201).json({ message: 'Data Berhasil disimpan', product })
+      console.log("Isi dari req.files:", req.files);
+  
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ message: 'No image file provided' });
+      }
+
+      const imagePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'));
+  
+      const product = new Product({
+        name,
+        brand,
+        quantity,
+        category,
+        description,
+        price,
+        images: imagePaths
+      })
+  
+      await product.save()
+      res.status(201).json({
+        message: 'Product created successfully',
+        product
+      })
     } catch (error) {
-        console.error(error)
-        res.status(500).json({ error: "Server error" })
+      console.error('Error creating product:', error)
+      res.status(500).json({ error: 'Server error' })
     }
-})
+  })
 
 export const update = asyncHandler(async (req, res) => {
     try {

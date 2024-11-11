@@ -18,7 +18,7 @@ import AdminMenu from "./AdminMenu"
 import Loader from "../../components/loader"
 
 const ProductList = () => {
-    const [images, setImages] = useState([]) // For preview
+    const [images, setImages] = useState([])
     const [imageFiles, setImageFiles] = useState([])
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -27,64 +27,64 @@ const ProductList = () => {
     const [quantity, setQuantity] = useState('')
     const [brand, setBrand] = useState('')
     const [stock, setStock] = useState(0)
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
     const [uploadProductImage] = useUploadProductImageMutation()
     const [createProduct] = useCreateProductMutation()
-    const { data: categories, isLoading, isError } = useFetchCateQuery()
+    const { data: categories } = useFetchCateQuery()
 
     const submitHandler = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
 
         try {
-            const formData = new FormData();
+            const formData = new FormData()
             imageFiles.forEach((file) => {
-                formData.append("images", file);
+                formData.append("images", file)
             })
 
-            const uploadResult = await uploadProductImage(formData).unwrap();
+            const uploadResult = await uploadProductImage(formData).unwrap()
 
             if (!uploadResult.images) {
-                toast.error("Image upload failed");
-                setLoading(false);
+                toast.error("Image upload failed")
+                setLoading(false)
                 return
             }
 
-            // Kemudian buat produk dengan URL gambar yang sudah diunggah
-            const productData = new FormData();
-            productData.append("name", name);
-            productData.append("description", description);
-            productData.append("price", price);
-            productData.append("category", category);
-            productData.append("quantity", quantity);
-            productData.append("brand", brand);
-            productData.append("countInStock", stock);
+            const productData = new FormData()
+            productData.append("name", name)
+            productData.append("description", description)
+            productData.append("price", price)
+            productData.append("category", category)
+            productData.append("quantity", quantity)
+            productData.append("brand", brand)
+            productData.append("countInStock", stock)
 
             uploadResult.images.forEach((imgUrl) => {
-                productData.append("images", imgUrl);
+                productData.append("images", imgUrl)
             })
 
-            const { data } = await createProduct(productData);
+            const { data } = await createProduct(productData)
+            console.log(data);
+            
 
             if (data) {
-                toast.success(`${data.product.name} is created`);
-                navigate("/");
+                toast.success(`${data.product.name} is created`)
+                navigate("/")
             } else if (!data) {
-                toast.error("Creating product failed");
+                toast.error("Creating product failed")
                 return
             }
         } catch (error) {
-            console.error(error);
-            toast.error("Product create failed. Try Again.");
+            console.error(error)
+            toast.error("Product create failed. Try Again.")
         }
     }
 
     const uploadFileHandler = (e) => {
-        const files = Array.from(e.target.files);
+        const files = Array.from(e.target.files)
         const newImagePreviews = files.map((file) => URL.createObjectURL(file));
 
-        // Gabungkan file baru dengan file yang sudah ada
         setImages((prevImages) => [...prevImages, ...newImagePreviews]);
         setImageFiles((prevFiles) => [...prevFiles, ...files]);
     }
@@ -96,10 +96,10 @@ const ProductList = () => {
     }, [images]);
 
     const removeImage = (index) => {
-        const newImages = images.filter((_, i) => i !== index);
-        const newImageFiles = imageFiles.filter((_, i) => i !== index);
-        setImages(newImages);
-        setImageFiles(newImageFiles);
+        const newImages = images.filter((_, i) => i !== index)
+        const newImageFiles = imageFiles.filter((_, i) => i !== index)
+        setImages(newImages)
+        setImageFiles(newImageFiles)
     };
 
     return (
@@ -113,7 +113,7 @@ const ProductList = () => {
                             className={`border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11 ${loading ? 'opacity-50' : ''}`}
                         >
                             {loading ? <Loader /> :
-                                images.length > 0 ? "Preview Images" : "Upload Images"}
+                                images.length > 0 ? `${images.length} selected` : "Upload Images"}
                             <input
                                 type="file"
                                 name="images"
@@ -127,7 +127,7 @@ const ProductList = () => {
                     </div>
 
                     {images.length > 0 && (
-                        <div className="grid grid-cols-3 gap-4 mt-4">
+                        <div className="flex flex-wrap gap-3 mt-2">
                             {images.map((image, index) => (
                                 <div key={index} className="relative w-[10rem] h-[10rem]">
                                     <img
