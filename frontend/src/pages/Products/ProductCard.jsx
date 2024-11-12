@@ -25,7 +25,7 @@ const ProductCard = ({ p }) => {
           <div className="overflow-hidden rounded-t-lg">
             {p?.images && p.images.length > 0 ? (
               <img
-                className="cursor-pointer w-full hover:scale-105 transition-transform duration-300 ease-in-out"
+                className="cursor-pointer w-full hover:scale-105 transition-transform duration-500 ease-in-out"
                 src={isHovered ? p.images[1] : p.images[0]} // Gambar berubah saat hover
                 alt={p.name}
                 style={{ height: "230px", objectFit: "cover" }}
