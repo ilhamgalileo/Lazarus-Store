@@ -1,12 +1,14 @@
-import { Link } from "react-router-dom"
-import { AiOutlineShoppingCart } from "react-icons/ai"
-import { useDispatch } from "react-redux"
-import { addToCart } from "../../redux/features/cart/cartSlice"
-import { toast } from "react-toastify"
-import HeartIcon from "./HeartIcon"
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/features/cart/cartSlice";
+import { toast } from "react-toastify";
+import HeartIcon from "./HeartIcon";
 
 const ProductCard = ({ p }) => {
-  const dispatch = useDispatch()
+  const [isHovered, setIsHovered] = useState(false);
+  const dispatch = useDispatch();
 
   const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }))
@@ -21,12 +23,23 @@ const ProductCard = ({ p }) => {
             {p?.brand}
           </span>
           <div className="overflow-hidden rounded-t-lg">
-            <img
-              className="cursor-pointer w-full hover:scale-105 transition-transform duration-300 ease-in-out"
-              src={p.image}
-              alt={p.name}
-              style={{ height: "230px", objectFit: "cover" }}
-            />
+            {p?.images && p.images.length > 0 ? (
+              <img
+                className="cursor-pointer w-full hover:scale-105 transition-transform duration-300 ease-in-out"
+                src={isHovered ? p.images[1] : p.images[0]} // Gambar berubah saat hover
+                alt={p.name}
+                style={{ height: "230px", objectFit: "cover" }}
+                onMouseEnter={() => setIsHovered(true)}  // Ketika hover
+                onMouseLeave={() => setIsHovered(false)}  // Ketika keluar hover
+              />
+            ) : (
+              <img
+                className="cursor-pointer w-full hover:scale-105 transition-transform duration-300 ease-in-out"
+                src="/images/default-image.jpg" // Gambar fallback jika tidak ada gambar produk
+                alt="Product image"
+                style={{ height: "230px", objectFit: "cover" }}
+              />
+            )}
           </div>
         </Link>
         <HeartIcon product={p} />
@@ -35,7 +48,9 @@ const ProductCard = ({ p }) => {
       <div className="p-5 h-[250px] flex flex-col justify-between">
         <div>
           <div className="flex justify-between">
-            <h5 className="mb-2 text-xl text-white dark:text-white">{p?.name?.substring(0, 25)}</h5>
+            <h5 className="mb-2 text-xl text-white dark:text-white">
+              {p?.name?.length > 25 ? p.name.substring(0, 25) + "..." : p.name}
+            </h5>
             <p className="font-semibold text-orange-500 text-lg">
               {p?.price?.toLocaleString("id-ID", {
                 style: "currency",
@@ -44,7 +59,7 @@ const ProductCard = ({ p }) => {
             </p>
           </div>
           <p className="mb-3 font-normal text-[#CFCFCF]">
-            {p?.description?.substring(0, 125)} ... 
+            {p?.description?.length > 125 ? p.description.substring(0, 125) + "..." : p.description}
           </p>
         </div>
 
@@ -80,7 +95,7 @@ const ProductCard = ({ p }) => {
         </section>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductCard
+export default ProductCard;

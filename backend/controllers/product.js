@@ -142,8 +142,8 @@ export const update = asyncHandler(async (req, res) => {
             return res.status(404).json({ message: 'Product not found' })
         }
 
-        await product.save();
-        res.status(201).json({ message: 'Data Berhasil diperbarui', product })
+        await product.save()
+        res.status(201).json({ message: 'update sucessfully!', product })
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: "Server error" })
@@ -153,9 +153,9 @@ export const update = asyncHandler(async (req, res) => {
 export const deleteProduct = asyncHandler(async (req, res) => {
     const deletedProduct = await Product.findByIdAndDelete(req.params.id)
     if (!deletedProduct) {
-        return res.status(404).json({ message: 'Produk tidak ditemukan' })
+        return res.status(404).json({ message: 'product not found' })
     }
-    res.json({ message: 'Produk berhasil dihapus', deletedProduct })
+    res.json({ message: 'delete successfully', deletedProduct })
 })
 
 export const filterProducts = asyncHandler(async (req, res) => {

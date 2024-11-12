@@ -12,9 +12,9 @@ router.get('/new', product.fetchNewProducts);
 router.post('/:id/reviews', authenticate, checkId, product.addProductReview);
 router.get('/all', product.fetchAllProducts);
 router.get('/:id', authenticate, product.findOne);
-router.post('/', authenticate, authorizeAdmin, uploadImages, product.createProduct);
-router.put('/:id', authenticate, authorizeAdmin, uploadImages, product.update);
-router.delete('/:id', authenticate, authorizeAdmin, product.deleteProduct);
+router.post('/', authenticate, authorizeAdmin, uploadImages, product.createProduct)
+router.put('/:id', authenticate, authorizeAdmin, uploadImages, product.update)
+router.delete('/:id', authenticate, authorizeAdmin, product.deleteProduct)
 router.post('/filtered-products', product.filterProducts)
 
 export default router
