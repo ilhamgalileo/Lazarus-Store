@@ -3,14 +3,14 @@ import HeartIcon from "./HeartIcon"
 
 const Product = ({ product }) => {
     return (
-        <div className="w-[30rem] ml-[2rem] p-3 relative">
+        <div className="w-[26rem] ml-[2rem] p-3 relative">
             <div className="relative overflow-hidden rounded">
                 <section>
                 <Link to={`/product/${product._id}`}>
                 <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-[300px] object-cover rounded cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
+                    className="w-full h-[15rem] object-cover rounded cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
                 <HeartIcon product={product} />
                 </Link>

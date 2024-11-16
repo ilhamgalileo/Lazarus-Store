@@ -20,7 +20,7 @@ const Home = () => {
   return (
     <>
     <div className="flex justify-between items-center">
-            <h1 className="ml-[22rem] mt-[0rem] text-[2rem] font-semibold">
+            <h1 className="ml-[22rem] mt-[0rem] text-[1rem] font-semibold">
               Our New Releases
             </h1>
       </div>
@@ -34,13 +34,13 @@ const Home = () => {
       ) : (
         <>
           <div className="flex justify-between items-center">
-            <h1 className="ml-[20rem] mt-[7rem] text-[3rem]">
+            <h1 className="ml-[18rem] mt-[7rem] text-[3rem]">
               Special Products
             </h1>
 
             <Link
               to="/shop"
-              className="bg-orange-600 font-bold rounded-full py-2 px-10 mr-[20rem] mt-[7rem]"
+              className="bg-orange-600 font-bold rounded-full py-2 px-8 mr-[20rem] mt-[7rem]"
             >
               Shop
             </Link>

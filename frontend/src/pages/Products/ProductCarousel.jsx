@@ -21,13 +21,13 @@ const ProductCarousel = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
+    arrows: false,
     autoplay: true,
     autoplaySpeed: 3000,
   };
 
   return (
-    <div className="mb-4 lg:block xl:block md:block">
+    <div className="mb- lg:block xl:block md:block">
       {isLoading ? null : error ? (
         <Message variant="danger">
           {error?.data?.message || error.error}
@@ -35,7 +35,7 @@ const ProductCarousel = () => {
       ) : (
         <Slider
           {...settings}
-          className="xl:w-[50rem]  lg:w-[50rem] md:w-[56rem] sm:w-[40rem] sm:block"
+          className="xl:w-[40rem] lg:w-[50rem] md:w-[50rem] sm:w-[40rem] sm:block"
         >
           {products.map(
             ({
@@ -55,20 +55,20 @@ const ProductCarousel = () => {
                 <img
                   src={image}
                   alt={name}
-                  className="w-full rounded-lg object-cover h-[30rem]"
+                  className="w-full rounded-lg object-cover h-[22rem]"
                 />
 
-                <div className="mt-4 flex justify-between">
-                  <div className="one text-lg">
-                    <h2>{name}</h2>
-                    <p className="text-orange-500 font-bold">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(price)}</p> <br /> <br />
+                <div className="mt-3 flex justify-between">
+                  <div className="one text-sm">
+                    <h2 className="text-xl">{name}</h2>
+                    <p className="text-orange-500 text-lg font-bold">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(price)}</p> <br /> <br />
                     <p className="w-[25rem]">
-                      {description.substring(0, 45)}...
+                      {description?.length > 125 ? description.substring(0, 125) + '...' : description}
                     </p>
                   </div>
 
                   <div className="flex justify-between w-[20rem]">
-                    <div className="one">
+                    <div className="one text-sm">
                       <h1 className="flex items-center mb-6">
                         <FaStore className="mr-2 text-white" /> Brand: {brand}
                       </h1>
@@ -82,7 +82,7 @@ const ProductCarousel = () => {
                       </h1>
                     </div>
 
-                    <div className="two">
+                    <div className="two text-sm">
                       <h1 className="flex items-center mb-6">
                         <FaStar className="mr-2 text-white" /> Ratings:{" "}
                         {Math.round(rating)}
