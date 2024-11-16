@@ -76,9 +76,9 @@ const Shop = () => {
 
   return (
     <>
-      <div className="container mx-auto">
+      <div className="container mx-auto px-5" style={{ maxWidth: "90%" }}>
         <div className="flex md:flex-row">
-          <div className="bg-[#151515] p-3 mt-2 mb-2 w-64 flex-shrink-0">
+          <div className="bg-[#151515] p-3 mt-2 mb-4 w-64 flex-shrink-0">
             <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
               Filter by categories
             </h2>
@@ -156,7 +156,6 @@ const Shop = () => {
             </div>
           </div>
 
-          {/* Product Grid Section */}
           <div className="flex-1 p-3">
             <h2 className="h4 text-center mb-2">{products?.length} Products</h2>
             {products.length === 0 ? (
@@ -165,7 +164,7 @@ const Shop = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {products?.map((p) => (
                   <div key={p._id} className="flex justify-center">
-                    <div className="w-full" style={{ maxWidth: "384px" }}>
+                    <div className="w-full" style={{ maxWidth: "320px" }}>
                       <ProductCard p={p} />
                     </div>
                   </div>
