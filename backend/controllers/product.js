@@ -102,12 +102,10 @@ export const addProductReview = asyncHandler(async (req, res) => {
 
 export const createProduct = asyncHandler(async (req, res) => {
     try {
-      const { name, brand, quantity, category, description, price } = req.body;
-
-      console.log("Isi dari req.files:", req.files);
+      const { name, brand, quantity, category, description, price } = req.body
   
       if (!req.files || req.files.length === 0) {
-        return res.status(400).json({ message: 'No image file provided' });
+        return res.status(400).json({ message: 'No image file provided' })
       }
 
       const imagePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'));
@@ -135,12 +133,26 @@ export const createProduct = asyncHandler(async (req, res) => {
 
 export const update = asyncHandler(async (req, res) => {
     try {
-        const { name, brand, quantity, category, description, price, image } = req.fields;
+        const { name, brand, quantity, category, description, price } = req.body;
 
-        const product = await Product.findByIdAndUpdate(req.params.id, { ...req.fields }, { new: true })
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ message: 'No image file provided' })
+          }
+
+        const imagePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'))
+        const product = await Product.findById(req.params.id)
+
         if (!product) {
             return res.status(404).json({ message: 'Product not found' })
         }
+
+        product.name = name
+        product.brand = brand
+        product.quantity = quantity
+        product.category = category
+        product.description = description
+        product.price = price
+        product.images = imagePaths
 
         await product.save()
         res.status(201).json({ message: 'update sucessfully!', product })

@@ -16,7 +16,7 @@ const ProductUpdate = () => {
     const { data: productData } = useGetProductByIdQuery(params.id)
     console.log(productData)
 
-    const [image, setImage] = useState(productData?.image || '')
+    const [image, setImage] = useState(productData?.images || '')
     const [name, setName] = useState(productData?.name || '')
     const [description, setDescription] = useState(productData?.description || '')
     const [price, setPrice] = useState(productData?.price || '')

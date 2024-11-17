@@ -35,7 +35,7 @@ const ProductList = () => {
     const { data: categories } = useFetchCateQuery()
 
     const submitHandler = async (e) => {
-        e.preventDefault()
+        e.preventDefault()  
 
         try {
             const formData = new FormData()
@@ -65,8 +65,6 @@ const ProductList = () => {
             })
 
             const { data } = await createProduct(productData)
-            console.log(data);
-            
 
             if (data) {
                 toast.success(`${data.product.name} is created`)
