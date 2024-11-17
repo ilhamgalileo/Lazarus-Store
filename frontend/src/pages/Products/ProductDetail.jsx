@@ -55,8 +55,8 @@ const ProductDetail = () => {
     };
 
     return (
-        <div className="container mx-auto px-4">
-            <div className="mb-4">
+        <div className="container mx-auto px-4 max-w-7xl">
+            <div className="mb-6">
                 <Link to="/" className="text-white font-semibold hover:underline">
                     Go Back
                 </Link>
@@ -69,27 +69,27 @@ const ProductDetail = () => {
                     {error?.data?.message || error.message}
                 </Message>
             ) : (
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col lg:flex-row gap-20">
                     <div className="lg:w-1/2">
                         <div className="relative">
                             <img
                                 src={mainImage}
                                 alt={product.name}
-                                className="w-full rounded-lg"
+                                className="w-full h-auto max-h-[38rem] rounded-lg object-container"
                             />
                             <div className="absolute top-2 right-2">
                                 <HeartIcon product={product} />
                             </div>
                         </div>
 
-                        <div className="flex mt-4 gap-2 overflow-x-auto">
+                        <div className="flex mt-4 gap-2 overflow-x-auto pb-2">
                             {product.images?.map((imgSrc, index) => (
                                 <img
                                     key={index}
                                     src={imgSrc}
                                     alt={`${product.name} thumbnail ${index + 1}`}
-                                    className={`w-20 h-20 rounded-md cursor-pointer transition-all ${
-                                        selectedImage === imgSrc ? 'border-2 border-orange-500' : 'border border-gray-600'
+                                    className={`w-16 h-16 rounded-md cursor-pointer transition-all object-cover ${
+                                        selectedImage === imgSrc ? 'border-2 border-orange-500' : 'border border-gr'
                                     }`}
                                     onClick={() => {
                                         setMainImage(imgSrc)
@@ -100,34 +100,34 @@ const ProductDetail = () => {
                         </div>
                     </div>
 
-                    <div className="lg:w-1/2">
-                        <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
-                        <p className="text-3xl font-bold text-orange-500 mb-6">
+                    <div className="lg:w-1/2 space-y-6">
+                        <h1 className="text-2xl font-bold">{product.name}</h1>
+                        <p className="text-3xl font-extrabold text-orange-500">
                             RP. {new Intl.NumberFormat('id-ID').format(product.price)}
                         </p>
 
-                        <p className="text-gray-300 mb-6">{product.description}</p>
+                        <p className="text-gray-300 text-sm">{product.description}</p>
 
-                        <div className="grid grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <p className="flex items-center gap-2 mb-2">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="text-sm space-y-2">
+                                <p className="flex items-center gap-2">
                                     <FaStore className="text-orange-500" /> Brand: {product.brand}
                                 </p>
-                                <p className="flex items-center gap-2 mb-2">
+                                <p className="flex items-center gap-2">
                                     <FaClock className="text-orange-500" /> Added: {moment(product.createdAt).format('DD MMMM YYYY')}
                                 </p>
-                                <p className="flex items-center gap-2 mb-2">
+                                <p className="flex items-center gap-2">
                                     <FaStar className="text-orange-500" /> Reviews: {product.numReviews}
                                 </p>
                             </div>
-                            <div>
-                                <p className="flex items-center gap-2 mb-2">
+                            <div className="text-sm space-y-2">
+                                <p className="flex items-center gap-2">
                                     <FaStar className="text-orange-500" /> Rating: {product.rating}
                                 </p>
-                                <p className="flex items-center gap-2 mb-2">
+                                <p className="flex items-center gap-2">
                                     <FaShoppingCart className="text-orange-500" /> Quantity: {product.quantity}
                                 </p>
-                                <p className="flex items-center gap-2 mb-2">
+                                <p className="flex items-center gap-2">
                                     <FaBox className="text-orange-500" /> Stock: {product.countInStock}
                                 </p>
                             </div>
@@ -136,7 +136,7 @@ const ProductDetail = () => {
                         <button
                             onClick={addToCartHandler}
                             disabled={product.countInStock === 0}
-                            className="w-full bg-orange-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed mb-8"
+                            className="w-full bg-orange-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
                         >
                             {product.countInStock === 0 ? 'Out of Stock' : 'Add to Cart'}
                         </button>

@@ -5,7 +5,7 @@ const SmallProduct = ({ product }) => {
   const productImage = product.images && product.images.length > 0 ? product.images[0] : product.name
 
   return (
-    <div className="w-full sm:w-[18rem] md:w-[18rem] lg:w-[rem] max-w-xs mx-auto p-3">
+    <div className="w-full sm:w-[18rem] md:w-[18rem] lg:w-[18rem] max-w-xs mx-auto p-3">
       <Link to={`/product/${product._id}`} className="block relative">
         <img
           src={(product.images && product.images.length > 0) ? product.images[0] : product.image}
