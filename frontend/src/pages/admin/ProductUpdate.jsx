@@ -9,14 +9,20 @@ import {
 import { useFetchCateQuery } from "../../redux/api/categoryApiSlice"
 import { toast } from "react-toastify"
 import AdminMenu from "./AdminMenu"
+import Loader from "../../components/loader"
 
 const ProductUpdate = () => {
     const params = useParams()
+    const navigate = useNavigate()
 
     const { data: productData } = useGetProductByIdQuery(params.id)
-    console.log(productData)
+    const { data: categories = [] } = useFetchCateQuery()
+    const [uploadProductImage] = useUploadProductImageMutation()
+    const [updateProduct] = useUpdateProductMutation()
+    const [deleteProduct] = useDeleteProductMutation()
 
-    const [image, setImage] = useState(productData?.images || '')
+    const [images, setImages] = useState([])
+    const [imageFiles, setImageFiles] = useState([]);
     const [name, setName] = useState(productData?.name || '')
     const [description, setDescription] = useState(productData?.description || '')
     const [price, setPrice] = useState(productData?.price || '')
@@ -24,13 +30,7 @@ const ProductUpdate = () => {
     const [brand, setBrand] = useState(productData?.brand || '')
     const [quantity, setQuantity] = useState(productData?.quantity || '')
     const [stock, setStock] = useState(productData?.countInStock || '')
-
-    const navigate = useNavigate()
-
-    const { data: categories = [] } = useFetchCateQuery()
-    const [uploadProductImage] = useUploadProductImageMutation()
-    const [updateProduct] = useUpdateProductMutation()
-    const [deleteProduct] = useDeleteProductMutation()
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (productData && productData._id) {
@@ -39,30 +39,28 @@ const ProductUpdate = () => {
             setPrice(productData.price)
             setCategory(productData.category)
             setBrand(productData.brand)
-            setImage(productData.image)
+            setImages(productData.images)
             setQuantity(productData.quantity)
             setStock(productData.countInStock)
         }
     }, [productData])
 
-    const uploadFileHandler = async (e) => {
-        const formData = new FormData()
-        formData.append("image", e.target.files[0])
-        try {
-          const res = await uploadProductImage(formData).unwrap()
-          toast.success("Item added successfully", {
-          })
-          setImage(res.image)
-        } catch (error) {
-            toast.error(error?.data?.message || error.error);
-        }
-      }
+    const uploadFileHandler = (e) => {
+        const files = Array.from(e.target.files);
+        const newImagePreviews = files.map((file) => URL.createObjectURL(file))
 
-      const submitHandler = async (e) => {
+        setImages((prevImages) => [...prevImages, ...newImagePreviews])
+        setImageFiles((prevFiles) => [...prevFiles, ...files])
+    };
+
+    const submitHandler = async (e) => {
         e.preventDefault()
         try {
             const formData = new FormData()
-            formData.append("image", image)
+
+            imageFiles.forEach((file) => {
+                formData.append("images", file)
+            })
             formData.append("name", name)
             formData.append("description", description)
             formData.append("price", price)
@@ -72,6 +70,7 @@ const ProductUpdate = () => {
             formData.append("countInStock", stock)
 
             const data = await updateProduct({ productId: params.id, formData }).unwrap()
+            console.log('data', formData)
 
             if (data) {
                 toast.success('susscessfully updated')
@@ -79,7 +78,7 @@ const ProductUpdate = () => {
                     navigate('/admin/allproductslist')
                     window.location.reload()
                 }, 1500)
-            } else if(!data) {
+            } else if (!data) {
                 toast.error(data.error)
                 return
             }
@@ -107,6 +106,13 @@ const ProductUpdate = () => {
         }
     }
 
+    const removeImage = (index) => {
+        const newImages = images.filter((_, i) => i !== index)
+        const newImageFiles = imageFiles.filter((_, i) => i !== index)
+        setImages(newImages)
+        setImageFiles(newImageFiles)
+    };
+
     return (
         <div className=" container xl:mx-[9rem] sm:mx-[0]">
             <div className="flex flex-col md:flex-row">
@@ -114,38 +120,51 @@ const ProductUpdate = () => {
                 <div className="md:w-3/4 p-3">
                     <div className="h-12"> Create Product</div>
 
-                    {image && (
-                        <div className="text-center">
-                            <img
-                                src={image}
-                                alt="product"
-                                className="block mx-auto max-h-[200px]"
-                            />
+                    {images.length > 0 && (
+                        <div className="flex flex-wrap gap-3 mt-2">
+                            {images.map((image, index) => (
+                                <div key={index} className="relative w-[10rem] h-[10rem]">
+                                    <img
+                                        src={image}
+                                        alt={`Preview ${index + 1}`}
+                                        className="w-full h-full object-cover rounded-lg"
+                                    />
+                                    {!loading && (
+                                        <button
+                                            onClick={() => removeImage(index)}
+                                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                                            type="button"
+                                        >
+                                            ×
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     )}
 
                     <div className="mb-3">
                         <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
-                            {image ? image.name : "Upload Image"}
-
+                            {images.length > 0 ? `${images.length} selected` : "Upload Images"}
                             <input
                                 type="file"
-                                name="image"
+                                name="images"
                                 accept="image/*"
+                                multiple
                                 onChange={uploadFileHandler}
-                                className={!image ? "hidden" : "text-white"}
+                                className="hidden"
                             />
                         </label>
                     </div>
 
                     <div className="p-3">
-                        <div className="flex flex-wrap">
+                        <div className="flex-wrap">
                             <div className="one">
                                 <label htmlFor="name"> Name</label>< br />
                                 <input
                                     type="text"
                                     className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
-                                    value={name}
+                                    value
                                     onChange={e => setName(e.target.value)}
                                 />
                             </div>

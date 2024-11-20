@@ -17,7 +17,7 @@ import { toast } from "react-toastify"
 import AdminMenu from "./AdminMenu"
 import Loader from "../../components/loader"
 
-const ProductList = () => {
+const ProductList = () => { 
     const [images, setImages] = useState([])
     const [imageFiles, setImageFiles] = useState([])
     const [name, setName] = useState('')
