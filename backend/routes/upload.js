@@ -1,6 +1,7 @@
 import path from "path";
 import express from "express";
 import multer from "multer";
+import { update, deleteImage } from "../controllers/product.js";
 
 const router = express.Router()
 
@@ -32,6 +33,9 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter })
 const uploadImages = upload.array("images", 5)
 
+router.put("/:id", uploadImages, update); 
+router.delete("/delete-image", deleteImage);
+
 router.post("/", (req, res) => {
   uploadImages(req, res, (err) => {
     if (err) {
@@ -39,13 +43,12 @@ router.post("/", (req, res) => {
     } else if (!req.files || req.files.length === 0) {
       res.status(400).send({ message: "No image file provided" });
     } else {
-      const filePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'));      
+      const imagePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'));
       res.status(200).send({
         message: "Image uploaded successfully",
-        images: filePaths,
+        images: imagePaths,
       })
     }
   })
 })
-
 export default router

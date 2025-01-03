@@ -15,248 +15,295 @@ const ProductUpdate = () => {
     const params = useParams()
     const navigate = useNavigate()
 
-    const { data: productData } = useGetProductByIdQuery(params.id)
-    const { data: categories = [] } = useFetchCateQuery()
+    const { data: productData, isLoading: isLoadingProduct } = useGetProductByIdQuery(params.id)
+    const { data: categories = [], isLoading: isLoadingCategories } = useFetchCateQuery()
     const [uploadProductImage] = useUploadProductImageMutation()
     const [updateProduct] = useUpdateProductMutation()
     const [deleteProduct] = useDeleteProductMutation()
 
-    const [images, setImages] = useState([])
-    const [imageFiles, setImageFiles] = useState([]);
-    const [name, setName] = useState(productData?.name || '')
-    const [description, setDescription] = useState(productData?.description || '')
-    const [price, setPrice] = useState(productData?.price || '')
-    const [category, setCategory] = useState(productData?.category || '')
-    const [brand, setBrand] = useState(productData?.brand || '')
-    const [quantity, setQuantity] = useState(productData?.quantity || '')
-    const [stock, setStock] = useState(productData?.countInStock || '')
+    const [newFiles, setNewFiles] = useState([])
+    const [formData, setFormData] = useState({
+        name: '',
+        description: '',
+        price: '',
+        category: '',
+        brand: '',
+        quantity: '',
+        countInStock: '',
+        images: [],
+    })
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (productData && productData._id) {
-            setName(productData.name)
-            setDescription(productData.description)
-            setPrice(productData.price)
-            setCategory(productData.category)
-            setBrand(productData.brand)
-            setImages(productData.images)
-            setQuantity(productData.quantity)
-            setStock(productData.countInStock)
+            setFormData(prev => ({
+                ...prev,
+                name: productData.name,
+                description: productData.description,
+                price: productData.price,
+                category: productData.category,
+                brand: productData.brand,
+                quantity: productData.quantity,
+                countInStock: productData.countInStock,
+                images: productData.images || [],
+            }))
         }
     }, [productData])
 
-    const uploadFileHandler = (e) => {
-        const files = Array.from(e.target.files);
-        const newImagePreviews = files.map((file) => URL.createObjectURL(file))
-
-        setImages((prevImages) => [...prevImages, ...newImagePreviews])
-        setImageFiles((prevFiles) => [...prevFiles, ...files])
-    };
+    const handleInputChange = (e) => {
+        const { name, value } = e.target
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
 
     const submitHandler = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        setLoading(true);
+
         try {
-            const formData = new FormData()
+            let uploadedImagePaths = [];
+            if (newFiles.length > 0) {
+                const uploadFormData = new FormData();
+                newFiles.forEach((file) => uploadFormData.append("images", file));
 
-            imageFiles.forEach((file) => {
-                formData.append("images", file)
-            })
-            formData.append("name", name)
-            formData.append("description", description)
-            formData.append("price", price)
-            formData.append("category", category)
-            formData.append("quantity", quantity)
-            formData.append("brand", brand)
-            formData.append("countInStock", stock)
-
-            const data = await updateProduct({ productId: params.id, formData }).unwrap()
-            console.log('data', formData)
-
-            if (data) {
-                toast.success('susscessfully updated')
-                setTimeout(() => {
-                    navigate('/admin/allproductslist')
-                    window.location.reload()
-                }, 1500)
-            } else if (!data) {
-                toast.error(data.error)
-                return
+                const uploadResponse = await uploadProductImage(uploadFormData).unwrap();
+                uploadedImagePaths = uploadResponse.images
             }
-        } catch (error) {
-            console.error(error);
-            toast.error("Product update failed. Try Again.")
+
+
+            const updatedImages = [
+                ...formData.images.filter(img => typeof img === 'string' && img.startsWith('/uploads/')),
+                ...uploadedImagePaths
+            ];
+
+            const productFormData = new FormData();
+            productFormData.append("name", formData.name);
+            productFormData.append("description", formData.description);
+            productFormData.append("price", formData.price);
+            productFormData.append("category", formData.category);
+            productFormData.append("brand", formData.brand);
+            productFormData.append("quantity", formData.quantity);
+            productFormData.append("countInStock", formData.countInStock);
+
+            newFiles.forEach((file) => {
+                productFormData.append("images", file)
+            })
+
+            const data = await updateProduct({
+                productId: params.id,
+                formData: productFormData,
+            }).unwrap()
+            toast.success("Product updated successfully");
+            navigate("/admin/allproductslist");
+
+        } catch (err) {
+            console.error("Error details:", err);
+            toast.error(err?.data?.message || "Failed to update product");
+        } finally {
+            setLoading(false);
         }
+    }
+
+    const uploadFileHandler = (e) => {
+        const files = Array.from(e.target.files);
+        setNewFiles((prev) => [...prev, ...files]);
+
+        const previewUrls = files.map((file) => URL.createObjectURL(file))
+
+        setFormData((prev) => ({
+            ...prev,
+            images: [...prev.images, ...previewUrls],
+        }));
+
+        toast.success("Images added successfully");
     }
 
     const deleteHandler = async () => {
+        if (!window.confirm('Are you sure you want to delete this product?')) return
+
+        setLoading(true)
         try {
-            let answer = window.confirm('Are you sure?')
-            if (!answer) return
-
-            const { data } = await deleteProduct(params.id)
-            toast.success('successfully deleted')
-            setTimeout(() => {
-                navigate('/admin/allproductslist')
-                window.location.reload()
-            }, 1500)
-
-        } catch (error) {
-            console.log(error)
-            toast.error("Delete failed")
+            await deleteProduct(params.id).unwrap()
+            toast.success('Product deleted successfully')
+            navigate('/admin/allproductslist')
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to delete product")
+        } finally {
+            setLoading(false)
         }
     }
 
-    const removeImage = (index) => {
-        const newImages = images.filter((_, i) => i !== index)
-        const newImageFiles = imageFiles.filter((_, i) => i !== index)
-        setImages(newImages)
-        setImageFiles(newImageFiles)
+    const removeImage = (indexToRemove) => {
+        setFormData(prev => ({
+            ...prev,
+            images: prev.images.filter((_, index) => index !== indexToRemove)
+        }));
     };
 
+    if (isLoadingProduct || isLoadingCategories) {
+        return <Loader />
+    }
+
     return (
-        <div className=" container xl:mx-[9rem] sm:mx-[0]">
+        <div className="container xl:mx-[9rem] sm:mx-[0]">
             <div className="flex flex-col md:flex-row">
                 <AdminMenu />
                 <div className="md:w-3/4 p-3">
-                    <div className="h-12"> Create Product</div>
+                    <h2 className="h-12">Update Product</h2>
+                    <form onSubmit={submitHandler}>
+                        <div className="mb-3">
+                            <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
+                                {loading ? "Uploading..." : "Upload Images"}
+                                <input
+                                    type="file"
+                                    name="images"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={uploadFileHandler}
+                                    className="hidden"
+                                    disabled={loading}
+                                />
+                            </label>
+                        </div>
 
-                    {images.length > 0 && (
-                        <div className="flex flex-wrap gap-3 mt-2">
-                            {images.map((image, index) => (
-                                <div key={index} className="relative w-[10rem] h-[10rem]">
-                                    <img
-                                        src={image}
-                                        alt={`Preview ${index + 1}`}
-                                        className="w-full h-full object-cover rounded-lg"
-                                    />
-                                    {!loading && (
+                        {formData.images.length > 0 && (
+                            <div className="flex flex-wrap gap-3 mt-2">
+                                {formData.images.map((image, index) => (
+                                    <div key={index} className="relative w-[10rem] h-[10rem]">
+                                        <img
+                                            src={image}
+                                            alt={`Product ${index + 1}`}
+                                            className="w-full h-full object-cover rounded-lg"
+                                        />
                                         <button
                                             onClick={() => removeImage(index)}
                                             className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
                                             type="button"
+                                            disabled={loading}
                                         >
                                             ×
                                         </button>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
-                    <div className="mb-3">
-                        <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
-                            {images.length > 0 ? `${images.length} selected` : "Upload Images"}
-                            <input
-                                type="file"
-                                name="images"
-                                accept="image/*"
-                                multiple
-                                onChange={uploadFileHandler}
-                                className="hidden"
-                            />
-                        </label>
-                    </div>
-
-                    <div className="p-3">
-                        <div className="flex-wrap">
-                            <div className="one">
-                                <label htmlFor="name"> Name</label>< br />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label htmlFor="name">Name</label>
                                 <input
                                     type="text"
-                                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
-                                    value
-                                    onChange={e => setName(e.target.value)}
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    className="p-4 w-full border rounded-lg bg-[#101011] text-white"
+                                    required
                                 />
                             </div>
-                            <div className="two ml-10">
-                                <label htmlFor="name block">Price</label>< br />
+
+                            <div>
+                                <label htmlFor="price">Price</label>
                                 <input
                                     type="number"
-                                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
-                                    value={price || ''}
-                                    onChange={e => setPrice(e.target.value)}
+                                    name="price"
+                                    value={formData.price}
+                                    onChange={handleInputChange}
+                                    className="p-4 w-full border rounded-lg bg-[#101011] text-white"
+                                    required
                                 />
                             </div>
-                        </div>
-                        <div className="flex flex-wrap">
-                            <div className="one">
-                                <label htmlFor="name block"> Quantity</label>< br />
+
+                            <div>
+                                <label htmlFor="quantity">Quantity</label>
                                 <input
                                     type="number"
-                                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
-                                    value={quantity}
-                                    onChange={e => setQuantity(e.target.value)}
+                                    name="quantity"
+                                    value={formData.quantity}
+                                    onChange={handleInputChange}
+                                    className="p-4 w-full border rounded-lg bg-[#101011] text-white"
+                                    required
                                 />
                             </div>
-                            <div className="two ml-10">
-                                <label htmlFor="name block">Brand</label>< br />
-                                <input
-                                    type="text"
-                                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
-                                    value={brand}
-                                    onChange={e => setBrand(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                        <label htmlFor="" className="my-5"> Description</label>
-                        <textarea
-                            type="text"
-                            className="p-2 mb-3 bg-[#101011] border rounded-lg w-[95%] text-white"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                        ></textarea>
 
-                        <div className="flex justify-between">
                             <div>
-                                <label htmlFor="name block">Count In Stock</label> <br />
+                                <label htmlFor="brand">Brand</label>
                                 <input
                                     type="text"
-                                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
-                                    value={stock}
-                                    onChange={(e) => setStock(e.target.value)}
+                                    name="brand"
+                                    value={formData.brand}
+                                    onChange={handleInputChange}
+                                    className="p-4 w-full border rounded-lg bg-[#101011] text-white"
+                                    required
                                 />
                             </div>
+
                             <div>
-                                <label htmlFor="">Category</label> <br />
+                                <label htmlFor="countInStock">Count In Stock</label>
+                                <input
+                                    type="number"
+                                    name="countInStock"
+                                    value={formData.countInStock}
+                                    onChange={handleInputChange}
+                                    className="p-4 w-full border rounded-lg bg-[#101011] text-white"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="category">Category</label>
                                 <select
-                                    placeholder="Choose Category"
-                                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
-                                    onChange={e => setCategory(e.target.value)}
-                                    defaultValue=""
+                                    name="category"
+                                    value={formData.category}
+                                    onChange={handleInputChange}
+                                    className="p-4 w-full border rounded-lg bg-[#101011] text-white"
+                                    required
                                 >
-                                    <option value="" disabled>
-                                        Choose Category
-                                    </option>
-                                    {categories && categories.length > 0 ? (
-                                        categories.map((e) => (
-                                            <option key={e._id} value={e._id}>
-                                                {e.name}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option>No categories available</option>
-                                    )}
+                                    <option value="">Choose Category</option>
+                                    {categories.map((category) => (
+                                        <option key={category._id} value={category._id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
-                        <div>
+
+                        <div className="mt-4">
+                            <label htmlFor="description">Description</label>
+                            <textarea
+                                name="description"
+                                value={formData.description}
+                                onChange={handleInputChange}
+                                className="p-4 w-full border rounded-lg bg-[#101011] text-white"
+                                rows="4"
+                                required
+                            />
+                        </div>
+
+                        <div className="flex gap-4 mt-6">
                             <button
-                                onClick={submitHandler}
-                                className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-green-600 mr-6"
-                            > Update
+                                type="submit"
+                                className="py-4 px-10 rounded-lg text-lg font-bold bg-green-600 text-white disabled:opacity-50"
+                                disabled={loading}
+                            >
+                                {loading ? "Updating..." : "Update"}
                             </button>
                             <button
+                                type="button"
                                 onClick={deleteHandler}
-                                className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-orange-600"
-                            > Delete
+                                className="py-4 px-10 rounded-lg text-lg font-bold bg-orange-600 text-white disabled:opacity-50"
+                                disabled={loading}
+                            >
+                                {loading ? "Deleting..." : "Delete"}
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     )
-
 }
 
 export default ProductUpdate

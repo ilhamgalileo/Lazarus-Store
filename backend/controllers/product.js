@@ -103,10 +103,6 @@ export const addProductReview = asyncHandler(async (req, res) => {
 export const createProduct = asyncHandler(async (req, res) => {
     try {
       const { name, brand, quantity, category, description, price } = req.body
-  
-      if (!req.files || req.files.length === 0) {
-        return res.status(400).json({ message: 'No image file provided' })
-      }
 
       const imagePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'));
   
@@ -131,35 +127,48 @@ export const createProduct = asyncHandler(async (req, res) => {
     }
   })
 
-export const update = asyncHandler(async (req, res) => {
+  export const update = asyncHandler(async (req, res) => {
     try {
         const { name, brand, quantity, category, description, price } = req.body;
 
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ message: 'No image file provided' })
-          }
-
-        const imagePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'))
-        const product = await Product.findById(req.params.id)
-
+        const product = await Product.findById(req.params.id);
         if (!product) {
-            return res.status(404).json({ message: 'Product not found' })
+            return res.status(404).json({ message: 'Product not found' });
         }
 
-        product.name = name
-        product.brand = brand
-        product.quantity = quantity
-        product.category = category
-        product.description = description
-        product.price = price
-        product.images = imagePaths
+        product.name = name;
+        product.brand = brand;
+        product.quantity = quantity;
+        product.category = category;
+        product.description = description;
+        product.price = price;
 
-        await product.save()
-        res.status(201).json({ message: 'update sucessfully!', product })
+        if (req.files && req.files.length > 0) {
+            const imagePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'));
+            product.images = [...product.images, ...imagePaths]
+        }
+
+        await product.save();
+        res.status(200).json({ message: 'Product updated successfully!', product });
     } catch (error) {
-        console.error(error)
-        res.status(500).json({ error: "Server error" })
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
     }
+})
+
+export const deleteImage = asyncHandler(async (req, res) => {
+    const { productId, imagePath } = req.body;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Hapus gambar dari array
+    product.images = product.images.filter(img => img !== imagePath);
+
+    await product.save();
+    res.status(200).json({ message: 'Image deleted successfully', images: product.images });
 })
 
 export const deleteProduct = asyncHandler(async (req, res) => {
