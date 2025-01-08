@@ -39,7 +39,6 @@ const ProductCarousel = () => {
         >
           {products.map(
             ({
-              image,
               _id,
               name,
               price,
@@ -49,11 +48,13 @@ const ProductCarousel = () => {
               numReviews,
               rating,
               quantity,
+              images,
+              image,
               countInStock,
             }) => (
               <div key={_id}>
                 <img
-                  src={image}
+                  src={images[1] || image}
                   alt={name}
                   className="w-full rounded-lg object-cover h-[22rem]"
                 />

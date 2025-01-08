@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 import { toast } from "react-toastify";
-import { FaShoppingCart, FaHeart, FaArrowRight } from "react-icons/fa";
-import HeartIcon from "./HeartIcon";
+import { FaShoppingCart, FaArrowRight } from "react-icons/fa";
 
 const ProductCard = ({ p }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -21,13 +20,12 @@ const ProductCard = ({ p }) => {
         <Link to={`/product/${p._id}`}>
           <img
             className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
-            src={isHovered && p?.images?.[1] ? p.images[1] : p?.images?.[0]}
+            src={isHovered && p?.images?.[1] ? p.images[1] : p?.images?.[0] || p.image}
             alt={p.name}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           />
         </Link>
-          <HeartIcon product={p}/>
       </div>
 
       <div className="p-6 space-y-4">

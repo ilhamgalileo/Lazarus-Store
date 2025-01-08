@@ -142,10 +142,10 @@ const PlaceOrder = () => {
                 )}
                 <div className="mt-8">
                     <h2 className="text-2xl font-semibold mb-5">Order Summary</h2>
-                    <div className="flex justify-between flex-wrap p-8 bg-[#181818]">
+                    <div className="flex justify-between flex-wrap p-8 bg-[#181818] text-sm">
                         <ul className="text-lg">
                             <li>
-                                <span className="font-semibold mb-4">items: {" "}</span>
+                                <span className="font-semibold mb-4 text-lg ">items: {" "}</span>
                                 RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(itemsPrice)}
                             </li>
                             <li>
@@ -153,11 +153,11 @@ const PlaceOrder = () => {
                                 RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(shippingPrice)}
                             </li>
                             <li>
-                                <span className="font-semibold mb-4">Tax: {" "}</span>
+                                <span className="font-semibold mb-4 text-lg">Tax: {" "}</span>
                                 RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(taxPrice)}
                             </li>
                             <li>
-                                <span className="font-semibold mb-4">Total: {" "}</span>
+                                <span className="font-semibold mb-4 text-lg">Total: {" "}</span>
                                 RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(totalPrice)}
                             </li>
                         </ul>

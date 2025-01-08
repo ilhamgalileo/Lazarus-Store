@@ -41,14 +41,14 @@ const Order = () => {
   ) : error ? (
     <Message variant="danger">{error.data.message}</Message>
   ) : (
-    <div className="container flex flex-col ml-[10rem] md:flex-row">
+    <div className="container flex flex-col ml-[5rem] md:flex-row">
       <div className="md:w-2/3 pr-4">
         <div className="border-gray-300 mt-5 pb-4 mb-5">
           {order.orderItems.length === 0 ? (
             <Message>Order is empty</Message>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-[80%]">
+              <table className="w-[70%]">
                 <thead className="border-b-2">
                   <tr>
                     <th className="p-2">Image</th>
@@ -63,7 +63,7 @@ const Order = () => {
                     <tr key={index}>
                       <td className="p-2 flex justify-center items-center">
                         <img
-                          src={item.image}
+                          src={item?.images[0] || item?.image}
                           alt={item.name}
                           className="w-20 h-20 object-cover"
                         />
@@ -83,9 +83,9 @@ const Order = () => {
         </div>
       </div>
 
-      <div className="md:w-1/3">
+      <div className="md:w-1/3 mr-[10rem] text-sm">
         <div className="mt-5 border-gray-300 pb-4 mb-4">
-          <h2 className="text-xl font-bold mb-2">Shipping</h2>
+          <h2 className="text-lg font-bold mb-2">Shipping</h2>
 
           <p className="mb-4 mt-4">
             <strong className="text-orange-500">Order:</strong> {order._id}

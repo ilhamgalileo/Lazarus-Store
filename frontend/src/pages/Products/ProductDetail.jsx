@@ -29,7 +29,7 @@ const ProductDetail = () => {
 
     useEffect(() => {
         if (product && !mainImage) {
-            setMainImage(product.images?.[0])
+            setMainImage(product.images?.[0] || product.image)
             setSelectedImage(product.images?.[0])
         }
     }, [product, mainImage])
@@ -41,7 +41,7 @@ const ProductDetail = () => {
                 productId,
                 rating,
                 comment,
-            }).unwrap() 
+            }).unwrap()
             refetch()
             toast.success("Review created successfully");
         } catch (error) {
@@ -88,9 +88,8 @@ const ProductDetail = () => {
                                     key={index}
                                     src={imgSrc}
                                     alt={`${product.name} thumbnail ${index + 1}`}
-                                    className={`w-16 h-16 rounded-md cursor-pointer transition-all object-cover ${
-                                        selectedImage === imgSrc ? 'border-2 border-orange-500' : 'border border-gr'
-                                    }`}
+                                    className={`w-16 h-16 rounded-md cursor-pointer transition-all object-cover ${selectedImage === imgSrc ? 'border-2 border-orange-500' : 'border border-gr'
+                                        }`}
                                     onClick={() => {
                                         setMainImage(imgSrc)
                                         setSelectedImage(imgSrc)

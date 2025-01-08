@@ -6,14 +6,14 @@ const Product = ({ product }) => {
         <div className="w-[25rem] ml-[3rem] p-3 relative">
             <div className="relative overflow-hidden rounded">
                 <section>
-                <Link to={`/product/${product._id}`}>
-                <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-[15rem] object-cover rounded cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
-                />
-                <HeartIcon product={product} />
-                </Link>
+                    <Link to={`/product/${product._id}`}>
+                        <img
+                            src={ product.image||product?.images[0]}
+                            alt={product.name}
+                            className="w-full h-[15rem] object-cover rounded cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
+                        />
+                        <HeartIcon product={product} />
+                    </Link>
                 </section>
             </div>
             <div className="p-4">

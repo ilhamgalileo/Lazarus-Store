@@ -17,7 +17,7 @@ const AllProducts = () => {
     return (
         <>
             <div className="container mx-[9rem]">
-                <div className="flex flex-col md:flex-row">
+                <div className="flex flex-col md:flex-row mr-[5rem]">
                     <div className="p-3">
                         <div className="ml-[2rem] text-xl font-bold h-12">
                             All Products ({products.length})
@@ -30,7 +30,7 @@ const AllProducts = () => {
                                 >
                                     <div className="flex">
                                         <img
-                                            src={product.image}
+                                            src={product?.image || product?.images?.[0]}
                                             alt={product.name}
                                             className="w-[5rem] h-[5rem] object-cover mr-4"
                                         />

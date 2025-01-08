@@ -8,7 +8,7 @@ const UserOrder = () => {
 
   return (
     <div className="container mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">My Orders</h2>
+      <h2 className="text-2xl font-semibold mb-3 ml-[4rem]">My Orders</h2>
 
       {isLoading ? (
         <Loader />
@@ -18,7 +18,7 @@ const UserOrder = () => {
         <table className="w-full">
           <thead>
             <tr>
-              <th className="py-2 text-center w-[6rem]">IMAGE</th>
+              <th className="py-2 text-center w-[11rem]">IMAGE</th>
               <th className="py-2 text-center w-[6rem]">ID</th>
               <th className="py-2 text-center w-[6rem]">DATE</th>
               <th className="py-2 text-center w-[6rem]">TOTAL</th>
@@ -35,7 +35,7 @@ const UserOrder = () => {
                   <img
                     src={order.orderItems[0].image}
                     alt={order.user}
-                    className="w-[15rem] mb-5"
+                    className="w-[15rem] mb-5 ml-[5rem]"
                   />
                 </td>
 

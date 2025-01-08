@@ -45,7 +45,7 @@ const Cart = () => {
                 <div key={item._id} className="flex items-enter mb-[1rem] pb-2">
                   <div className="w-[5rem] h-[5rem]">
                     <img
-                      src={item.image}
+                      src={item?.images[0] || item.image}
                       alt={item.name}
                       className="w-full h-full object-cover rounded"
                     />
@@ -106,7 +106,7 @@ const Cart = () => {
                     disabled={cartItems.length === 0}
                     onClick={checkoutHandler}
                   >
-                    Proceed To Checkout
+                    processed To Checkout
                   </button>
                 </div>
               </div>
