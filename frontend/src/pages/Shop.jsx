@@ -161,7 +161,7 @@ const Shop = () => {
             {products.length === 0 ? (
               <Loader />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ml-[3rem]">
                 {products?.map((p) => (
                   <div key={p._id} className="flex justify-center">
                     <div className="w-full" style={{ maxWidth: "320px" }}>

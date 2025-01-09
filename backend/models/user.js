@@ -1,6 +1,6 @@
-import mongoose  from 'mongoose'
-import bcrypt  from 'bcrypt'
-  const userSchema = new mongoose.Schema({
+import mongoose from 'mongoose'
+import bcrypt from 'bcrypt'
+const userSchema = new mongoose.Schema({
     username: {
         type: String, required: [true, 'Nama harus diisi'],
         trim: true,
@@ -13,7 +13,7 @@ import bcrypt  from 'bcrypt'
         lowercase: true,
         trim: true,
         validate: {
-            validator: function(value) {
+            validator: function (value) {
                 // Regex untuk memeriksa format email yang valid
                 return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
             },
@@ -29,12 +29,17 @@ import bcrypt  from 'bcrypt'
     isAdmin: {
         type: Boolean,
         require: true,
-        default: false, 
-      },
-    }, {timestamps: true})
+        default: false,
+    },
 
-  // Middleware untuk hashing password sebelum menyimpan user
-  userSchema.pre('save', async function (next) {
+    superAdmin: {
+        type: Boolean,
+        default: false
+    }
+}, { timestamps: true })
+
+// Middleware untuk hashing password sebelum menyimpan user
+userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         return next()
     }

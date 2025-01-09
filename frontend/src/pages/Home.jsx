@@ -19,10 +19,10 @@ const Home = () => {
 
   return (
     <>
-    <div className="flex justify-between items-center">
-            <h1 className="ml-[22rem] mt-[0rem] text-[1rem] font-semibold">
-              Our New Releases
-            </h1>
+      <div className="flex justify-between items-center">
+        <h1 className="ml-0 mt-4 text-lg sm:ml-[22rem] sm:mt-[0rem] sm:text-[1rem] font-semibold">
+          Our New Releases
+        </h1>
       </div>
       {!keyword ? <Header /> : null}
       {isLoading ? (
@@ -33,14 +33,14 @@ const Home = () => {
         </Message>
       ) : (
         <>
-          <div className="flex justify-between items-center">
-            <h1 className="ml-[18rem] mt-[7rem] text-[3rem]">
+          <div className="flex flex-col items-center mt-16 sm:flex-row sm:justify-between sm:mt-[7rem]">
+            <h1 className="ml-[18rem] mt-[1rem] text-[3rem]">
               Special Products
             </h1>
 
             <Link
               to="/shop"
-              className="bg-orange-600 font-bold rounded-full py-2 px-8 mr-[20rem] mt-[7rem]"
+              className="bg-orange-600 font-bold rounded-full py-2 px-8 mt-4 sm:mt-8 sm:mr-[20rem]"
             >
               Shop
             </Link>

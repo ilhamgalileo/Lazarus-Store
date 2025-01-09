@@ -63,7 +63,7 @@ const Order = () => {
                     <tr key={index}>
                       <td className="p-2 flex justify-center items-center">
                         <img
-                          src={item?.images[0] || item?.image}
+                          src={item?.image || item?.images[0]}
                           alt={item.name}
                           className="w-20 h-20 object-cover"
                         />

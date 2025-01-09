@@ -179,6 +179,10 @@ const Navigation = () => {
                     Orders
                   </Link>
                 </li>
+              </>
+            )}
+            {userInfo.user.superAdmin && (
+              <>
                 <li>
                   <Link
                     to="/admin/userlist"
@@ -189,7 +193,6 @@ const Navigation = () => {
                 </li>
               </>
             )}
-
             <li>
               <Link to="/profile" className="block px-4 py-2 hover:bg-gray-700">
                 Profile
@@ -205,6 +208,7 @@ const Navigation = () => {
             </li>
           </ul>
         )}
+
         {!userInfo && (
           <ul>
             <li>
