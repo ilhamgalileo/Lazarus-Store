@@ -60,6 +60,7 @@ const Navigation = () => {
       id="navigation-container"
     >
       <div className="flex flex-col justify-center space-y-4">
+        
         <Link
           to="/"
           className="flex relative">
@@ -214,19 +215,21 @@ const Navigation = () => {
             <li>
               <Link
                 to="/login"
-                className="flex items-center mt-5 transition-transform transform hover:translate-x-2"
-              >
-                <AiOutlineLogin className="mr-2 mt-[4px]" size={26} />
-                <span className="hidden nav-item-name">LOGIN</span>
+                className="flex relative">
+                <div className="flex items-center mt-5 transition-transform transform hover:translate-x-2">
+                  <AiOutlineLogin className="mr-2 mt-[4px]" size={26} />
+                  <span className="hidden nav-item-name">LOGIN</span>
+                </div>
               </Link>
             </li>
             <li>
               <Link
                 to="/register"
-                className="flex items-center mt-5 transition-transform transform hover:translate-x-2"
-              >
-                <AiOutlineUserAdd size={26} />
-                <span className="hidden nav-item-name">REGISTER</span>
+                className="flex relative">
+               <div className="flex items-center mt-5 transition-transform transform hover:translate-x-2">
+                  <AiOutlineUserAdd size={26} />
+                  <span className="hidden nav-item-name">REGISTER</span>
+                </div>
               </Link>
             </li>
           </ul>

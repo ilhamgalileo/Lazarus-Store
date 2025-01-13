@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema({
         trim: true,
         validate: {
             validator: function (value) {
-                // Regex untuk memeriksa format email yang valid
                 return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
             },
             message: props => `${props.value} bukan format email yang valid`
@@ -24,7 +23,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Password harus diisi'],
         minlength: [6, 'Password harus memiliki setidaknya 6 karakter'],
-        select: false // Menghindari password terpilih secara default
+        select: false 
     },
     isAdmin: {
         type: Boolean,
@@ -38,7 +37,6 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true })
 
-// Middleware untuk hashing password sebelum menyimpan user
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         return next()

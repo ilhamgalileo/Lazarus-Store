@@ -99,99 +99,59 @@ const PlaceOrder = () => {
     }
 
     return (
-        <>
-            <ProgressSteps step1 step2 step3 />
-            <div className="container mx-auto mt-8">
-                {cart.cartItems.length === 0 ? (
-                    <Message>Your cart id empty</Message>
-                ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full border-collapse">
-                            <thead>
-                                <tr>
-                                    <td className="px-1 py-2 text-left align-top">Image</td>
-                                    <td className="px-1 py-2 text-left">Product</td>
-                                    <td className="px-1 py-2 text-left">Quantity</td>
-                                    <td className="px-1 py-2 text-left">Price</td>
-                                    <td className="px-1 py-2 text-left">Total</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {cart.cartItems.map((item, index) => (
-                                    <tr key={index}>
-                                        <td className="p-2">
-                                            <img
-                                                src={item.image}
-                                                alt={item.name}
-                                                className="w-16 h-16 object-cover"
-                                            />
-                                        </td>
-                                        <td className="p-2">
-                                            <Link to={`/product/${item.product}`}>{item.name}</Link>
-                                        </td>
-                                        <td className="p-2">{item.qty}</td>
-                                        <td className="p-2">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(item.price)}</td>
-                                        <td className="p-2">
-                                            RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(item.qty * item.price)}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-                <div className="mt-8">
-                    <h2 className="text-2xl font-semibold mb-5">Order Summary</h2>
-                    <div className="flex justify-between flex-wrap p-8 bg-[#181818] text-sm">
-                        <ul className="text-lg">
-                            <li>
-                                <span className="font-semibold mb-4 text-lg ">items: {" "}</span>
-                                RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(itemsPrice)}
-                            </li>
-                            <li>
-                                <span className="font-semibold mb-4">Shipping: {" "}</span>
-                                RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(shippingPrice)}
-                            </li>
-                            <li>
-                                <span className="font-semibold mb-4 text-lg">Tax: {" "}</span>
-                                RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(taxPrice)}
-                            </li>
-                            <li>
-                                <span className="font-semibold mb-4 text-lg">Total: {" "}</span>
-                                RP.{isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(totalPrice)}
-                            </li>
-                        </ul>
-
-                        {error && <Message variant='danger'>{error.data.message}</Message>}
-
-                        <div>
-                            <h2 className="text-2xl font-semibold mb-4">Shipping</h2>
-                            <p>
-                                <strong>Address:</strong> {cart.shippingAddress.address},
-                                {cart.shippingAddress.city}{" "}
-                                {cart.shippingAddress.postalCode}, {" "}
-                                {cart.shippingAddress.country}
-                            </p>
-                        </div>
-                        <div>
-                            <h2 className="text-2xl font-semibold mb-4">Payment Method</h2>
-                            <strong>Method:</strong> {cart.paymentMethod}
-                        </div>
-                    </div>
-
-                    <button
-                        type="button"
-                        className="bg-orange-500 text-white py-2 px-4 rounded-full text-lg w-full mt-4"
-                        disabled={cart.cartItems === 0}
-                        onClick={placeOrderHandler}
-                    >
-                        Place Order
-                    </button>
-                    {isLoading && <Loader />}
-                </div>
+      <>
+        <ProgressSteps step1 step2 step3 />
+        <div className="container mx-auto mt-8">
+          {cart.cartItems.length === 0 ? (
+            <Message>Your cart is empty</Message>
+          ) : (
+            <div className="overflow-x-auto ml-[7rem]">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left">
+                  <th className="py-2 px-3">Image</th>
+                    <th className="py-2 px-3">Product</th>
+                    <th className="py-2 px-3">Qty</th>
+                    <th className="py-2 px-3">Price</th>
+                    <th className="py-2 px-3">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cart.cartItems.map((item) => (
+                    <tr key={item.product}>
+                      <td><img src={item.image || item.images[0]} alt={item.name} className="w-16 h-16 object-cover" /></td>
+                      <td><Link to={`/product/${item.product}`}>{item.name}</Link></td>
+                      <td>{item.qty}</td>
+                      <td>Rp. {item.price.toLocaleString()}</td>
+                      <td>Rp. {(item.qty * item.price).toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-        </>
-    )
+          )}
+  
+          <div className="mt-8 ml-[7rem]">
+            <h2 className="text-xl font-semibold">Order Summary</h2>
+            <ul>
+              <li>Items: Rp. {itemsPrice.toLocaleString()}</li>
+              <li>Shipping: Rp. {shippingPrice.toLocaleString()}</li>
+              <li>Tax: Rp. {taxPrice.toLocaleString()}</li>
+              <li>Total: Rp. {totalPrice.toLocaleString()}</li>
+            </ul>
+          </div>
+          <button
+              className="bg-orange-500 text-white py-2 px-4 rounded w-[70rem] mt-4 ml-[10rem]"
+              onClick={placeOrderHandler}
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader /> : "Place Order"}
+            </button>
+  
+            {error && <Message variant="danger">{error.data.message}</Message>}
+        </div>
+      </>
+    );
 }
 
 export default PlaceOrder

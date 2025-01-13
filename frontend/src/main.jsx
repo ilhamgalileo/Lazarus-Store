@@ -22,7 +22,6 @@ import Cart from './pages/Cart.jsx'
 import Shop from './pages/Shop.jsx'
 import Shipping from './pages/orders/Shipping.jsx'
 import PlaceOrder from './pages/orders/PlaceOrder.jsx'
-import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 import Order from './pages/orders/Order.jsx'
 import UserOrder from './pages/user/UserOrder.jsx'
 import OrderList from './pages/admin/OrderList.jsx'
@@ -63,6 +62,6 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   < Provider store={store}>
-      <RouterProvider router={router} />
+    <RouterProvider router={router} />
   </Provider>
 )

@@ -29,14 +29,14 @@ const Register = () => {
         }
     }, [navigate, redirect, userInfo])
 
-    const submitHandlder = async (e) =>{
+    const submitHandler = async (e) => {
         e.preventDefault()
 
         if (password !== confirmPassword) {
             toast.error('password do not match')
-        }else{
+        } else {
             try {
-                const res = await register({username, email, password}).unwrap()
+                const res = await register({ username, email, password }).unwrap()
                 console.log(res)
                 disptach(setCredientials({ ...res }))
                 navigate(redirect)
@@ -48,94 +48,105 @@ const Register = () => {
     }
 
     return (
-        <section className="pl-[10rem] flex flex-wrap">
-            <div className="mr-[4rem] mt-[5rem]">
-                <h1 className="text-2xl font-semibold mb-4"> Register</h1>
+        <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+            <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-xl p-8">
+                <div className="mb-6">
+                    <h1 className="text-2xl font-semibold text-center text-white">Register</h1>
+                </div>
 
-                <form onSubmit={submitHandlder} 
-                className="container w-[40rem]">
-                    <div className="my-[2rem]">
-                        <label htmlFor="name" className="block text-sm font-medium text-white"
+                <form onSubmit={submitHandler} className="space-y-6">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            id="name"
+                            className="peer w-full rounded border-gray-600 bg-gray-700 text-white p-2 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-orange-600"
+                            placeholder="Enter Name"
+                            value={username}
+                            onChange={(e) => setUserName(e.target.value)}
+                        />
+                        <label
+                            htmlFor="name"
+                            className="absolute left-2 top-[-1px] text-xs text-gray-400 transform transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-[-1px] peer-focus:text-xs peer-focus:text-orange-600"
                         >
                             Name
                         </label>
-                        <input type="text"
-                            id="name"
-                            className="mt-1 p-2 border rounded w-full"
-                            placeholder="Enter Name"
-                            value={username}
-                            onChange={(e) => setUserName(e.target.value)
-                            } />
                     </div>
 
-                    <div className="my-[2rem]">
+                    <div className="relative">
+                        <input
+                            type="email"
+                            id="email"
+                            className="peer w-full rounded border-gray-600 bg-gray-700 text-white p-2 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-orange-600"
+                            placeholder="Enter Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
                         <label
                             htmlFor="email"
-                            className="block text-sm font-medium text-white"
+                            className="absolute left-2 top-[-1px] text-xs text-gray-400 transform transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-[-1px] peer-focus:text-xs peer-focus:text-orange-600"
                         >
                             Email
                         </label>
-                        <input type="email"
-                            id="email"
-                            className="mt-1 p-2 border rounded w-full"
-                            placeholder="Enter Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)
-                            } />
                     </div>
 
-                    <div className="my-[2rem]">
-                        <label htmlFor="password"
-                            className="block text-sm font-medium text-white"
+                    <div className="relative">
+                        <input
+                            type="password"
+                            id="password"
+                            className="peer w-full rounded border-gray-600 bg-gray-700 text-white p-2 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-orange-600"
+                            placeholder="Enter Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <label
+                            htmlFor="password"
+                            className="absolute left-2 top-[-1px] text-xs text-gray-400 transform transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-[-1px] peer-focus:text-xs peer-focus:text-orange-600"
                         >
                             Password
                         </label>
-                        <input type="password"
-                            id="password"
-                            className="mt-1 p-2 border rounded w-full"
-                            placeholder="Enter Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)
-                            } />
                     </div>
 
-                    <div className="my-[2rem]">
-                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-white"
+                    <div className="relative">
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            className="peer w-full rounded border-gray-600 bg-gray-700 text-white p-2 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-orange-600"
+                            placeholder="Confirm Password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                        <label
+                            htmlFor="confirmPassword"
+                            className="absolute left-2 top-[-1px] text-xs text-gray-400 transform transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-[-1px] peer-focus:text-xs peer-focus:text-orange-600"
                         >
                             Confirm Password
                         </label>
-                        <input type="password"
-                            id="confirmPassword"
-                            className="mt-1 p-2 border rounded w-full"
-                            placeholder="Confirm Password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)
-                            } />
                     </div>
-                    <button disabled={isLoading} 
-                    type="submit"
-                    className="bg-orange-600 text-white px-4 py-2 rounded cursor-pointer my-[1rem]"
+
+                    <button
+                        disabled={isLoading}
+                        type="submit"
+                        className="w-full bg-orange-600 text-white p-2 rounded hover:bg-orange-700 disabled:opacity-50"
                     >
-                    {isLoading ? "Registering..." : "Register"}
+                        {isLoading ? "Registering..." : "Register"}
                     </button>
+
                     {isLoading && <Loader />}
                 </form>
 
-                <div className="mt-4">
+                <div className="mt-4 text-center">
                     <p className="text-white">
-                        Already have an Account? {" "}
-                        <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}
-                        className="text-orange-600 hover:underline"> Login
+                        Already have an Account?{" "}
+                        <Link
+                            to={redirect ? `/login?redirect=${redirect}` : "/login"}
+                            className="text-orange-600 hover:underline"
+                        >
+                            Login
                         </Link>
                     </p>
                 </div>
             </div>
-            <img
-        src="https://images.unsplash.com/photo-1576502200916-3808e07386a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2065&q=80"
-        alt=""
-        className="h-[65rem] w-[50%] xl:block md:hidden sm:hidden rounded-lg"
-      />
-        </section>
+        </div>
     )
 }
 

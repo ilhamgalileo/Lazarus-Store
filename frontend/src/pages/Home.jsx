@@ -34,7 +34,7 @@ const Home = () => {
       ) : (
         <>
           <div className="flex flex-col items-center mt-16 sm:flex-row sm:justify-between sm:mt-[7rem]">
-            <h1 className="ml-[18rem] mt-[1rem] text-[3rem]">
+            <h1 className="ml-[18rem] text-[3rem]">
               Special Products
             </h1>
 

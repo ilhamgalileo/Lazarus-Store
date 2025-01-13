@@ -56,20 +56,20 @@ const ProductCarousel = () => {
                 <img
                   src={images[1] || image}
                   alt={name}
-                  className="w-full rounded-lg object-cover h-[22rem]"
+                  className="w-[50rem] rounded-lg object-cover h-[20rem]"
                 />
 
                 <div className="mt-3 flex justify-between">
-                  <div className="one text-sm">
+                  <div className="one text-xs">
                     <h2 className="text-xl">{name}</h2>
                     <p className="text-orange-500 text-lg font-bold">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(price)}</p> <br /> <br />
-                    <p className="w-[25rem]">
-                      {description?.length > 125 ? description.substring(0, 125) + '...' : description}
-                    </p>
+                    {/* <p className="w-[25rem]">
+                      {description?.length > 100 ? description.substring(0, 125) + '...' : description}
+                    </p> */}
                   </div>
 
                   <div className="flex justify-between w-[20rem]">
-                    <div className="one text-sm">
+                    <div className="one text-xs">
                       <h1 className="flex items-center mb-6">
                         <FaStore className="mr-2 text-white" /> Brand: {brand}
                       </h1>
@@ -83,7 +83,7 @@ const ProductCarousel = () => {
                       </h1>
                     </div>
 
-                    <div className="two text-sm">
+                    <div className="two text-xs">
                       <h1 className="flex items-center mb-6">
                         <FaStar className="mr-2 text-white" /> Ratings:{" "}
                         {Math.round(rating)}

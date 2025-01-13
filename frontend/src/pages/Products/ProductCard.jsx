@@ -30,17 +30,15 @@ const ProductCard = ({ p }) => {
 
       <div className="p-6 space-y-4">
         <div className="space-y-2">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-medium text-lg text-white truncate">
-              {p?.name}
-            </h3>
-            <span className="text-orange-500 font-semibold whitespace-nowrap">
-              {p?.price?.toLocaleString("id-ID", {
-                style: "currency",
-                currency: "IDR",
-              })}
-            </span>
-          </div>
+          <h3 className="font-medium text-sm text-white truncate">
+            {p?.name}
+          </h3>
+          <span className="block text-orange-500 font-semibold whitespace-nowrap">
+            {p?.price?.toLocaleString("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            })}
+          </span>
           <p className="text-sm text-neutral-400 line-clamp-2">
             {p?.description}
           </p>
@@ -62,12 +60,6 @@ const ProductCard = ({ p }) => {
             <FaShoppingCart className="w-4 h-4" />
           </button>
         </div>
-
-        {p?.brand && (
-          <span className="absolute top-4 left-4 px-3 py-1 text-xs font-medium rounded-full bg-black/50 backdrop-blur-sm text-white">
-            {p.brand}
-          </span>
-        )}
       </div>
     </div>
   );
