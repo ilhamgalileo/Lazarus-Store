@@ -76,10 +76,13 @@ const Shop = () => {
 
   return (
     <>
-      <div className="container mx-auto px-5" style={{ maxWidth: "90%" }}>
-        <div className="flex md:flex-row">
-          <div className="bg-[#151515] p-3 mt-2 mb-4 w-64 flex-shrink-0">
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
+      <div className="container mx-auto px-5 text-sm" style={{ maxWidth: "90%" }}>
+        <div className="flex md:flex-row">  
+          <div
+            className="bg-[#151515] p-3 mt-2 mb-4 w-64 flex-shrink-0 top-0"
+            style={{ position:"fixed", height: "100vh", overflowY: "auto", top:"0" }}
+          >
+            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2 text-white">
               Filter by categories
             </h2>
 
@@ -161,7 +164,7 @@ const Shop = () => {
             {products.length === 0 ? (
               <Loader />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ml-[3rem]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ml-[20rem]">
                 {products?.map((p) => (
                   <div key={p._id} className="flex justify-center">
                     <div className="w-full" style={{ maxWidth: "320px" }}>

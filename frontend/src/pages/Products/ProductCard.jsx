@@ -20,7 +20,7 @@ const ProductCard = ({ p }) => {
         <Link to={`/product/${p._id}`}>
           <img
             className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
-            src={isHovered && p?.images?.[1] ? p.images[1] : p?.images?.[0] || p.image}
+            src={isHovered && p?.images?.[1] ? p.images[1] : p?.images?.[0]}
             alt={p.name}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

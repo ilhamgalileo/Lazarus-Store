@@ -8,7 +8,7 @@ const Product = ({ product }) => {
                 <section>
                     <Link to={`/product/${product._id}`}>
                         <img
-                            src={ product.image||product?.images[0]}
+                            src={product?.images[0]}
                             alt={product.name}
                             className="w-full h-[15rem] object-cover rounded cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out"
                         />

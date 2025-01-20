@@ -77,7 +77,7 @@ const Login = () => {
                           />
                           <label
                               htmlFor="password"
-                              className="absolute left-2 top-[-1px] text-sm text-gray-400 transform transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-[-1  px] peer-focus:text-sm peer-focus:text-orange-600"
+                              className="absolute left-2 top-[-1px] text-xs text-gray-400 transform transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-[-1px] peer-focus:text-xs peer-focus:text-orange-600"
                           >
                               Password
                           </label>

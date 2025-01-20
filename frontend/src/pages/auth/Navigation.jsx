@@ -111,10 +111,10 @@ const Navigation = () => {
       <div className="relative">
         <button
           onClick={toggleDropdown}
-          className="flex items-center text-gray-800 focus:outline-none"
+          className="flex items-center text-gray-800 focus:outline-none mr-[4rem]"
         >
           {userInfo ? (
-            <span className="text-white text-sm ">{userInfo.user.username}</span>
+            <span className="text-white text-sm">{userInfo.user.username}</span>
           ) : (
             <></>
           )}
@@ -140,8 +140,8 @@ const Navigation = () => {
 
         {dropdownOpen && userInfo && (
           <ul
-            className={`absolute right-0 mt-2 mr-14 space-y-2 bg-gray-600 text-white
-                    ${!userInfo.user.isAdmin ? "-top-20" : "-top-80"}
+            className={`absolute right-0 mt-2 space-y-1 ml-20 bg-gray-600 text-white
+                    ${!userInfo.user.isAdmin ? " absolute right-20 -top-20" : "-top-80"}
                     ${dropdownOpen ? 'clip-path: inset(0% 0% 0% 0%)' : 'clip-path: inset(100% 0% 0% 0%)'}
                     `}
             onMouseLeave={() => setDropdownOpen(false)}
@@ -202,7 +202,7 @@ const Navigation = () => {
             <li>
               <button
                 onClick={logoutHandler}
-                className="block w-full px-4 py-2 text-left hover:bg-gray-700"
+                className="block px-4 py-2 hover:bg-gray-700"
               >
                 Logout
               </button>

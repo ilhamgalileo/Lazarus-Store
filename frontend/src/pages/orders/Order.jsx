@@ -88,7 +88,7 @@ const Order = () => {
           <h2 className="text-lg font-bold mb-2">Shipping</h2>
 
           <p className="mb-4 mt-4">
-            <strong className="text-orange-500">Order:</strong> {order._id}
+            <strong className="text-orange-500">Order ID:</strong> {order._id}
           </p>
 
           <p className="mb-4 mt-4">

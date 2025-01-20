@@ -30,7 +30,7 @@ const AllProducts = () => {
                                 >
                                     <div className="flex">
                                         <img
-                                            src={product?.image || product?.images?.[0]}
+                                            src={ product?.images?.[0] }
                                             alt={product.name}
                                             className="w-[5rem] h-[5rem] object-cover mr-4"
                                         />

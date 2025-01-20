@@ -71,7 +71,6 @@ export const createOrder = asyncHandler(async (req, res) => {
 
     const createdOrder = await order.save()
     const orderId = createdOrder.id
-    console.log('orderid:', orderId)
 
     const orderDetails = {
         transaction_details: {
@@ -127,11 +126,11 @@ export const createOrder = asyncHandler(async (req, res) => {
         await createdOrder.save()
         console.log('createorder', createdOrder)
 
-        await Promise.all(dbOrderItems.map(item =>
-            Product.findByIdAndUpdate(item.product, {
-                $inc: { countInStock: -item.qty }
-            })
-        ))
+        // await Promise.all(dbOrderItems.map(item =>
+        //     Product.findByIdAndUpdate(item.product, {
+        //         $inc: { countInStock: -item.qty }
+        //     })
+        // ))
 
         res.status(201).json({
             order: createdOrder,
@@ -196,24 +195,42 @@ export const findOrderById = asyncHandler(async (req, res) => {
 })
 
 export const markOrderIsPay = asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id)
 
     if (order) {
-        const { status, updatedAt, id, payment_type } = req.body;
+        const { status, updatedAt, id, payment_type } = req.body
 
         order.isPaid = true
         order.paidAt = Date.now()
-        order.paymentMethod = payment_type
+        order.paymentMethod = payment_type;
         order.paymentResult = {
             status,
             update_time: updatedAt,
             id,
         }
+
+        await Promise.all(order.orderItems.map(async (item) => {
+            const product = await Product.findById(item.product)
+            if (product) {
+                product.countInStock -= item.qty
+
+                if (product.countInStock < 0) {
+                    res.status(400);
+                    throw new Error(`Stock insufficient for product: ${product.name}`)
+                }
+
+                await product.save()
+            } else {
+                res.status(404);
+                throw new Error(`Product not found: ${item.product}`)
+            }
+        }))
+
         const updatedOrder = await order.save()
         res.json(updatedOrder)
     } else {
         res.status(404);
-        throw new Error('Order not found');
+        throw new Error('Order not found')
     }
 })
 

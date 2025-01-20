@@ -8,7 +8,7 @@ const SmallProduct = ({ product }) => {
     <div className="w-full sm:w-[18rem] md:w-[18rem] lg:w-[18rem] max-w-xs mx-auto p-3">
       <Link to={`/product/${product._id}`} className="block relative">
         <img
-          src={(product.images && product.images.length > 0) ? product.images[0] : product.image}
+          src={product.images[0]}
           alt={product.name}
           className="w-[40rem] h-[9rem] object-cover rounded"
         />

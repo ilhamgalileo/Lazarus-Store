@@ -20,7 +20,7 @@ const Home = () => {
   return (
     <>
       <div className="flex justify-between items-center">
-        <h1 className="ml-0 mt-4 text-lg sm:ml-[22rem] sm:mt-[0rem] sm:text-[1rem] font-semibold">
+        <h1 className="ml-[1rem] mt-4 text-lg sm:ml-[22rem] sm:mt-[0rem] sm:text-[1rem] font-semibold">
           Our New Releases
         </h1>
       </div>
@@ -33,14 +33,20 @@ const Home = () => {
         </Message>
       ) : (
         <>
-          <div className="flex flex-col items-center mt-16 sm:flex-row sm:justify-between sm:mt-[7rem]">
-            <h1 className="ml-[18rem] text-[3rem]">
-              Special Products
-            </h1>
-
+          <div
+            className="flex flex-col items-center mt-16 sm:flex-row sm:justify-between sm:mt-[7rem]"
+            style={{
+              position: "sticky",
+              top: 0,
+              zIndex: 10,
+              background: "#0f0f10",
+              padding: "1rem 0", 
+            }}
+          >
+            <h1 className="ml-[18rem] text-[3rem]">Special Products</h1>
             <Link
               to="/shop"
-              className="bg-orange-600 font-bold rounded-full py-2 px-8 mt-4 sm:mt-8 sm:mr-[20rem]"
+              className="bg-orange-600 font-bold rounded-full py-2 px-8 sm:mt-8 sm:mr-[24rem]"
             >
               Shop
             </Link>

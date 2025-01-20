@@ -21,7 +21,7 @@ const OrderList = () => {
           <th className="text-left pl-1">ITEMS</th>
           <th className="text-left pl-1">ID</th>
           <th className="text-left pl-1">USER</th>
-          <th className="text-left pl-1">DATA</th>
+          <th className="text-left pl-1">DATE</th>
           <th className="text-left pl-1">TOTAL</th>
           <th className="text-left pl-1">PAID</th>
           <th className="text-left pl-1">DELIVERED
@@ -32,7 +32,7 @@ const OrderList = () => {
             <tr key={order._id}>
               <td>
                 <img
-                  src={order.orderItems[0].image}
+                  src={order.orderItems[0]?.images[0]}
                   alt=""
                   className="w-[15rem] mb-5"
                 />

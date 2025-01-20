@@ -33,7 +33,7 @@ const UserOrder = () => {
               <tr key={order._id}>
                 <td className="py-2 text-center w-[6rem]">
                   <img
-                    src={order.orderItems[0].image}
+                    src={order.orderItems[0]?.images[0]}
                     alt={order.user}
                     className="w-[15rem] mb-5 ml-[5rem]"
                   />

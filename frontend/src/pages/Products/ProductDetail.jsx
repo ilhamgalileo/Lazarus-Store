@@ -29,7 +29,7 @@ const ProductDetail = () => {
 
     useEffect(() => {
         if (product && !mainImage) {
-            setMainImage(product.images?.[0] || product.image)
+            setMainImage(product.images?.[0])
             setSelectedImage(product.images?.[0])
         }
     }, [product, mainImage])
@@ -75,7 +75,7 @@ const ProductDetail = () => {
                             <img
                                 src={mainImage}
                                 alt={product.name}
-                                className="w-full h-auto max-h-[38rem] rounded-lg object-container"
+                                className="w-full max-w-[40rem] h-auto max-h-[39rem] rounded-lg object-container"
                             />
                             <div className="absolute top-2 right-2">
                                 <HeartIcon product={product} />

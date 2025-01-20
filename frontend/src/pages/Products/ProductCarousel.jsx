@@ -54,7 +54,7 @@ const ProductCarousel = () => {
             }) => (
               <div key={_id}>
                 <img
-                  src={images[1] || image}
+                  src={images[0]}
                   alt={name}
                   className="w-[50rem] rounded-lg object-cover h-[20rem]"
                 />
@@ -63,9 +63,6 @@ const ProductCarousel = () => {
                   <div className="one text-xs">
                     <h2 className="text-xl">{name}</h2>
                     <p className="text-orange-500 text-lg font-bold">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(price)}</p> <br /> <br />
-                    {/* <p className="w-[25rem]">
-                      {description?.length > 100 ? description.substring(0, 125) + '...' : description}
-                    </p> */}
                   </div>
 
                   <div className="flex justify-between w-[20rem]">
