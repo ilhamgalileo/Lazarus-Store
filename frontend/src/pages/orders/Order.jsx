@@ -63,7 +63,7 @@ const Order = () => {
                     <tr key={index}>
                       <td className="p-2 flex justify-center items-center">
                         <img
-                          src={item?.image || item?.images[0]}
+                          src={item?.images[0]}
                           alt={item.name}
                           className="w-20 h-20 object-cover"
                         />
@@ -106,12 +106,18 @@ const Order = () => {
           <p className="mb-4 mt-4">
             <strong className="text-orange-500">Method:</strong> {order.paymentMethod}
           </p>
-
-          {order.isPaid ? (
-            <Message variant="success" className='text-orange-500'>Paid on {moment(order.paidAt).format('DD MMMM YYYY')}</Message>
-          ) : (
-            <Message variant="danger" className='text-orange-500'>Not paid</Message>
-          )}
+          <div
+            className={`p-4 rounded-md text-sm mb-4 ${order.isPaid ? "bg-green-600 text-white" : "bg-red-600 text-white"
+              }`}
+          >
+            {order.isPaid ? (
+              <>
+                Paid on {moment(order.paidAt).format("DD MMMM YYYY")}
+              </>
+            ) : (
+              "Not paid"
+            )}
+          </div>
         </div>
         <h2 className="text-xl font-bold mb-2 mt-[3rem]">Order Summary</h2>
         <div className="flex justify-between mb-2">
@@ -133,7 +139,7 @@ const Order = () => {
           <span>Total</span>
           <span>RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(order.totalPrice)}</span>
         </div>
-        
+
         {loadingDeliver && <Loader />}
         {userInfo && userInfo.user?.isAdmin && order.isPaid && !order.isDelivered && (
           <div>

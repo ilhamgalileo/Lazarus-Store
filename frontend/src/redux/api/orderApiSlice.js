@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-import {  ORDERS_URL, MIDTRANS_URL } from "../constants";
+import { ORDERS_URL, MIDTRANS_URL } from "../constants";
 
 export const orderApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -11,9 +11,23 @@ export const orderApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+        createCashOrder: builder.mutation({
+            query: (cashOrder) => ({
+                url: `${ORDERS_URL}/cash`,
+                method: 'POST',
+                body: cashOrder
+            })
+        }),
+
         getOrderDetails: builder.query({
             query: (id) => ({
                 url: `${ORDERS_URL}/${id}`
+            }),
+        }),
+
+        getCashOrderDetails: builder.query({
+            query: (id) => ({
+                url: `${ORDERS_URL}/cash/${id}`
             }),
         }),
 
@@ -43,9 +57,25 @@ export const orderApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
-        getOrders : builder.query ({
+        getOrders: builder.query({
             query: () => ({
                 url: ORDERS_URL
+            }),
+        }),
+
+        getAllOrders: builder.query({
+            query: () => ({
+                url: `${ORDERS_URL}/all-orders`
+            }),
+            transformResponse: (response) => ({
+                orders: response.orders || [],
+                cashOrders: response.cashOrders || [],
+            }),
+        }),
+
+        getCashOrders: builder.query({
+            query: () => ({
+                url: `${ORDERS_URL}/cash/all`
             }),
         }),
 
@@ -72,14 +102,18 @@ export const orderApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useCreateOrderMutation,
+    useCreateCashOrderMutation,
     useDeliverOrderMutation,
     useGetMyOrdersQuery,
     useGetMidtransTokenMutation,
     useGetOrderDetailsQuery,
+    useGetCashOrderDetailsQuery,
+    useGetCashOrdersQuery,
     useGetOrdersSalesByDateQuery,
     useGetTotalOrderQuery,
     useGetTotalSalesQuery,
     useGetTotalSalesByDateQuery,
     usePayOrderMutation,
-    useGetOrdersQuery
+    useGetOrdersQuery,
+    useGetAllOrdersQuery,
 } = orderApiSlice

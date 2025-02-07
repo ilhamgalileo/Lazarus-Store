@@ -1,85 +1,51 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ProgressSteps from "../../components/ProgressSteps";
+import { toast } from "react-toastify";
 import { saveShippingAddress, savePaymentMethod } from "../../redux/features/cart/cartSlice";
 
-const InputField = ({ label, value, onChange, placeholder }) => (
-  <div className="mb-4">
-    <label className="block text-white mb-2">{label}</label>
-    <input
-      type="text"
-      className="w-full p-2 border rounded"
-      placeholder={placeholder}
-      value={value}
-      required
-      onChange={onChange}
-    />
-  </div>
-)
-
 const Shipping = () => {
-  const cart = useSelector((state) => state.cart)
   const { userInfo } = useSelector((state) => state.auth)
-  const { shippingAddress } = cart
+  const [paymentMethod, setPaymentMethod] = useState(
+    userInfo?.user?.isAdmin ? "" : "qris/bank"
+  );
+  const [qrisBankDetails, setQrisBankDetails] = useState({
+    address: "",
+    city: "",
+    postalCode: "",
+    country: "",
+  });
 
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [address, setAddress] = useState(shippingAddress.address || "");
-  const [city, setCity] = useState(shippingAddress.city || "")
-  const [postalCode, setPostalCode] = useState(shippingAddress.postalCode || "")
-  const [country, setCountry] = useState(shippingAddress.country || "")
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const handleQrisBankChange = (e) => {
+    const { name, value } = e.target;
+    setQrisBankDetails({ ...qrisBankDetails, [name]: value });
+  };
 
-  const isContinueDisabled = !paymentMethod || !address || !city || !postalCode || !country;
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    dispatch(saveShippingAddress({ address, city, postalCode, country }));
-    dispatch(savePaymentMethod(paymentMethod));
-    navigate("/placeorder");
-  }
-
-  useEffect(() => {
-    if (!shippingAddress.address) {
-      navigate("/shipping");
+  const handleContinue = () => {
+    if (paymentMethod === "qris/bank") {
+      dispatch(saveShippingAddress(qrisBankDetails));
+      dispatch(savePaymentMethod(paymentMethod));
+      navigate("/placeorder")
+    } else if (paymentMethod === "cash") {
+      navigate("/placeorder/cash")
+    } else {
+      alert("Please select a payment method.")
     }
-  }, [navigate, shippingAddress]);
+  }
 
   return (
     <div className="container mx-auto">
       <ProgressSteps step1 step2 />
       <div className="mt-[2rem] flex justify-around items-center flex-wrap">
-        <form onSubmit={submitHandler} className="w-[40rem]">
+        <form className="w-[40rem]">
           <h1 className="text-2xl font-semibold mb-4">Shipping</h1>
-          <InputField
-            label="Address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Enter address"
-          />
-          <InputField
-            label="City"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder="Enter city"
-          />
-          <InputField
-            label="Postal Code"
-            value={postalCode}
-            onChange={(e) => setPostalCode(e.target.value)}
-            placeholder="Enter postal code"
-          />
-          <InputField
-            label="Country"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-            placeholder="Enter country"
-          />
 
           <div className="mb-4">
-            <label className="block text-gray-400">Select Method</label>
+            <label className="block text-gray-400">Select Payment Method</label>
             <div className="mt-2">
               <label className="inline-flex items-center">
                 <input
@@ -93,7 +59,7 @@ const Shipping = () => {
                 <span className="ml-2">Qris or Transfer</span>
               </label>
             </div>
-            {userInfo?.user?.isAdmin && (
+            {userInfo.user.isAdmin && (
               <div className="mt-2">
                 <label className="inline-flex items-center">
                   <input
@@ -110,19 +76,77 @@ const Shipping = () => {
             )}
           </div>
 
-          <button
-            className={`py-2 px-4 rounded-full text-lg w-full ${
-              isContinueDisabled ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-orange-500 text-white"
-            }`}
-            type="submit"
-            disabled={isContinueDisabled}
-          >
-            Continue
-          </button>
+          {paymentMethod === "qris/bank" && (
+            <>
+              <InputField
+                label="Address"
+                name="address"
+                value={qrisBankDetails.address}
+                onChange={handleQrisBankChange}
+                placeholder="Enter address"
+              />
+              <InputField
+                label="City"
+                name="city"
+                value={qrisBankDetails.city}
+                onChange={handleQrisBankChange}
+                placeholder="Enter city"
+              />
+              <InputField
+                label="Postal Code"
+                name="postalCode"
+                value={qrisBankDetails.postalCode}
+                onChange={handleQrisBankChange}
+                placeholder="Enter postal code"
+              />
+              <InputField
+                label="Country"
+                name="country"
+                value={qrisBankDetails.country}
+                onChange={handleQrisBankChange}
+                placeholder="Enter country"
+              />
+              <button
+                className="bg-orange-500 text-white py-2 px-4 rounded-lg w-full mt-4"
+                type="button"
+                onClick={handleContinue}
+              >
+                Continue
+              </button>
+            </>
+          )}
+
+          {paymentMethod === "cash" && (
+            <div className="text-center mt-4">
+              <p className="text-gray-400">You will be redirected to the cash order page.</p>
+              <button
+                className="bg-green-700 text-white py-2 px-4 rounded-lg w-full mt-4"
+                type="button"
+                onClick={handleContinue}
+              >
+                Continue
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>
   )
 }
+
+const InputField = ({ label, name, value, onChange, placeholder, type = "text" }) => (
+  <div className="mb-4">
+    <label className="block text-white mb-2">{label}</label>
+    <input
+      type={type}
+      name={name}
+      className="w-full p-2 border rounded"
+      placeholder={placeholder}
+      value={value}
+      required
+      onChange={onChange}
+    />
+  </div>
+)
 
 export default Shipping

@@ -11,6 +11,7 @@ import category from "./routes/category.js";
 import product from "./routes/product.js";
 import upload from "./routes/upload.js";
 import order from "./routes/order.js";
+import cashOrder from "./routes/cashOrder.js"
 
 dotenv.config()
 const port = process.env.PORT || 5000
@@ -28,6 +29,7 @@ app.use("/api/category", category)
 app.use("/api/products", product)
 app.use("/api/uploads", upload)
 app.use("/api/orders", order)
+app.use("/api/orders/cash", cashOrder)
 
 const __dirname = path.resolve()
 app.use("/uploads", express.static(path.join(__dirname + "/uploads")))

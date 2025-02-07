@@ -25,7 +25,9 @@ import PlaceOrder from './pages/orders/PlaceOrder.jsx'
 import Order from './pages/orders/Order.jsx'
 import UserOrder from './pages/user/UserOrder.jsx'
 import OrderList from './pages/admin/OrderList.jsx'
+import CashOrder from './pages/orders/cashOrder.jsx'
 import AdminDashboard from './pages/admin/AdminDashboard.jsx'
+import PlaceOrderCash from './pages/orders/placeOrderCash.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,7 +45,9 @@ const router = createBrowserRouter(
         <Route path='/profile' element={<Profile />} />
         <Route path='/shipping' element={<Shipping />} />
         <Route path='/placeorder' element={<PlaceOrder />} />
+        <Route path='/placeorder/cash' element={<PlaceOrderCash />} />
         <Route path='/order/:id' element={<Order />} />
+        <Route path='/order/:id/cash' element={<CashOrder />} />
       </Route>
 
       {/* admin */}

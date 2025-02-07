@@ -2,6 +2,7 @@ import Order from '../models/order.js'
 import Product from '../models/product.js'
 import asyncHandler from 'express-async-handler'
 import snap from '../config/midtrans.js';
+import CashOrder from '../models/cashOrder.js';
 
 function calcPrice(orderItems) {
     const itemsPrice = orderItems.reduce(
@@ -124,13 +125,6 @@ export const createOrder = asyncHandler(async (req, res) => {
         createdOrder.paymentToken = response.token
         createdOrder.paymentUrl = response.redirect_url
         await createdOrder.save()
-        console.log('createorder', createdOrder)
-
-        // await Promise.all(dbOrderItems.map(item =>
-        //     Product.findByIdAndUpdate(item.product, {
-        //         $inc: { countInStock: -item.qty }
-        //     })
-        // ))
 
         res.status(201).json({
             order: createdOrder,
@@ -147,6 +141,18 @@ export const getAllOrder = asyncHandler(async (req, res) => {
     res.json(orders)
 })
 
+export const getAllCombinedOrders = asyncHandler(async (req, res) => {
+    const [orders, cashOrders] = await Promise.all([
+      Order.find({}).populate("user", "id username"),
+      CashOrder.find({}).populate("items.product", "name price images"),
+    ])
+  
+    res.json({
+      orders,
+      cashOrders,
+    })
+  })  
+
 export const getMyOrder = asyncHandler(async (req, res) => {
     const id = req.user._id
     const myOder = await Order.find({ user: id })
@@ -154,13 +160,21 @@ export const getMyOrder = asyncHandler(async (req, res) => {
 })
 
 export const countTotalOrders = asyncHandler(async (req, res) => {
-    const totalOrders = await Order.countDocuments()
-    res.json({ totalOrders })
+    const [totalTransferOrders, totalCashOrders] = await Promise.all([
+        Order.countDocuments(),
+        CashOrder.countDocuments()
+    ]);
+
+    const totalCombinedOrders = totalTransferOrders + totalCashOrders;
+
+    res.json({ totalOrders: totalCombinedOrders })
 })
 
 export const calcTotalSales = asyncHandler(async (req, res) => {
     const orders = await Order.find()
-    const totalSales = orders.reduce((sum, order) => sum + order.totalPrice, 0)
+    const cashOrders = await CashOrder.find()
+    const totalSales = orders.reduce((sum, order) => sum + order.totalPrice, 0) +
+        cashOrders.reduce((sum, cashOrder) => sum + cashOrder.totalAmount, 0);
     res.json({ totalSales })
 })
 
@@ -202,7 +216,7 @@ export const markOrderIsPay = asyncHandler(async (req, res) => {
 
         order.isPaid = true
         order.paidAt = Date.now()
-        order.paymentMethod = payment_type;
+        order.paymentMethod = payment_type
         order.paymentResult = {
             status,
             update_time: updatedAt,

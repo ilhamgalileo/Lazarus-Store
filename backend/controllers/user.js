@@ -94,8 +94,8 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 
 export const getUserCount = asyncHandler(async (req, res) => {
     const userCount = await User.countDocuments({
-        isAdmin: false,
-        superAdmin: false,
+        isAdmin: null,
+        // superAdmin: false,
     })
     res.status(200).json({
         userCount,
