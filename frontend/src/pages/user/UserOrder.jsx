@@ -76,7 +76,7 @@ const UserOrder = () => {
                 </td>
                 <td className="py-2 text-center w-[6rem]">
                   <Link to={`/order/${order._id}`}>
-                    <button className="bg-orange-400 text-black py-2 px-3 rounded">
+                    <button className="bg-orange-600 text-white py-2 px-3 rounded">
                       View Details
                     </button>
                   </Link>

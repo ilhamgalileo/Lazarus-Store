@@ -60,13 +60,13 @@ const Order = () => {
             <h3 className="text-lg font-semibold mb-3">Order Information</h3>
             <p className="mb-1"><strong>Order ID:</strong> {order._id}</p>
             <p className="mb-1"><strong>Date:</strong> {moment(order.createdAt).format("DD MMMM YYYY")}</p>
-            <p className="mb-1"><strong>Payment Status:</strong> {order.isPaid ? 
-              <span className="text-green-300">Paid on {moment(order.paidAt).format("DD MMMM YYYY")}</span> : 
+            <p className="mb-1"><strong>Payment Status:</strong> {order.isPaid ?
+              <span className="text-green-300">Paid on {moment(order.paidAt).format("DD MMMM YYYY")}</span> :
               <span className="text-red-600">Not Paid</span>
             }</p>
             <p className="mb-1"><strong>Method:</strong> {order.paymentMethod}</p>
           </div>
-          
+
           <div>
             <h3 className="text-lg font-semibold mb-2">Customer Details</h3>
             <p className="mb-1"><strong>Name:</strong> {order.user.username}</p>
@@ -111,7 +111,7 @@ const Order = () => {
           </table>
         </div>
 
-        <div className="mt-6 flex justify">
+        <div className="mt-[3rem] flex justify text font-medium">
           <div className="w-64">
             <div className="flex justify-between mb-2">
               <span>Items Subtotal:</span>
