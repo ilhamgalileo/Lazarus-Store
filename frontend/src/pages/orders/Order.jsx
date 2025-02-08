@@ -59,14 +59,14 @@ const Order = () => {
   ) : error ? (
     <Message variant="danger">{error.data.message}</Message>
   ) : (
-    <div className="container mx-auto max-w-[90%] mr-[3rem]">
+    <div className="container mx-auto max-w-[87%] mr-[2rem] ml-[9rem] mt-[1rem]">
       <div className="flex justify-end mb-4">
         <button onClick={handleDownloadPDF} className="bg-blue-500 text-white px-4 py-2 rounded">
           Download Invoice
         </button>
       </div>
 
-      <div ref={invoiceRef} className="bg-gray-700 p-5 mt-5 shadow-lg">
+      <div ref={invoiceRef} className="bg-gray-700 p-2 mt-2 shadow-lg">
         <h2 className="text-2xl font-medium mb-[5rem] text-center">INVOICE</h2>
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
@@ -157,7 +157,7 @@ const Order = () => {
             </button>
           </div>
         )}
-        {userInfo && order.isPaid && (
+        {userInfo.isAdmin && order.isPaid && (
           <div className="mt-6">
             <button
               type="button"

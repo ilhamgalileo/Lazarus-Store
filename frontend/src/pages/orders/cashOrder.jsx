@@ -104,7 +104,7 @@ const CashOrder = () => {
           <p><strong>Change:</strong> RP. {new Intl.NumberFormat('id-ID').format(cashOrder.change)}</p>
         </div>
       </div>
-      {userInfo && cashOrder.isPaid && (
+      {userInfo.isAdmin && cashOrder.isPaid && (
         <div className="mt-6">
           <button
             type="button"
