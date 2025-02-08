@@ -178,24 +178,51 @@ export const calcTotalSales = asyncHandler(async (req, res) => {
     res.json({ totalSales })
 })
 
-export const calcTotalSalesByDate = asyncHandler(async (req, res) => {
-    const salesByDate = await Order.aggregate([
-        {
-            $match: {
-                isPaid: true,
-            },
-        },
-        {
-            $group: {
-                _id: {
-                    $dateToString: { format: "%Y-%m-%d", date: "$paidAt" },
+export const calcTotalSalesByDate = asyncHandler(async (_req, res) => {
+    const [salesByDateOrder, salesByDateCashOrder] = await Promise.all([
+        Order.aggregate([
+            {
+                $match: {
+                    isPaid: true,
                 },
-                totalSales: { $sum: "$totalPrice" },
             },
-        },
-    ])
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$paidAt" },
+                    },
+                    totalSales: { $sum: "$totalPrice" },
+                },
+            },
+        ]),
+        CashOrder.aggregate([
+            {
+                $match: {
+                    isPaid: true,
+                },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+                    },
+                    totalSales: { $sum: "$totalAmount" },
+                },
+            },
+        ]),
+    ]);
 
-    res.json(salesByDate)
+    const mergedSales = [...salesByDateOrder, ...salesByDateCashOrder].reduce((acc, sale) => {
+        const existing = acc.find(item => item._id === sale._id);
+        if (existing) {
+            existing.totalSales += sale.totalSales;
+        } else {
+            acc.push(sale)
+        }
+        return acc
+    }, [])
+
+    res.json(mergedSales)
 })
 
 export const findOrderById = asyncHandler(async (req, res) => {

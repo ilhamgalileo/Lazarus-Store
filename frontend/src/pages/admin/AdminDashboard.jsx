@@ -11,22 +11,18 @@ import {
 import OrderList from "./OrderList";
 import AdminMenu from "./AdminMenu";
 import Loader from "../../components/loader";
-import { FaUser, FaMoneyBill, FaShoppingBag, FaChartLine, FaCalendar, FaPercent } from "react-icons/fa";
+import { FaUser, FaMoneyBill, FaShoppingBag, FaChartLine, FaCalendar } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 
 const StatBox = ({ title, value, icon, loading, percentageChange }) => (
   <div className="rounded-lg bg-black shadow-lg p-6 w-full">
     <div className="flex items-center justify-between">
-      <div className="font-bold rounded-full w-12 h-12 bg-gray-700 flex items-center justify-center text-orange-500">
+      <div className="font-bold rounded-full w-12 h-12 bg-orange-500 flex items-center justify-center text-gray-800">
         {icon}
       </div>
-      {percentageChange && (
-        <div className={`text-sm font-semibold ${percentageChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-          {percentageChange >= 0 ? '↑' : '↓'} {Math.abs(percentageChange)}%
-        </div>
-      )}
     </div>
     <div className="mt-4">
-      <p className="text-white text-sm font-medium">{title}</p> 
+      <p className="text-white text-sm font-medium">{title}</p>
       <h1 className="text-2xl font-bold text-white mt-1">
         {loading ? <Loader /> : value}
       </h1>
@@ -58,7 +54,7 @@ const AdminDashboard = () => {
         curve: "smooth",
         width: 2
       },
-      colors: ["blue"],
+      colors: ["orange"],
       fill: {
         type: "gradient",
         gradient: {
@@ -217,7 +213,15 @@ const AdminDashboard = () => {
           </div>
 
           <div className="bg-black rounded-lg shadow-lg p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Recent Orders</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-white">Recent Orders</h2>
+              <Link
+                to="/admin/orderlist"
+                className="text-orange-500 hover:text-orange-400 text-sm font-semibold"
+              >
+                View All Orders
+              </Link>
+            </div>
             <OrderList limit={5} />
           </div>
         </div>

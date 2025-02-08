@@ -41,8 +41,8 @@ const OrderList = () => {
                     <th className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold">Total Items</th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold">ID</th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold">User</th>
-                    <th className="px-3 py-3.5 text-left text-sm font-semibold">Date</th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold">Total</th>
+                    <th className="px-3 py-3.5 text-left text-sm font-semibold">Date</th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold">Payment</th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold">Delivery</th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold">Actions</th>
@@ -61,10 +61,10 @@ const OrderList = () => {
                         {order.user ? order.user.username : "N/A"}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                        {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
+                        Rp {new Intl.NumberFormat('id-ID').format(order.totalPrice)}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                        Rp {new Intl.NumberFormat('id-ID').format(order.totalPrice)}
+                        {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm">
                         <StatusBadge
@@ -98,10 +98,10 @@ const OrderList = () => {
                         {order.customerName}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                        {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
+                        Rp {new Intl.NumberFormat('id-ID').format(order.totalAmount)}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                        Rp {new Intl.NumberFormat('id-ID').format(order.totalAmount)}
+                        {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm">
                         <StatusBadge
