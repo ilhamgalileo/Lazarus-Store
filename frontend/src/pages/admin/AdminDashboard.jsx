@@ -1,7 +1,6 @@
 import Chart from "react-apexcharts";
 import {
   useGetUserCountQuery,
-  useGetUsersQuery,
 } from "../../redux/api/usersApiSlice";
 import {
   useGetTotalSalesQuery,

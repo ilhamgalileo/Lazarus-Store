@@ -1,151 +1,143 @@
-import { useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import moment from "moment";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import Message from "../../components/Message";
 import Loader from "../../components/loader";
-import {
-  useGetOrderDetailsQuery,
-  useDeliverOrderMutation,
-} from "../../redux/api/orderApiSlice";
+import { useGetOrderDetailsQuery, useDeliverOrderMutation } from "../../redux/api/orderApiSlice";
 
 const Order = () => {
-  const { id: orderId } = useParams()
-  const navigate = useNavigate()
-
-  const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)
-  const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation()
-  const { userInfo } = useSelector((state) => state.auth)
+  const { id: orderId } = useParams();
+  const invoiceRef = useRef();
+  const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId);
+  const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
+  const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    refetch()
-  }, [refetch])
+    refetch();
+  }, [refetch]);
+
+  const handleDownloadPDF = async () => {
+    const input = invoiceRef.current;
+    const canvas = await html2canvas(input, { scale: 1.8, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgWidth = 171;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    pdf.addImage(imgData, "PNG", 20, 20, imgWidth, imgHeight);
+    pdf.save(`invoice-${orderId}.pdf`);
+  };
 
   const deliverHandler = async () => {
     try {
-      await deliverOrder(orderId).unwrap()
-      toast.success('Deliver successful')
-      setTimeout(() => {
-        navigate('/user-orders')
-        window.location.reload()
-      }, 3000);
+      await deliverOrder(orderId).unwrap();
+      toast.success("Deliver successful");
       refetch();
     } catch (error) {
-      toast.error('Failed to mark as delivered');
+      toast.error("Failed to mark as delivered");
     }
-  }
+  };
 
   return isLoading ? (
     <Loader />
   ) : error ? (
     <Message variant="danger">{error.data.message}</Message>
   ) : (
-    <div className="container flex flex-col ml-[5rem] md:flex-row">
-      <div className="md:w-2/3 pr-4">
-        <div className="border-gray-300 mt-5 pb-4 mb-5">
-          {order.orderItems.length === 0 ? (
-            <Message>Order is empty</Message>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-[70%]">
-                <thead className="border-b-2">
-                  <tr>
-                    <th className="p-2">Image</th>
-                    <th className="p-2">Product</th>
-                    <th className="p-2 text-center">Quantity</th>
-                    <th className="p-2">Unit Price</th>
-                    <th className="p-2">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {order.orderItems.map((item, index) => (
-                    <tr key={index}>
-                      <td className="p-2 flex justify-center items-center">
-                        <img
-                          src={item?.images[0]}
-                          alt={item.name}
-                          className="w-20 h-20 object-cover"
-                        />
-                      </td>
-                      <td className="p-2 text-center">
-                        <Link to={`/product/${item.product}`}>{item.name}</Link>
-                      </td>
-                      <td className="p-2 text-center">{item.qty}</td>
-                      <td className="p-2 text-center">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(item.price)}</td>
-                      <td className="p-2 text-center">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+    <div className="container mx-auto max-w-[90%] mr-[3rem]">
+      <div className="flex justify-end mb-4">
+        <button onClick={handleDownloadPDF} className="bg-blue-500 text-white px-4 py-2 rounded">
+          Download Invoice
+        </button>
       </div>
 
-      <div className="md:w-1/3 mr-[10rem] text-sm">
-        <div className="mt-5 border-gray-300 pb-4 mb-4">
-          <h2 className="text-lg font-bold mb-2">Shipping</h2>
-
-          <p className="mb-4 mt-4">
-            <strong className="text-orange-500">Order ID:</strong> {order._id}
-          </p>
-
-          <p className="mb-4 mt-4">
-            <strong className="text-orange-500">Name:</strong> {order.user.username}
-          </p>
-
-          <p className="mb-4 mt-4">
-            <strong className="text-orange-500">Email:</strong> {order.user.email}
-          </p>
-
-          <p className="mb-4">
-            <strong className="text-orange-500">Address:</strong> {order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}
-          </p>
-
-          <p className="mb-4 mt-4">
-            <strong className="text-orange-500">Method:</strong> {order.paymentMethod}
-          </p>
-          <div
-            className={`p-4 rounded-md text-sm mb-4 ${order.isPaid ? "bg-green-600 text-white" : "bg-red-600 text-white"
-              }`}
-          >
-            {order.isPaid ? (
-              <>
-                Paid on {moment(order.paidAt).format("DD MMMM YYYY")}
-              </>
-            ) : (
-              "Not paid"
-            )}
+      <div ref={invoiceRef} className="bg-gray-700 p-5 mt-5 shadow-lg">
+        <h2 className="text-2xl font-medium mb-[5rem] text-center">INVOICE</h2>
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <h3 className="text-lg font-semibold mb-3">Order Information</h3>
+            <p className="mb-1"><strong>Order ID:</strong> {order._id}</p>
+            <p className="mb-1"><strong>Date:</strong> {moment(order.createdAt).format("DD MMMM YYYY")}</p>
+            <p className="mb-1"><strong>Payment Status:</strong> {order.isPaid ? 
+              <span className="text-green-300">Paid on {moment(order.paidAt).format("DD MMMM YYYY")}</span> : 
+              <span className="text-red-600">Not Paid</span>
+            }</p>
+            <p className="mb-1"><strong>Method:</strong> {order.paymentMethod}</p>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Customer Details</h3>
+            <p className="mb-1"><strong>Name:</strong> {order.user.username}</p>
+            <p className="mb-1"><strong>Email:</strong> {order.user.email}</p>
+            <p className="mb-1"><strong>Address:</strong> {order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}</p>
           </div>
         </div>
-        <h2 className="text-xl font-bold mb-2 mt-[3rem]">Order Summary</h2>
-        <div className="flex justify-between mb-2">
-          <span>Items</span>
-          <span>RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</span>
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border">
+            <thead>
+              <tr className="bg-orange-600">
+                <th className="p-2 border">Image</th>
+                <th className="p-2 border">Product</th>
+                <th className="p-2 border">Quantity</th>
+                <th className="p-2 border">Unit Price</th>
+                <th className="p-2 border">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {order.orderItems.map((item, index) => (
+                <tr key={index} className="text-center">
+                  <td className="p-2 border">
+                    <img
+                      src={item?.images[0]}
+                      alt={item.name}
+                      className="w-16 h-16 object-cover mx-auto"
+                      crossOrigin="anonymous"
+                    />
+                  </td>
+                  <td className="p-2 border">
+                    <Link to={`/product/${item.product}`} className="text-yellow-300 hover:text-yellow-500">
+                      {item.name}
+                    </Link>
+                  </td>
+                  <td className="p-2 border">{item.qty}</td>
+                  <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                  <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        <div className="flex justify-between mb-2">
-          <span>Shipping</span>
-          <span>RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(order.shippingPrice)}</span>
-        </div>
-
-        <div className="flex justify-between mb-2">
-          <span>Tax</span>
-          <span>RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(order.taxPrice)}</span>
-        </div>
-
-        <div className="flex justify-between mb-2">
-          <span>Total</span>
-          <span>RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(order.totalPrice)}</span>
+        <div className="mt-6 flex justify">
+          <div className="w-64">
+            <div className="flex justify-between mb-2">
+              <span>Items Subtotal:</span>
+              <span>RP. {new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</span>
+            </div>
+            <div className="flex justify-between mb-2">
+              <span>Shipping:</span>
+              <span>RP. {new Intl.NumberFormat('id-ID').format(order.shippingPrice)}</span>
+            </div>
+            <div className="flex justify-between mb-2">
+              <span>Tax:</span>
+              <span>RP. {new Intl.NumberFormat('id-ID').format(order.taxPrice)}</span>
+            </div>
+            <div className="flex justify-between font-bold mt-2 pt-2 border-t">
+              <span>Total:</span>
+              <span>RP. {new Intl.NumberFormat('id-ID').format(order.totalPrice)}</span>
+            </div>
+          </div>
         </div>
 
         {loadingDeliver && <Loader />}
         {userInfo && userInfo.user?.isAdmin && order.isPaid && !order.isDelivered && (
-          <div>
+          <div className="mt-6">
             <button
               type="button"
-              className="bg-orange-500 text-white w-full py-2"
+              className="bg-orange-500 text-white w-full py-2 rounded"
               onClick={deliverHandler}
             >
               Mark As Delivered
