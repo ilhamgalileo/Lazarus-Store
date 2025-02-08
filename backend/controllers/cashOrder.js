@@ -1,8 +1,6 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import CashOrder from "../models/cashOrder.js";
 import Product from "../models/product.js";
-import Order from '../models/order.js'
-// import { findAllCashOrders } from "./helper/orderHelper.js";
 
 export const createCashOrder = async (req, res) => {
   const {
@@ -117,5 +115,40 @@ export const getCashOrderById = asyncHandler(async (req, res) => {
     res.send(data)
   } else {
     res.status(500).send({ message: 'Order not found with id ' + id })
+  }
+})
+
+export const markOrderAsReturned = asyncHandler(async (req, res) => {
+  const order = await CashOrder.findById(req.params.id);
+
+  if (order) {
+      if (!order.isPaid) {
+          res.status(400)
+          throw new Error('Order has not valid');
+      }
+
+      if (order.isPaid === false) {
+          res.status(400)
+          throw new Error('Order has already been returned');
+      }
+
+      await Promise.all(order.items.map(async (item) => {
+          const product = await Product.findById(item.product);
+          if (product) {
+              product.countInStock += item.quantity
+              await product.save()
+          } else {
+              res.status(404);
+              throw new Error(`Product not found: ${item.product}`);
+          }
+      }))
+
+      order.isPaid = false
+
+      const updatedOrder = await order.save()
+      res.json(updatedOrder)
+  } else {
+      res.status(404);
+      throw new Error('Order not found');
   }
 })

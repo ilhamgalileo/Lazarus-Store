@@ -275,6 +275,43 @@ export const markOrderIsPay = asyncHandler(async (req, res) => {
     }
 })
 
+export const markOrderAsReturned = asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id)
+
+    if (order) {
+        if (!order.isPaid) {
+            res.status(400)
+            throw new Error('Order has not been paid yet')
+        }
+
+        if (order.isReturned) {
+            res.status(400);
+            throw new Error('Order has already been returned')
+        }
+
+        // Kembalikan stok produk
+        await Promise.all(order.orderItems.map(async (item) => {
+            const product = await Product.findById(item.product)
+            if (product) {
+                product.countInStock += item.qty
+                await product.save()
+            } else {
+                res.status(404)
+                throw new Error(`Product not found: ${item.product}`)
+            }
+        }))
+
+        order.isPaid = false
+        order.isDelivered = false
+
+        const updatedOrder = await order.save()
+        res.json(updatedOrder)
+    } else {
+        res.status(404)
+        throw new Error('Order not found')
+    }
+})
+
 export const markOrderIsDeliver = asyncHandler(async (req, res) => {
     const id = req.params.id
 

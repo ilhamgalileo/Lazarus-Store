@@ -44,6 +44,20 @@ export const orderApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+        returnOrder: builder.mutation({
+            query: ( orderId ) => ({
+                url: `${ORDERS_URL}/${orderId}/return`,
+                method: "PUT",
+            }),
+        }),
+
+        returnCashOrder: builder.mutation({
+            query: ( orderId ) => ({
+                url: `${ORDERS_URL}/cash/${orderId}/return`,
+                method: "PUT",
+            }),
+        }),
+
         getMidtransToken: builder.mutation({
             query: (orderId) => ({
                 url: `${MIDTRANS_URL}/${orderId}/token`,
@@ -114,6 +128,8 @@ export const {
     useGetTotalSalesQuery,
     useGetTotalSalesByDateQuery,
     usePayOrderMutation,
+    useReturnOrderMutation,
     useGetOrdersQuery,
     useGetAllOrdersQuery,
+    useReturnCashOrderMutation,
 } = orderApiSlice

@@ -6,5 +6,6 @@ import * as cashOrder from '../controllers/cashOrder.js'
 router.post('/', authenticate, authorizeAdmin, cashOrder.createCashOrder)
 router.get('/all', authenticate, authorizeAdmin, cashOrder.getAllOrderCash)
 router.get('/:id', authenticate, authorizeAdmin, cashOrder.getCashOrderById)
+router.put('/:id/return', authenticate, authorizeAdmin, cashOrder.markOrderAsReturned)
 
 export default router

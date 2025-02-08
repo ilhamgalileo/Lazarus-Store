@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -7,13 +7,14 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Message from "../../components/Message";
 import Loader from "../../components/loader";
-import { useGetOrderDetailsQuery, useDeliverOrderMutation } from "../../redux/api/orderApiSlice";
+import { useGetOrderDetailsQuery, useDeliverOrderMutation, useReturnOrderMutation } from "../../redux/api/orderApiSlice";
 
 const Order = () => {
   const { id: orderId } = useParams();
   const invoiceRef = useRef();
   const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId);
   const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
+  const [returnOrder, { isLoading: loadingReturn }] = useReturnOrderMutation();
   const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -40,6 +41,18 @@ const Order = () => {
       toast.error("Failed to mark as delivered");
     }
   };
+
+  const returnHandler = useCallback(async () => {
+      if (window.confirm("Are you sure you want to return this order?")) {
+        try {
+          await returnOrder(orderId).unwrap();
+          toast.success("Order returned successfully");
+          refetch();
+        } catch {
+          toast.error("Failed to return order");
+        }
+      }
+    }, [returnOrder, orderId, refetch]);
 
   return isLoading ? (
     <Loader />
@@ -141,6 +154,18 @@ const Order = () => {
               onClick={deliverHandler}
             >
               Mark As Delivered
+            </button>
+          </div>
+        )}
+        {userInfo && order.isPaid && (
+          <div className="mt-6">
+            <button
+              type="button"
+              className="bg-red-500 text-white w-full py-2 rounded"
+              onClick={returnHandler} 
+              disabled={loadingReturn}
+            >
+              {loadingReturn ? "Processing..." : "Return Order"}
             </button>
           </div>
         )}

@@ -12,6 +12,7 @@ router.get('/total-sales-by-date', authenticate, order.calcTotalSalesByDate)
 router.get('/all-orders', authenticate, authorizeAdmin, order.getAllCombinedOrders)
 router.get('/:id', authenticate, order.findOrderById)
 router.put('/:id/pay', authenticate, order.markOrderIsPay)
+router.put('/:id/return', authenticate, order.markOrderAsReturned)
 router.put('/:id/deliver', authenticate, authorizeAdmin, order.markOrderIsDeliver)
 
 export default router

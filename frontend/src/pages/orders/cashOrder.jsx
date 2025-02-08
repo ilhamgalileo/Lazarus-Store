@@ -1,29 +1,42 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useGetCashOrderDetailsQuery } from "../../redux/api/orderApiSlice";
+import { useGetCashOrderDetailsQuery, useReturnCashOrderMutation } from "../../redux/api/orderApiSlice";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import moment from "moment";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const CashOrder = () => {
   const { id: orderId } = useParams();
   const { data: cashOrder, refetch, isLoading, error } = useGetCashOrderDetailsQuery(orderId);
+  const { userInfo } = useSelector((state) => state.auth);
+  const [returnOrder, { isLoading: loadingReturn }] = useReturnCashOrderMutation();
   const invoiceRef = useRef();
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    refetch()
+  }, [refetch])
 
-  const handleDownloadPDF = async () => {
-    const input = invoiceRef.current;
-    const canvas = await html2canvas(input, { scale: 1.8, useCORS: true })
-    const imgData = canvas.toDataURL("image/png")
-    const pdf = new jsPDF("p", "mm", "a4")
-    const imgWidth = 171
-    const imgHeight = (canvas.height * imgWidth) / canvas.width
-    pdf.addImage(imgData, "PNG", 20, 20, imgWidth, imgHeight)
-    pdf.save(`invoice-${orderId}.pdf`)
-  };
+  const handleDownloadPDF = useCallback(async () => {
+    if (!invoiceRef.current) return;
+    const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true });
+    const pdf = new jsPDF("p", "mm", "a4");
+    pdf.addImage(canvas.toDataURL("image/png"), "PNG", 20, 20, 171, (canvas.height * 171) / canvas.width);
+    pdf.save(`invoice-${orderId}.pdf`);
+  }, [orderId]);
+
+  const returnHandler = useCallback(async () => {
+    if (window.confirm("Are you sure you want to return this order?")) {
+      try {
+        await returnOrder(orderId).unwrap();
+        toast.success("Order returned successfully");
+        refetch();
+      } catch {
+        toast.error("Failed to return order");
+      }
+    }
+  }, [returnOrder, orderId, refetch]);
 
   return isLoading ? (
     <p>Loading...</p>
@@ -41,6 +54,10 @@ const CashOrder = () => {
         <h2 className="text-2xl font-medium mb-[5rem] text-center">INVOICE</h2>
         <p className="mb-1"><strong>Order ID:</strong> {cashOrder._id}</p>
         <p className="mb-1"><strong>Payment On:</strong>  {moment(cashOrder.createdAt).format("DD MMMM YYYY")}</p>
+        <p className="mb-1"><strong>Payment Status:</strong> {cashOrder.isPaid ?
+                      <span className="text-green-300">Paid on {moment(cashOrder.paidAt).format("DD MMMM YYYY")}</span> :
+                      <span className="text-red-600">Not Paid</span>
+                    }</p>
         <p className="mb-1"><strong>Name:</strong> {cashOrder.customerName}</p>
         <p className="mb-1"><strong>Address:</strong> {cashOrder.address}</p>
         <p className="mb-1"><strong>Method:</strong> {cashOrder.paymentMethod}</p>
@@ -87,6 +104,18 @@ const CashOrder = () => {
           <p><strong>Change:</strong> RP. {new Intl.NumberFormat('id-ID').format(cashOrder.change)}</p>
         </div>
       </div>
+      {userInfo && cashOrder.isPaid && (
+        <div className="mt-6">
+          <button
+            type="button"
+            className="bg-red-500 text-white w-full py-2 rounded"
+            onClick={returnHandler}
+            disabled={loadingReturn}
+          >
+            {loadingReturn ? "Processing..." : "Return Order"}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
