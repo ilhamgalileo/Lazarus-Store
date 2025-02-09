@@ -19,7 +19,6 @@ export const createCashOrder = async (req, res) => {
   }
 
   try {
-    // Validasi items dan hitung total
     const validatedItems = [];
     let calculatedTotal = 0;
 
@@ -32,7 +31,6 @@ export const createCashOrder = async (req, res) => {
         });
       }
 
-      // Verifikasi harga dengan database
       if (product.price !== item.price) {
         return res.status(400).json({
           message: `Invalid price for product: ${product.name}`,

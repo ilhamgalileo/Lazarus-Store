@@ -4,7 +4,7 @@ const cashOrderSchema = mongoose.Schema(
   {
     customerName: { type: String, required: true },
     phone: { type: String, required: true },
-    address: { type: String, required: true },
+    address: { type: String, default: null },
     items: [
       {
         product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
@@ -14,9 +14,7 @@ const cashOrderSchema = mongoose.Schema(
     totalAmount: { type: Number, required: true },
     receivedAmount: { type: Number, required: true },
     change: { type: Number, required: true },
-    isDelivered: { type: Boolean, default: false },
     isPaid: {type: Boolean, default: false},
-    deliveredAt: { type: Date },
     paymentMethod: { type: String, default: 'cash', required: true }
   },
   {
