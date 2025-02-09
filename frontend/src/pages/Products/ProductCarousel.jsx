@@ -10,6 +10,7 @@ import {
   FaShoppingCart,
   FaStar,
   FaStore,
+  FaRegStar 
 } from "react-icons/fa";
 
 const ProductCarousel = () => {
@@ -42,14 +43,12 @@ const ProductCarousel = () => {
               _id,
               name,
               price,
-              description,
               brand,
               createdAt,
               numReviews,
               rating,
               quantity,
               images,
-              image,
               countInStock,
             }) => (
               <div key={_id}>
@@ -75,7 +74,7 @@ const ProductCarousel = () => {
                         {moment(createdAt).fromNow()}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                        <FaStar className="mr-2 text-white" /> Reviews: {" "}
+                        <FaRegStar className="mr-2 text-white" /> Reviews: {" "}
                         {numReviews}
                       </h1>
                     </div>
