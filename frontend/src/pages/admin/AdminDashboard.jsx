@@ -14,7 +14,7 @@ import Loader from "../../components/loader";
 import { FaUser, FaMoneyBill, FaShoppingBag, FaChartLine, FaCalendar } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 
-const StatBox = ({ title, value, icon, loading, percentageChange }) => (
+const StatBox = ({ title, value, icon, loading }) => (
   <div className="rounded-lg bg-black shadow-lg p-6 w-full">
     <div className="flex items-center justify-between">
       <div className="font-bold rounded-full w-12 h-12 bg-orange-500 flex items-center justify-center text-gray-800">
@@ -71,7 +71,7 @@ const AdminDashboard = () => {
         }
       },
       grid: {
-        borderColor: "white",
+        borderColor: "gray",
         strokeDashArray: 4,
         xaxis: {
           lines: {
@@ -83,7 +83,7 @@ const AdminDashboard = () => {
         categories: [],
         labels: {
           style: {
-            colors: "white",
+            colors: "gray",
             fontSize: "12px"
           }
         },

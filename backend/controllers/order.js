@@ -143,15 +143,15 @@ export const getAllOrder = asyncHandler(async (req, res) => {
 
 export const getAllCombinedOrders = asyncHandler(async (req, res) => {
     const [orders, cashOrders] = await Promise.all([
-      Order.find({}).populate("user", "id username"),
-      CashOrder.find({}).populate("items.product", "name price images"),
+        Order.find({}).populate("user", "id username"),
+        CashOrder.find({}).populate("items.product", "name price images"),
     ])
-  
+
     res.json({
-      orders,
-      cashOrders,
+        orders,
+        cashOrders,
     })
-  })  
+})
 
 export const getMyOrder = asyncHandler(async (req, res) => {
     const id = req.user._id
@@ -171,14 +171,18 @@ export const countTotalOrders = asyncHandler(async (req, res) => {
 })
 
 export const calcTotalSales = asyncHandler(async (req, res) => {
-    const orders = await Order.find()
-    const cashOrders = await CashOrder.find()
+    const [orders, cashOrders] = await Promise.all([
+        Order.find({ isPaid: true }),
+        CashOrder.find({ isPaid: true })
+    ])
+
     const totalSales = orders.reduce((sum, order) => sum + order.totalPrice, 0) +
         cashOrders.reduce((sum, cashOrder) => sum + cashOrder.totalAmount, 0);
+
     res.json({ totalSales })
 })
 
-export const calcTotalSalesByDate = asyncHandler(async (_req, res) => {
+export const calcTotalSalesByDate = asyncHandler(async (req, res) => {
     const [salesByDateOrder, salesByDateCashOrder] = await Promise.all([
         Order.aggregate([
             {
