@@ -43,16 +43,16 @@ const Order = () => {
   };
 
   const returnHandler = useCallback(async () => {
-      if (window.confirm("Are you sure you want to return this order?")) {
-        try {
-          await returnOrder(orderId).unwrap();
-          toast.success("Order returned successfully");
-          refetch();
-        } catch {
-          toast.error("Failed to return order");
-        }
+    if (window.confirm("Are you sure you want to return this order?")) {
+      try {
+        await returnOrder(orderId).unwrap();
+        toast.success("Order returned successfully");
+        refetch();
+      } catch {
+        toast.error("Failed to return order");
       }
-    }, [returnOrder, orderId, refetch]);
+    }
+  }, [returnOrder, orderId, refetch]);
 
   return isLoading ? (
     <Loader />
@@ -157,19 +157,19 @@ const Order = () => {
             </button>
           </div>
         )}
-        {userInfo.isAdmin && order.isPaid && (
-          <div className="mt-6">
-            <button
-              type="button"
-              className="bg-red-500 text-white w-full py-2 rounded"
-              onClick={returnHandler} 
-              disabled={loadingReturn}
-            >
-              {loadingReturn ? "Processing..." : "Return Order"}
-            </button>
-          </div>
-        )}
       </div>
+      {userInfo.user.isAdmin && order.isPaid && (
+        <div className="mt-6">
+          <button
+            type="button"
+            className="bg-red-500 text-white w-full py-2 rounded"
+            onClick={returnHandler}
+            disabled={loadingReturn}
+          >
+            {loadingReturn ? "Processing..." : "Return Order"}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

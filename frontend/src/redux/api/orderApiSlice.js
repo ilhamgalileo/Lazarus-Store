@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-import { ORDERS_URL, MIDTRANS_URL } from "../constants";
+import { ORDERS_URL, MIDTRANS_URL, CASH_ORDERS_URL } from "../constants";
 
 export const orderApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -13,7 +13,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
 
         createCashOrder: builder.mutation({
             query: (cashOrder) => ({
-                url: `${ORDERS_URL}/cash`,
+                url: `${CASH_ORDERS_URL}`,
                 method: 'POST',
                 body: cashOrder
             })
@@ -27,7 +27,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
 
         getCashOrderDetails: builder.query({
             query: (id) => ({
-                url: `${ORDERS_URL}/cash/${id}`
+                url: `${CASH_ORDERS_URL}/${id}`
             }),
         }),
 
@@ -45,15 +45,15 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         }),
 
         returnOrder: builder.mutation({
-            query: ( orderId ) => ({
+            query: (orderId) => ({
                 url: `${ORDERS_URL}/${orderId}/return`,
                 method: "PUT",
             }),
         }),
 
         returnCashOrder: builder.mutation({
-            query: ( orderId ) => ({
-                url: `${ORDERS_URL}/cash/${orderId}/return`,
+            query: (orderId) => ({
+                url: `${CASH_ORDERS_URL}/${orderId}/return`,
                 method: "PUT",
             }),
         }),
@@ -89,7 +89,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
 
         getCashOrders: builder.query({
             query: () => ({
-                url: `${ORDERS_URL}/cash/all`
+                url: `${CASH_ORDERS_URL}/all`
             }),
         }),
 

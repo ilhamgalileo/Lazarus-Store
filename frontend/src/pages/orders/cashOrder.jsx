@@ -55,9 +55,9 @@ const CashOrder = () => {
         <p className="mb-1"><strong>Order ID:</strong> {cashOrder._id}</p>
         <p className="mb-1"><strong>Payment On:</strong>  {moment(cashOrder.createdAt).format("DD MMMM YYYY")}</p>
         <p className="mb-1"><strong>Payment Status:</strong> {cashOrder.isPaid ?
-                      <span className="text-green-300">Paid on {moment(cashOrder.paidAt).format("DD MMMM YYYY")}</span> :
-                      <span className="text-red-600">Not Paid</span>
-                    }</p>
+          <span className="text-green-300">Paid on {moment(cashOrder.paidAt).format("DD MMMM YYYY")}</span> :
+          <span className="text-red-600">Not Paid</span>
+        }</p>
         <p className="mb-1"><strong>Name:</strong> {cashOrder.customerName}</p>
         <p className="mb-1"><strong>Address:</strong> {cashOrder.address}</p>
         <p className="mb-1"><strong>Method:</strong> {cashOrder.paymentMethod}</p>
@@ -104,7 +104,7 @@ const CashOrder = () => {
           <p><strong>Change:</strong> RP. {new Intl.NumberFormat('id-ID').format(cashOrder.change)}</p>
         </div>
       </div>
-      {userInfo.isAdmin && cashOrder.isPaid && (
+      {userInfo.user.isAdmin && cashOrder.isPaid && (
         <div className="mt-6">
           <button
             type="button"
