@@ -101,7 +101,6 @@ const Navigation = () => {
               <div
                 className="absolute left-0 bottom-full mb-2 w-48 bg-gray-800 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                 role="menu"
-                onMouseLeave={() => setDropdownOpen(false)}
               >
                 <div className="py-1" role="none">
                   {userInfo.user.isAdmin && (

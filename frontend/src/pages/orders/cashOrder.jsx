@@ -56,7 +56,7 @@ const CashOrder = () => {
         <p className="mb-1"><strong>Payment On:</strong>  {moment(cashOrder.createdAt).format("DD MMMM YYYY")}</p>
         <p className="mb-1"><strong>Payment Status:</strong> {cashOrder.isPaid ?
           <span className="text-green-300">Paid on {moment(cashOrder.paidAt).format("DD MMMM YYYY")}</span> :
-          <span className="text-red-600">Not Paid</span>
+          <span className="text-red-300">Cancelled</span>
         }</p>
         <p className="mb-1"><strong>Name:</strong> {cashOrder.customerName}</p>
         <p className="mb-1"><strong>Address:</strong> {cashOrder.address}</p>

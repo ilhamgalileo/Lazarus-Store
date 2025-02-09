@@ -75,7 +75,11 @@ const Order = () => {
             <p className="mb-1"><strong>Date:</strong> {moment(order.createdAt).format("DD MMMM YYYY")}</p>
             <p className="mb-1"><strong>Payment Status:</strong> {order.isPaid ?
               <span className="text-green-300">Paid on {moment(order.paidAt).format("DD MMMM YYYY")}</span> :
-              <span className="text-red-600">Not Paid</span>
+              <span className="text-red-300">Cancelled</span>
+            }</p>
+            <p className="mb-1"><strong>Delivery Status:</strong> {order.isDelivered ?
+              <span className="text-green-300">On Process {moment(order.deliveredAt).format("DD MMMM YYYY")}</span> :
+              <span className="text-red-300">Pending</span>
             }</p>
             <p className="mb-1"><strong>Method:</strong> {order.paymentMethod}</p>
           </div>

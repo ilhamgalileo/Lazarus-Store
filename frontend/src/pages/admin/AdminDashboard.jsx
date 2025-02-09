@@ -150,7 +150,7 @@ const AdminDashboard = () => {
       <AdminMenu />
       <div className="p-6 xl:ml-[4rem] md:ml-[0rem]">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-white">Dashboard Overview</h1>
+          <h1 className="text-3xl font-bold text-white">Dashboard Overview</h1>
           <div className="flex items-center mr-[4rem] mt-4 space-x-2 text-sm text-white">
             <FaCalendar className="text-white" />
             <span>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
