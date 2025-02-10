@@ -7,6 +7,7 @@ import Message from "../components/Message"
 import Product from "./Products/Product"
 import logo from '../assets/1-removebg-preview.png'
 import ProductCarousel from "./Products/ProductCarousel"
+import Footer from "../footer"
 
 const Home = () => {
   const { keyword } = useParams();
@@ -47,8 +48,6 @@ const Home = () => {
         </div>
       </div>
 
-
-
       {/* Our New Releases Section */}
       <div className="ml-[21rem] mt-4">
         <h1 className="text-xl font-semibold">Our New Releases</h1>
@@ -87,6 +86,9 @@ const Home = () => {
           </div>
         </>
       )}
+
+      {/* Footer */}
+      <Footer />
     </>
   );
 };
