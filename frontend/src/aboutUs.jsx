@@ -12,11 +12,8 @@ const AboutUs = () => {
                         <img src={logo} alt="Logo" className="w-32 h-32 object-contain" />
                     </Link>
                     <nav className="flex items-center gap-6">
-                        <Link to="/products" className="text-lg font-semibold hover:text-orange-600">
+                        <Link to="/shop" className="text-lg font-semibold hover:text-orange-600">
                             All Products
-                        </Link>
-                        <Link to="/contact" className="text-lg font-semibold hover:text-orange-600">
-                            Contact
                         </Link>
                         <Link to="/about" className="text-lg font-semibold text-orange-600">
                             About Us

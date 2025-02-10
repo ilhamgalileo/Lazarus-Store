@@ -40,9 +40,6 @@ const Home = () => {
             <Link to="/shop" className="text-lg font-semibold hover:text-orange-600">
               All Products
             </Link>
-            <Link to="/contact" className="text-lg font-semibold hover:text-orange-600">
-              Contact
-            </Link>
             <Link to="/about" className="text-lg font-semibold hover:text-orange-600">
               About Us
             </Link>
