@@ -5,6 +5,7 @@ import { useLoginMutation } from "../../redux/api/usersApiSlice"
 import { setCredientials } from "../../redux/features/auth/authSlice"
 import { toast } from "react-toastify"
 import Loader from "../../components/loader"
+import logo from '../../assets/1-removebg-preview.png'
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -39,76 +40,83 @@ const Login = () => {
     }
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
-          <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-xl p-8">
-              <div className="mb-6">
-                  <h1 className="text-2xl font-semibold text-center text-white">Sign In</h1>
-              </div>
-  
-              <div className="w-full">
-                  <form onSubmit={submitHandler} className="space-y-6">
-                      {/* Email Input */}
-                      <div className="relative">
-                          <input
-                              type="email"
-                              id="email"
-                              className="peer w-full rounded border-gray-600 bg-gray-700 text-white p-2 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-orange-600"
-                              placeholder="Email Address"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                          />
-                          <label
-                              htmlFor="email"
-                              className="absolute left-2 top-[-1px] text-xs text-gray-400 transform transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-[-1px] peer-focus:text-xs peer-focus:text-orange-600"
-                          >
-                              Email
-                          </label>
-                      </div>
-  
-                      {/* Password Input */}
-                      <div className="relative">
-                          <input
-                              type="password"
-                              id="password"
-                              className="peer w-full rounded border-gray-600 bg-gray-700 text-white p-2 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-orange-600"
-                              placeholder="Password"
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                          />
-                          <label
-                              htmlFor="password"
-                              className="absolute left-2 top-[-1px] text-xs text-gray-400 transform transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-[-1px] peer-focus:text-xs peer-focus:text-orange-600"
-                          >
-                              Password
-                          </label>
-                      </div>
-  
-                      <button
-                          disabled={isLoading}
-                          type="submit"
-                          className="w-full bg-orange-600 text-white p-2 rounded hover:bg-orange-700 disabled:opacity-50"
-                      >
-                          {isLoading ? "Signing in..." : "Sign In"}
-                      </button>
-  
-                      {isLoading && <Loader />}
-  
-                      <div className="text-center">
-                          <p className="text-white">
-                              New Customer?{" "}
-                              <Link
-                                  to={redirect ? `/register?redirect=${redirect}` : "/register"}
-                                  className="text-orange-600 hover:underline"
-                              >
-                                  Register
-                              </Link>
-                          </p>
-                      </div>
-                  </form>
-              </div>
-          </div>
-      </div>
-  );
+        <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+            <div className="w-full max-w-2xl bg-gray-800 rounded-lg shadow-xl p-8 flex items-center">
+                {/* Logo di kiri */}
+                <div className="w-1/3 flex justify-center">
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        className="w-full object-cover"
+                    />
+                </div>
+    
+                <div className="w-2/3">
+                    <h1 className="text-2xl font-semibold text-center text-white mb-6">Sign In</h1>
+    
+                    <form onSubmit={submitHandler} className="space-y-6">
+                        {/* Email Input */}
+                        <div className="relative">
+                            <input
+                                type="email"
+                                id="email"
+                                className="peer w-full rounded border-gray-600 bg-gray-700 text-white p-2 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                placeholder="Email Address"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                            <label
+                                htmlFor="email"
+                                className="absolute left-2 top-[-1px] text-xs text-gray-400 transform transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-[-1px] peer-focus:text-xs peer-focus:text-orange-600"
+                            >
+                                Email
+                            </label>
+                        </div>
+    
+                        {/* Password Input */}
+                        <div className="relative">
+                            <input
+                                type="password"
+                                id="password"
+                                className="peer w-full rounded border-gray-600 bg-gray-700 text-white p-2 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <label
+                                htmlFor="password"
+                                className="absolute left-2 top-[-1px] text-xs text-gray-400 transform transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-[-1px] peer-focus:text-xs peer-focus:text-orange-600"
+                            >
+                                Password
+                            </label>
+                        </div>
+    
+                        <button
+                            disabled={isLoading}
+                            type="submit"
+                            className="w-full bg-orange-600 text-white p-2 rounded hover:bg-orange-700 disabled:opacity-50"
+                        >
+                            {isLoading ? "Signing in..." : "Sign In"}
+                        </button>
+    
+                        {isLoading && <Loader />}
+    
+                        <div className="text-center">
+                            <p className="text-white">
+                                New Customer?{" "}
+                                <Link
+                                    to={redirect ? `/register?redirect=${redirect}` : "/register"}
+                                    className="text-orange-600 hover:underline"
+                                >
+                                    Register
+                                </Link>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default Login

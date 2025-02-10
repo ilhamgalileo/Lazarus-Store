@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Message from "../../components/Message";
 import Loader from "../../components/loader";
+import logo from '../../assets/1-removebg-preview.png'
 import { useGetOrderDetailsQuery, useDeliverOrderMutation, useReturnOrderMutation } from "../../redux/api/orderApiSlice";
 
 const Order = () => {
@@ -66,11 +67,12 @@ const Order = () => {
         </button>
       </div>
 
-      <div ref={invoiceRef} className="bg-gray-700 p-2 mt-2 shadow-lg">
+      <div ref={invoiceRef} className="bg-gray-700 p-2 mt-2 shadow-lg relative">
+        <img src={logo} alt="Logo" className="absolute top-2 left-2 w-[8rem] h-auto" />
         <h2 className="text-2xl font-medium mb-[5rem] text-center">INVOICE</h2>
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
-            <h3 className="text-lg font-semibold mb-3">Order Information</h3>
+            <h3 className="text-lg font-semibold mb-3 mt-[1rem]">Order Information</h3>
             <p className="mb-1"><strong>Order ID:</strong> {order._id}</p>
             <p className="mb-1"><strong>Date:</strong> {moment(order.createdAt).format("DD MMMM YYYY")}</p>
             <p className="mb-1"><strong>Payment Status:</strong> {order.isPaid ?
@@ -85,7 +87,7 @@ const Order = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-2">Customer Details</h3>
+            <h3 className="text-lg font-semibold mb-2 mt-[1rem]">Customer Details</h3>
             <p className="mb-1"><strong>Name:</strong> {order.user.username}</p>
             <p className="mb-1"><strong>Email:</strong> {order.user.email}</p>
             <p className="mb-1"><strong>Address:</strong> {order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}</p>
@@ -111,7 +113,6 @@ const Order = () => {
                       src={item?.images[0]}
                       alt={item.name}
                       className="w-16 h-16 object-cover mx-auto"
-                      crossOrigin="anonymous"
                     />
                   </td>
                   <td className="p-2 border">

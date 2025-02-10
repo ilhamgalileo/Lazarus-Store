@@ -15,7 +15,7 @@ const Header = () => {
         return <h1>Error</h1>
     }
     return <>
-        <div className="flex justify-around ml-10">
+        <div className="flex ml-[10rem]">
             <div className="xl:block lg:hidden mf:hidden sm:hidden">
                 <div className="grid grid-cols-2">
                     {data.map((product) => (
@@ -25,7 +25,7 @@ const Header = () => {
                     ))}
                 </div>
             </div>
-                <ProductCarousel/>
+                {/* <ProductCarousel/> */}
         </div>
     </>
 

@@ -10,11 +10,11 @@ import {
   FaShoppingCart,
   FaStar,
   FaStore,
-  FaRegStar 
+  FaCommentDots
 } from "react-icons/fa";
 
 const ProductCarousel = () => {
-  const { data: products, isLoading, error } = useGetTopProductsQuery()
+  const { data: products, isLoading, error } = useGetTopProductsQuery();
 
   const settings = {
     dots: false,
@@ -28,7 +28,7 @@ const ProductCarousel = () => {
   };
 
   return (
-    <div className="mb- lg:block xl:block md:block">
+    <div className="lg:block xl:block md:block mt-1">
       {isLoading ? null : error ? (
         <Message variant="danger">
           {error?.data?.message || error.error}
@@ -36,7 +36,7 @@ const ProductCarousel = () => {
       ) : (
         <Slider
           {...settings}
-          className=" ml-1 xl:w-[40rem] lg:w-[40rem] md:w-[40rem] sm:w-[40rem] sm:block"
+          className="ml-1 xl:w-[40rem] lg:w-[40rem] md:w-[40rem] sm:w-[40rem] sm:block"
         >
           {products.map(
             ({
@@ -55,17 +55,21 @@ const ProductCarousel = () => {
                 <img
                   src={images[0]}
                   alt={name}
-                  className="w-[50rem] rounded-lg object-cover h-[20rem]"
+                  className="w-[59rem] h-[25rem] object-cover rounded-lg border-2 border-orange-500"
                 />
 
-                <div className="mt-3 flex justify-between">
+                <div className="mt-[1rem] flex justify-between">
                   <div className="one text-xs">
-                    <h2 className="text-xl">{name}</h2>
-                    <p className="text-orange-500 text-lg font-bold">RP. {isLoading ? <Loader /> : new Intl.NumberFormat('id-ID').format(price)}</p> <br /> <br />
+                    <h2 className="font-medium text-xl">{name}</h2>
+                    <p className="text-orange-500 text-lg font-bold">
+                      RP. {isLoading ? "Loading..." : new Intl.NumberFormat('id-ID').format(price)}
+                    </p>
+                    <br />
+                    <br />
                   </div>
 
                   <div className="flex justify-between w-[20rem]">
-                    <div className="one text-xs">
+                    <div className="one text-sm">
                       <h1 className="flex items-center mb-6">
                         <FaStore className="mr-2 text-white" /> Brand: {brand}
                       </h1>
@@ -74,12 +78,12 @@ const ProductCarousel = () => {
                         {moment(createdAt).fromNow()}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                        <FaRegStar className="mr-2 text-white" /> Reviews: {" "}
+                        <FaCommentDots className="mr-2 text-white" /> Reviews:{" "}
                         {numReviews}
                       </h1>
                     </div>
 
-                    <div className="two text-xs">
+                    <div className="two text-sm">
                       <h1 className="flex items-center mb-6">
                         <FaStar className="mr-2 text-white" /> Ratings:{" "}
                         {Math.round(rating)}
@@ -101,7 +105,7 @@ const ProductCarousel = () => {
         </Slider>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ProductCarousel
+export default ProductCarousel;

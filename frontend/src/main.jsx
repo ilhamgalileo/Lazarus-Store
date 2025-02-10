@@ -28,6 +28,7 @@ import OrderList from './pages/admin/OrderList.jsx'
 import CashOrder from './pages/orders/cashOrder.jsx'
 import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 import PlaceOrderCash from './pages/orders/placeOrderCash.jsx'
+import AboutUs from './aboutUs.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -39,6 +40,7 @@ const router = createBrowserRouter(
       <Route path='/product/:id' element={<ProductDetail />} />
       <Route path='/cart' element={<Cart />} />
       <Route path='/shop' element={<Shop />} />
+      <Route path='/about' element={<AboutUs />} />
       <Route path='/user-orders' element={<UserOrder />} />
 
       <Route path='' element={<PrivateRoute />} >

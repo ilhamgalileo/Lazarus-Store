@@ -6,6 +6,7 @@ import html2canvas from "html2canvas";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import logo from '../../assets/1-removebg-preview.png'
 
 const CashOrder = () => {
   const { id: orderId } = useParams();
@@ -50,7 +51,8 @@ const CashOrder = () => {
         </button>
       </div>
 
-      <div ref={invoiceRef} className="bg-gray-700 p-5 shadow-lg mt-5">
+      <div ref={invoiceRef} className="bg-gray-700 p-2 mt-2 shadow-lg relative">
+        <img src={logo} alt="Logo" className="absolute top-2 left-2 w-[8rem] h-auto" />
         <h2 className="text-2xl font-medium mb-[5rem] text-center">INVOICE</h2>
         <p className="mb-1"><strong>Order ID:</strong> {cashOrder._id}</p>
         <p className="mb-1"><strong>Payment On:</strong>  {moment(cashOrder.createdAt).format("DD MMMM YYYY")}</p>
@@ -80,8 +82,7 @@ const CashOrder = () => {
                     <img
                       src={item?.product?.images[0]}
                       alt={item.product.name}
-                      className="w-16 h-16 object-cover"
-                      crossOrigin="anonymous"
+                      className="w-20 h-20 object-cover"
                     />
                   </td>
                   <td className="p-1.5 border">
