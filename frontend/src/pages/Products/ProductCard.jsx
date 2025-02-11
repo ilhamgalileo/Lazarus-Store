@@ -6,12 +6,12 @@ import { toast } from "react-toastify";
 import { FaShoppingCart, FaArrowRight } from "react-icons/fa";
 
 const ProductCard = ({ p }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const dispatch = useDispatch();
+  const [isHovered, setIsHovered] = useState(false)
+  const dispatch = useDispatch()
 
   const addToCartHandler = (product, qty) => {
-    dispatch(addToCart({ ...product, qty }));
-    toast.success("Item added successfully");
+    dispatch(addToCart({ ...product, qty }))
+    toast.success("Item added successfully")
   };
 
   return (
@@ -55,14 +55,17 @@ const ProductCard = ({ p }) => {
 
           <button
             onClick={() => addToCartHandler(p, 1)}
-            className="p-2 rounded-full bg-orange-500 text-white hover:bg-orange-600 transition-colors"
+            disabled={p.countInStock === 0}
+            className={`p-2 rounded-full ${
+              p.countInStock === 0 ? "bg-gray-500 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"
+            } text-white transition-colors`}
           >
             <FaShoppingCart className="w-4 h-4" />
           </button>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductCard;
+export default ProductCard

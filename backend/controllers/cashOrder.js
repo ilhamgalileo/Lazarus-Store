@@ -71,8 +71,8 @@ export const createCashOrder = async (req, res) => {
       totalAmount,
       receivedAmount,
       change: receivedAmount - totalAmount,
-      isPaid: true, // Tandai pesanan sebagai sudah dibayar
-      paidAt: new Date(), // Catat waktu pembayaran
+      isPaid: true,
+      paidAt: new Date(),
     });
 
     for (const item of validatedItems) {
@@ -80,10 +80,10 @@ export const createCashOrder = async (req, res) => {
       if (product.countInStock < item.quantity) {
         return res.status(400).json({
           message: `Not enough stock for product: ${product.name}`,
-        });
+        })
       }
       product.countInStock -= item.quantity;
-      await product.save();
+      await product.save()
     }
 
     res.status(201).json({

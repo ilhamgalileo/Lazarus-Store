@@ -12,6 +12,7 @@ const cashOrderSchema = mongoose.Schema(
       },
     ],
     totalAmount: { type: Number, required: true },
+    taxPrice: { type: Number, required: true },
     receivedAmount: { type: Number, required: true },
     change: { type: Number, required: true },
     isPaid: {type: Boolean, default: false},
@@ -20,7 +21,7 @@ const cashOrderSchema = mongoose.Schema(
   {
     timestamps: true,
   }
-);
+)
 
 const CashOrder = mongoose.model("CashOrder", cashOrderSchema);
 export default CashOrder
