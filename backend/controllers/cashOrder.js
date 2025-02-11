@@ -10,17 +10,15 @@ export const createCashOrder = async (req, res) => {
     orderItems,
     receivedAmount,
     shippingPrice,
-    taxPrice,
-    totalAmount,
-  } = req.body;
+  } = req.body
 
   if (!customerName || !phone || !cust_address || !orderItems || !receivedAmount) {
-    return res.status(400).json({ message: "All fields are required" });
+    return res.status(400).json({ message: "All fields are required" })
   }
 
   try {
-    const validatedItems = [];
-    let calculatedTotal = 0;
+    const validatedItems = []
+    let calculatedTotal = 0
 
     for (const item of orderItems) {
       const product = await Product.findById(item.product);
@@ -28,39 +26,36 @@ export const createCashOrder = async (req, res) => {
       if (!product) {
         return res.status(404).json({
           message: `Product not found with ID: ${item.product}`,
-        });
+        })
       }
 
       if (product.price !== item.price) {
         return res.status(400).json({
           message: `Invalid price for product: ${product.name}`,
-        });
+        })
       }
 
-      calculatedTotal += product.price * item.quantity;
+      calculatedTotal += product.price * item.quantity
 
       validatedItems.push({
         product: item.product,
         quantity: item.quantity,
         price: product.price,
-      });
+      })
     }
 
-    calculatedTotal += shippingPrice + taxPrice;
+    const totalAmountBeforeTax = calculatedTotal + shippingPrice
 
-    if (Math.abs(calculatedTotal - totalAmount) > 1) {
-      return res.status(400).json({
-        message: "Total amount mismatch",
-      });
-    }
+    const taxPrice = 0.11 * totalAmountBeforeTax
+
+    const totalAmount = totalAmountBeforeTax + taxPrice
 
     if (receivedAmount < totalAmount) {
       return res.status(400).json({
         message: "Received amount must be greater than or equal to total amount",
-      });
+      })
     }
 
-    // Buat order
     const cashOrder = await CashOrder.create({
       customerName,
       phone,
@@ -73,7 +68,7 @@ export const createCashOrder = async (req, res) => {
       change: receivedAmount - totalAmount,
       isPaid: true,
       paidAt: new Date(),
-    });
+    })
 
     for (const item of validatedItems) {
       const product = await Product.findById(item.product);
@@ -83,22 +78,24 @@ export const createCashOrder = async (req, res) => {
         })
       }
       product.countInStock -= item.quantity;
-      await product.save()
+      await product.save();
     }
 
     res.status(201).json({
       _id: cashOrder._id,
       message: "Order created successfully",
       order: cashOrder,
-    });
+      taxPrice,
+      totalAmount,
+    })
   } catch (error) {
     console.error("Create cash order error:", error);
     res.status(500).json({
       message: "Failed to create order",
       error: error.message,
-    });
+    })
   }
-};
+}
 
 export const getAllOrderCash = asyncHandler(async (req, res) => {
   const orders = await CashOrder.find({}).populate("items.product", "name");

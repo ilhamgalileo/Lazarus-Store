@@ -15,11 +15,9 @@ const PlaceCashOrder = () => {
 
   const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.qty * item.price, 0) || 0
   const shippingPrice = itemsPrice > 100 ? 0 : 10
-  const taxPrice = itemsPrice >= 10000 && itemsPrice < 1000000 ? 1000 :
-    itemsPrice >= 1000000 ? 100000 :
-      itemsPrice <= 100 ? 1 :
-        itemsPrice <= 500 ? 5 :
-          itemsPrice < 1000 ? 8 : 10
+
+  const taxPrice = Math.round(0.11 * (itemsPrice + shippingPrice))
+
   const totalPrice = Math.round((itemsPrice + shippingPrice + taxPrice) || 0)
 
   const [createCashOrder, { isLoading, error }] = useCreateCashOrderMutation()
@@ -122,7 +120,6 @@ const PlaceCashOrder = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Order Summary Section */}
             <div className="bg-gray-700 rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
               <div className="space-y-3">
@@ -135,7 +132,7 @@ const PlaceCashOrder = () => {
                   <span>Rp. {shippingPrice.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-white">
-                  <span>Tax:</span>
+                  <span>Tax (PPN 11%):</span>
                   <span>Rp. {taxPrice.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between font-semibold text-lg pt-3 border-t border-gray-200">
@@ -145,7 +142,6 @@ const PlaceCashOrder = () => {
               </div>
             </div>
 
-            {/* Cash Order Details Section */}
             <div className="bg-gray-700 rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Cash Order Details</h2>
               <div className="space-y-4">
