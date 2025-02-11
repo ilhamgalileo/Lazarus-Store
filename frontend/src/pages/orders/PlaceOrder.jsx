@@ -12,15 +12,10 @@ import { usePayOrderMutation } from "../../redux/api/orderApiSlice"
 const PlaceOrder = () => {
   const navigate = useNavigate()
   const cart = useSelector(state => state.cart)
-  const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.qty * item.price, 0) || 0;
-  const shippingPrice = itemsPrice > 100 ? 0 : 10;
-  const taxPrice = itemsPrice >= 10000 && itemsPrice < 1000000 ? 1000 :
-    itemsPrice >= 1000000 ? 100000 :
-      itemsPrice <= 100 ? 1 :
-        itemsPrice <= 500 ? 5 :
-          itemsPrice < 1000 ? 8 : 10;
-  const totalPrice = Math.round((itemsPrice + shippingPrice + taxPrice) || 0);
-
+  const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.qty * item.price, 0) || 0
+  const shippingPrice = itemsPrice > 100 ? 0 : 10
+  const taxPrice = Math.round((itemsPrice + shippingPrice) * 0.11)
+  const totalPrice = Math.round(itemsPrice + shippingPrice + taxPrice)
   const [createOrder, { isLoading, error }] = useCreateOrderMutation()
   const [payOrder] = usePayOrderMutation()
 

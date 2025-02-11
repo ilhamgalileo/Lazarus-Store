@@ -8,15 +8,11 @@ function calcPrice(orderItems) {
     const itemsPrice = orderItems.reduce(
         (acc, item) => acc + item.price * item.qty,
         0
-    );
-    const shippingPrice = itemsPrice > 100 ? 0 : 10;
-    const taxPrice =
-        itemsPrice >= 10000 && itemsPrice < 1000000 ? 1000 :
-            itemsPrice >= 1000000 ? 100000 :
-                itemsPrice <= 100 ? 1 :
-                    itemsPrice <= 500 ? 5 :
-                        itemsPrice < 1000 ? 8 : 10;
-    const totalPrice = Math.round(itemsPrice + shippingPrice + taxPrice)
+    )
+    const shippingPrice = itemsPrice > 100 ? 0 : 10
+    const subtotal = itemsPrice + shippingPrice
+    const taxPrice = Math.round(subtotal * 0.11)
+    const totalPrice = Math.round(subtotal + taxPrce)
 
     return {
         itemsPrice: Math.round(itemsPrice),
@@ -27,11 +23,11 @@ function calcPrice(orderItems) {
 }
 
 export const createOrder = asyncHandler(async (req, res) => {
-    const { orderItems, shippingAddress, paymentMethod } = req.body
+    const { orderItems, shippingAddress, paymentMethod } = req.body;
 
     if (!orderItems || orderItems.length === 0) {
         res.status(400);
-        throw new Error("No order items")
+        throw new Error("No order items");
     }
 
     const itemsFromDB = await Product.find({
@@ -41,7 +37,7 @@ export const createOrder = asyncHandler(async (req, res) => {
     const dbOrderItems = orderItems.map((itemsFromClient) => {
         const matchingItemFromDB = itemsFromDB.find(
             (item) => item._id.toString() === itemsFromClient._id
-        )
+        );
 
         if (!matchingItemFromDB) {
             res.status(404);
@@ -56,8 +52,7 @@ export const createOrder = asyncHandler(async (req, res) => {
         }
     })
 
-    const { itemsPrice, taxPrice, shippingPrice } = calcPrice(dbOrderItems);
-    const totalPrice = itemsPrice + taxPrice + shippingPrice;
+    const { itemsPrice, taxPrice, shippingPrice, totalPrice } = calcPrice(dbOrderItems);
 
     const order = new Order({
         orderItems: dbOrderItems,
@@ -70,8 +65,8 @@ export const createOrder = asyncHandler(async (req, res) => {
         totalPrice,
     })
 
-    const createdOrder = await order.save()
-    const orderId = createdOrder.id
+    const createdOrder = await order.save();
+    const orderId = createdOrder.id;
 
     const orderDetails = {
         transaction_details: {
@@ -100,12 +95,12 @@ export const createOrder = asyncHandler(async (req, res) => {
                 quantity: item.qty,
                 name: item.name,
             })),
-            ...(taxPrice > 0 ? [{
+            {
                 id: 'TAX',
                 price: taxPrice,
                 quantity: 1,
-                name: 'Tax'
-            }] : []),
+                name: 'PPN 11%'
+            },
             ...(shippingPrice > 0 ? [{
                 id: 'SHIPPING',
                 price: shippingPrice,
@@ -116,23 +111,23 @@ export const createOrder = asyncHandler(async (req, res) => {
     }
 
     try {
-        const response = await snap.createTransaction(orderDetails)
+        const response = await snap.createTransaction(orderDetails);
 
         if (!response.token) {
-            throw new Error('Midtrans did not return a payment token')
+            throw new Error('Midtrans did not return a payment token');
         }
 
-        createdOrder.paymentToken = response.token
-        createdOrder.paymentUrl = response.redirect_url
-        await createdOrder.save()
+        createdOrder.paymentToken = response.token;
+        createdOrder.paymentUrl = response.redirect_url;
+        await createdOrder.save();
 
         res.status(201).json({
             order: createdOrder,
             token: response.token,
-        })
+        });
     } catch (error) {
-        console.error('Error creating order:', error)
-        res.status(500).json({ message: 'Failed to create order', error: error.message })
+        console.error('Error creating order:', error);
+        res.status(500).json({ message: 'Failed to create order', error: error.message });
     }
 })
 

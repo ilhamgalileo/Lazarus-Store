@@ -140,7 +140,7 @@ const Order = () => {
               <span>RP. {new Intl.NumberFormat('id-ID').format(order.shippingPrice)}</span>
             </div>
             <div className="flex justify-between mb-2">
-              <span>Tax:</span>
+              <span>Tax (PPN 11%):</span>
               <span>RP. {new Intl.NumberFormat('id-ID').format(order.taxPrice)}</span>
             </div>
             <div className="flex justify-between font-bold mt-2 pt-2 border-t">
