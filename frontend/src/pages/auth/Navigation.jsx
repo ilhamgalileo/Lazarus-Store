@@ -38,8 +38,7 @@ const Navigation = () => {
       }
     }
   };
-
-  // Fungsi untuk menutup dropdown
+  
   const closeDropdown = () => {
     setDropdownOpen(false);
   };

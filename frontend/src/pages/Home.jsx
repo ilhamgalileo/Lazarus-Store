@@ -70,7 +70,7 @@ const Home = () => {
             <h1 className="text-[3rem] ml-[17rem]">Special Products</h1>
             <Link
               to="/shop"
-              className="bg-orange-600 font-bold rounded-full py-2 px-8 sm:mt-8 mr-24"
+              className="bg-orange-600 font-bold rounded-full py-3 px-10 sm:mt-8 mr-[20rem]"
             >
               Shop
             </Link>
