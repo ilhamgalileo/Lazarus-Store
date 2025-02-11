@@ -15,7 +15,7 @@ import { FaUser, FaMoneyBill, FaShoppingBag, FaChartLine, FaCalendar } from "rea
 import { Link } from 'react-router-dom';
 
 const StatBox = ({ title, value, icon, loading }) => (
-  <div className="rounded-lg bg-black shadow-lg p-6 w-full">
+  <div className="rounded-lg bg-gray-700 shadow-lg p-6 w-full">
     <div className="flex items-center justify-between">
       <div className="font-bold rounded-full w-12 h-12 bg-orange-500 flex items-center justify-center text-gray-800">
         {icon}
@@ -35,6 +35,8 @@ const AdminDashboard = () => {
   const { data: customers, isLoading: loadingCustomers } = useGetUserCountQuery();
   const { data: orders, isLoading: loadingOrders } = useGetTotalOrderQuery();
   const { data: salesDetail } = useGetTotalSalesByDateQuery();
+
+  const averageSales = sales?.totalSales && orders?.totalOrders ? Math.round(sales.totalSales / orders.totalOrders) : 0;
 
   const [chartConfig, setChartConfig] = useState({
     options: {
@@ -134,17 +136,6 @@ const AdminDashboard = () => {
     }
   }, [salesDetail]);
 
-  const quickStats = [
-    {
-      title: "Average Order Value",
-      value: sales?.totalSales && orders?.totalOrders
-        ? `Rp ${new Intl.NumberFormat("id-ID").format(Math.round(sales.totalSales / orders.totalOrders))}`
-        : "Rp 0",
-      icon: <FaChartLine size="1.2em" />,
-      percentageChange: 5.2
-    },
-  ]
-
   return (
     <div className="min-h-screen">
       <AdminMenu />
@@ -157,73 +148,27 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
-          <StatBox
-            title="Total Sales"
-            value={sales?.totalSales
-              ? `Rp ${new Intl.NumberFormat("id-ID").format(sales.totalSales)}`
-              : "Rp 0"}
-            icon={<FaMoneyBill />}
-            loading={loadingSales}
-            percentageChange={8.4}
-          />
-          <StatBox
-            title="Total Customers Account"
-            value={customers?.userCount || 0}
-            icon={<FaUser />}
-            loading={loadingCustomers}
-            percentageChange={12.3}
-          />
-          <StatBox
-            title="Total Orders"
-            value={orders?.totalOrders || 0}
-            icon={<FaShoppingBag />}
-            loading={loadingOrders}
-            percentageChange={-2.5}
-          />
-          {quickStats.map((stat, index) => (
-            <StatBox
-              key={index}
-              title={stat.title}
-              value={stat.value}
-              icon={stat.icon}
-              percentageChange={stat.percentageChange}
-            />
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          <StatBox title="Total Sales" value={sales?.totalSales ? `Rp ${new Intl.NumberFormat("id-ID").format(sales.totalSales)}` : "Rp 0"} icon={<FaMoneyBill />} loading={loadingSales} />
+          <StatBox title="Average Sales" value={`Rp ${new Intl.NumberFormat("id-ID").format(averageSales)}`} icon={<FaChartLine />} loading={loadingSales || loadingOrders} />
+          <StatBox title="Total Customers Account" value={customers?.userCount || 0} icon={<FaUser />} loading={loadingCustomers} />
+          <StatBox title="Total Orders" value={orders?.totalOrders || 0} icon={<FaShoppingBag />} loading={loadingOrders} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-black rounded-lg shadow-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-white">Sales Trend</h2>
-              <div className="text-sm text-white">Last 30 days</div>
-            </div>
-            {chartConfig.series[0].data.length > 0 ? (
-              <Chart
-                options={chartConfig.options}
-                series={chartConfig.series}
-                type="area"
-                height={350}
-              />
-            ) : (
-              <div className="flex items-center justify-center h-[350px] text-gray-800">
-                No sales data available
-              </div>
-            )}
-          </div>
+        <div className="bg-black rounded-lg shadow-lg p-6 mb-6">
+          <h2 className="text-lg font-bold text-white">Sales Trend</h2>
+          {chartConfig.series[0].data.length > 0 ? (
+            <Chart options={chartConfig.options} series={chartConfig.series} type="area" height={350} />
+          ) : (
+            <div className="flex items-center justify-center h-[350px] text-gray-800">No sales data available</div>
+          )}
+        </div>
 
-          <div className="bg-black rounded-lg shadow-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-white">Recent Orders</h2>
-              <Link
-                to="/admin/orderlist"
-                className="text-orange-500 hover:text-orange-400 text-sm font-semibold"
-              >
-                View All Orders
-              </Link>
-            </div>
-            <OrderList limit={5} />
+        <div className="bg-black rounded-lg shadow-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-white">Recent Orders</h2>
           </div>
+          <OrderList limit={5} />
         </div>
       </div>
     </div>
