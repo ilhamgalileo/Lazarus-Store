@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ProgressSteps from "../../components/ProgressSteps";
@@ -6,36 +6,47 @@ import { toast } from "react-toastify";
 import { saveShippingAddress, savePaymentMethod } from "../../redux/features/cart/cartSlice";
 
 const Shipping = () => {
-  const { userInfo } = useSelector((state) => state.auth)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const { userInfo } = useSelector((state) => state.auth);
+  const { shippingAddress } = useSelector((state) => state.cart);
+
   const [paymentMethod, setPaymentMethod] = useState(
     userInfo?.user?.isAdmin ? "" : "qris/bank"
   );
   const [qrisBankDetails, setQrisBankDetails] = useState({
-    address: "",
-    city: "",
-    postalCode: "",
-    country: "",
+    address: shippingAddress?.address || "",
+    city: shippingAddress?.city || "",
+    postalCode: shippingAddress?.postalCode || "",
+    country: shippingAddress?.country || "",
   });
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  useEffect(() => {
+    console.log("Redux Shipping Address:", shippingAddress);
+    console.log("Local Storage Cart:", localStorage.getItem("cart"));
+  }, [shippingAddress]);
 
   const handleQrisBankChange = (e) => {
     const { name, value } = e.target;
-    setQrisBankDetails({ ...qrisBankDetails, [name]: value });
+    setQrisBankDetails((prev) => ({ ...prev, [name]: value }));
+    console.log(`Updating ${name} to ${value}`);
   };
 
   const handleContinue = () => {
+    console.log("Shipping Address Before Dispatch:", qrisBankDetails);
+    console.log("Payment Method Before Dispatch:", paymentMethod);
+
     if (paymentMethod === "qris/bank") {
       dispatch(saveShippingAddress(qrisBankDetails));
       dispatch(savePaymentMethod(paymentMethod));
-      navigate("/placeorder")
+      navigate("/placeorder");
     } else if (paymentMethod === "cash") {
-      navigate("/placeorder/cash")
+      navigate("/placeorder/cash");
     } else {
-      alert("Please select a payment method.")
+      toast.error("Please select a payment method.");
     }
-  }
+  };
 
   return (
     <div className="container mx-auto">
@@ -131,8 +142,8 @@ const Shipping = () => {
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const InputField = ({ label, name, value, onChange, placeholder, type = "text" }) => (
   <div className="mb-4">
@@ -147,6 +158,6 @@ const InputField = ({ label, name, value, onChange, placeholder, type = "text" }
       onChange={onChange}
     />
   </div>
-)
+);
 
-export default Shipping
+export default Shipping;

@@ -118,7 +118,7 @@ const PlaceOrder = () => {
               <tbody>
                 {cart.cartItems.map((item) => (
                   <tr key={item.product}>
-                    <td><img src={item.image || item.images[0]} alt={item.name} className="w-16 h-16 object-cover" /></td>
+                    <td><img src={item?.images[0]} alt={item.name} className="w-16 h-16 object-cover" /></td>
                     <td><Link to={`/product/${item.product}`}>{item.name}</Link></td>
                     <td>{item.qty}</td>
                     <td>Rp. {item.price.toLocaleString()}</td>

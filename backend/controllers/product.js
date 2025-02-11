@@ -128,7 +128,7 @@ export const createProduct = asyncHandler(async (req, res) => {
 
   export const update = asyncHandler(async (req, res) => {
     try {
-        const { name, brand, quantity, category, description, price } = req.body;
+        const { name, brand, quantity, category, description, price, countInStock } = req.body;
 
         const product = await Product.findById(req.params.id);
         if (!product) {
@@ -139,6 +139,7 @@ export const createProduct = asyncHandler(async (req, res) => {
         product.brand = brand;
         product.quantity = quantity;
         product.category = category;
+        product.countInStock = countInStock;
         product.description = description;
         product.price = price;
 
