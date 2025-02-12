@@ -12,6 +12,7 @@ const Shop = () => {
 
   const categoriesQuery = useFetchCateQuery()
   const [priceFilter, setPriceFilter] = useState("")
+  const [searchTerm, setSearchTerm] = useState("")
 
   const filteredProductsQuery = useGetFilterProductsQuery({ checked, radio })
 
@@ -26,16 +27,18 @@ const Shop = () => {
       if (!filteredProductsQuery.isLoading) {
         const filteredProducts = filteredProductsQuery.data.filter(
           (product) => {
-            return (
+            const matchesPrice =
               product.price.toString().includes(priceFilter) ||
               product.price === parseInt(priceFilter, 10)
-            )
+            const matchesName =
+              product.name.toLowerCase().includes(searchTerm.toLowerCase())
+            return matchesPrice && matchesName
           }
         )
         dispatch(setProducts(filteredProducts))
       }
     }
-  }, [checked, radio, filteredProductsQuery.data, dispatch, priceFilter])
+  }, [checked, radio, filteredProductsQuery.data, dispatch, priceFilter, searchTerm])
 
   const handleBrandClick = (brand) => {
     setSelectedBrand(brand)
@@ -55,6 +58,7 @@ const Shop = () => {
 
   const handleReset = () => {
     setPriceFilter("")
+    setSearchTerm("")
     dispatch(setChecked([]))
     dispatch(setSelectedBrand(null))
     dispatch(setProducts([]))
@@ -77,11 +81,39 @@ const Shop = () => {
   return (
     <>
       <div className="container mx-auto px-5 text-sm" style={{ maxWidth: "90%" }}>
-        <div className="flex md:flex-row">  
+        <div className="flex md:flex-row">
           <div
             className="bg-[#151515] p-3 mt-2 mb-4 w-64 flex-shrink-0 top-0"
-            style={{ position:"fixed", height: "100vh", overflowY: "auto", top:"0" }}
+            style={{ position: "fixed", height: "100vh", overflowY: "auto", top: "0" }}
           >
+            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
+              Search by Name
+            </h2>
+
+            <div className="p-5">
+              <input
+                type="text"
+                placeholder="Enter product name"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+              />
+            </div>
+
+            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
+              Filter by Price
+            </h2>
+
+            <div className="p-5">
+              <input
+                type="text"
+                placeholder="Enter price"
+                value={priceFilter}
+                onChange={handlePriceChange}
+                className="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+              />
+            </div>
+
             <h2 className="h4 text-center py-2 bg-black rounded-full mb-2 text-white">
               Filter by categories
             </h2>
@@ -133,20 +165,6 @@ const Shop = () => {
                   </label>
                 </div>
               ))}
-            </div>
-
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
-              Filter by Price
-            </h2>
-
-            <div className="p-5">
-              <input
-                type="text"
-                placeholder="Enter price"
-                value={priceFilter}
-                onChange={handlePriceChange}
-                className="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-              />
             </div>
 
             <div className="p-5 pt-0">

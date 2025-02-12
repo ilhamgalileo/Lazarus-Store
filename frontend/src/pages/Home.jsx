@@ -12,7 +12,6 @@ import Footer from "../footer"
 const Home = () => {
   const { keyword } = useParams()
   const { data, isLoading, isError } = useGetProductsQuery({ keyword })
-
   const shuffledProducts = useMemo(() => {
     if (data?.products) {
       return [...data.products].sort(() => Math.random() - 0.5)
@@ -22,7 +21,6 @@ const Home = () => {
 
   return (
     <>
-      {/* Header with Logo & Navigation Menu */}
       <div className="flex items-center justify-between px-6 py-4 bg-[#0f0f10] top-0 z-50 ml-[4rem]">
         <div className="flex items-center gap-8">
           <Link to="/">
@@ -80,7 +78,6 @@ const Home = () => {
           </div>
         </>
       )}
-
       <Footer />
     </>
   )
