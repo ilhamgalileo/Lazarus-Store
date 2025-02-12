@@ -151,9 +151,9 @@ export const markOrderIsPay = asyncHandler(async (req, res) => {
     }
 })
 
-export const getAllStoreOrder= asyncHandler(async (req, res) => {
+export const getAllStoreOrder = asyncHandler(async (req, res) => {
     const orderStore = await OrderStore.find({}).populate("user", "id username");
-    res.json({ orderStore });
+    res.json(orderStore);
 })
 
 export const findOrderById = asyncHandler(async (req, res) => {

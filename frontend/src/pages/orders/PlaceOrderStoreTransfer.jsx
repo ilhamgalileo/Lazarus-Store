@@ -6,23 +6,16 @@ import Message from "../../components/Message"
 import ProgressSteps from "../../components/ProgressSteps"
 import Loader from "../../components/loader"
 import { clearCartItems } from "../../redux/features/cart/cartSlice"
-import { usePayOrderStoreMutation, useCreateStoreTransferOrderMutation  } from "../../redux/api/orderApiSlice"
+import { usePayOrderStoreMutation, useCreateStoreTransferOrderMutation } from "../../redux/api/orderApiSlice"
 
 const PlaceOrderStoreTransfer = () => {
     const navigate = useNavigate()
     const cart = useSelector(state => state.cart)
     const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.qty * item.price, 0) || 0
-    const shippingPrice = itemsPrice > 100 ? 0 : 10
-    const taxPrice = Math.round((itemsPrice + shippingPrice) * 0.11)
-    const totalPrice = Math.round(itemsPrice + shippingPrice + taxPrice)
+    const taxPrice = Math.round(itemsPrice * 0.11)
+    const totalPrice = Math.round(itemsPrice + taxPrice)
     const [createOrder, { isLoading, error }] = useCreateStoreTransferOrderMutation()
     const [payOrder] = usePayOrderStoreMutation()
-
-    useEffect(() => {
-        if (!cart.shippingAddress.address) {
-            navigate("/shipping")
-        }
-    }, [cart.paymentMethod, cart.shippingAddress.address, navigate])
 
     const dispatch = useDispatch()
 
@@ -65,11 +58,10 @@ const PlaceOrderStoreTransfer = () => {
                             payment_type: details.payment_type
                         }).unwrap()
                         toast.success('payment successfully')
-                        navigate(`/order/${res.order._id}`);
+                        navigate(`/order/${res.order._id}/store`);
                     } catch (error) {
                         toast.error(error?.data?.message || error.message);
                     }
-                    navigate(`/order/store-transfer/${res.order._id}`)
                 },
                 onPending: function (details) {
                     console.log('Payment pending:', details)
@@ -126,7 +118,6 @@ const PlaceOrderStoreTransfer = () => {
                     <h2 className="text-xl font-semibold">Order Summary</h2>
                     <ul>
                         <li>Items: Rp. {itemsPrice.toLocaleString()}</li>
-                        <li>Shipping: Rp. {shippingPrice.toLocaleString()}</li>
                         <li>Tax: Rp. {taxPrice.toLocaleString()}</li>
                         <li>Total: Rp. {totalPrice.toLocaleString()}</li>
                     </ul>

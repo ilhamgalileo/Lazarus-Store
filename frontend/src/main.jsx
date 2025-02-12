@@ -32,6 +32,7 @@ import AboutUs from './aboutUs.jsx'
 import Footer from './footer.jsx'
 import ProductsTable from './pages/admin/ProductsTable.jsx'
 import PlaceOrderStoreTransfer from './pages/orders/PlaceOrderStoreTransfer.jsx'
+import StoreOrder from './pages/orders/storeOrder.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -55,6 +56,7 @@ const router = createBrowserRouter(
         <Route path='/placeorder/store-transfer' element={<PlaceOrderStoreTransfer />} />
         <Route path='/order/:id' element={<Order />} />
         <Route path='/order/:id/cash' element={<CashOrder />} />
+        <Route path='/order/:id/store' element={<StoreOrder />} />
       </Route>
 
       {/* admin */}

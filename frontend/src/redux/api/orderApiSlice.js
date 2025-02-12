@@ -39,6 +39,12 @@ export const orderApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+        getStoreOrderDetails: builder.query({
+            query: (id) => ({
+                url: `${STORE_ORDERS_URL}/${id}`
+            }),
+        }),
+
         payOrder: builder.mutation({
             query: ({ orderId, details }) => ({
                 url: `${ORDERS_URL}/${orderId}/pay`,
@@ -105,12 +111,19 @@ export const orderApiSlice = apiSlice.injectEndpoints({
             transformResponse: (response) => ({
                 orders: response.orders || [],
                 cashOrders: response.cashOrders || [],
+                orderStore: response.orderStore || [],
             }),
         }),
 
         getCashOrders: builder.query({
             query: () => ({
                 url: `${CASH_ORDERS_URL}/all`
+            }),
+        }),
+
+        getStoreOrders: builder.query({
+            query: () => ({
+                url: `${STORE_ORDERS_URL}/all`
             }),
         }),
 
@@ -143,6 +156,8 @@ export const {
     useGetMyOrdersQuery,
     useGetMidtransTokenMutation,
     useGetOrderDetailsQuery,
+    useGetStoreOrderDetailsQuery,
+    useGetStoreOrdersQuery,
     useGetCashOrderDetailsQuery,
     useGetCashOrdersQuery,
     useGetOrdersSalesByDateQuery,

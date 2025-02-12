@@ -10,6 +10,7 @@ const ProductsTable = () => {
   const { data: products, isLoading, error } = useAllProductsQuery();
   const [searchTerm, setSearchTerm] = useState('');
   const [searchPrice, setSearchPrice] = useState('');
+  const [searchStock, setSearchStock] = useState('');
   const [priceFilter, setPriceFilter] = useState('all');
 
   if (isLoading) return <Loader />;
@@ -18,10 +19,13 @@ const ProductsTable = () => {
   const filteredProducts = products.filter((product) => {
     const matchesSearchTerm =
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.countInStock.toString().includes(searchTerm);
+      product._id.toString().includes(searchTerm)
 
     const matchSearchPrice =
       product.price.toString().includes(searchPrice);
+
+    const matchSearchStock =
+      product.countInStock.toString().includes(searchStock);
 
     const matchesPriceFilter =
       priceFilter === 'all' ||
@@ -29,7 +33,7 @@ const ProductsTable = () => {
       (priceFilter === '1-5' && product.price >= 1000000 && product.price <= 5000000) ||
       (priceFilter === 'above5m' && product.price > 5000000)
 
-    return matchesSearchTerm && matchesPriceFilter && matchSearchPrice;
+    return matchesSearchTerm && matchesPriceFilter && matchSearchPrice && matchSearchStock;
   });
 
   const exportToPDF = () => {
@@ -53,7 +57,7 @@ const ProductsTable = () => {
       <div className="mt-8 flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
         <input
           type="text"
-          placeholder="Search by name or stock"
+          placeholder="Search by Name or ID"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full md:w-1/3 px-3 py-2 text-white bg-gray-600 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -64,6 +68,15 @@ const ProductsTable = () => {
           placeholder="Search Price"
           value={searchPrice}
           onChange={(e) => setSearchPrice(e.target.value)}
+          className
+          ="w-full md:w-1/3 px-3 py-2 text-white bg-gray-600 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+        />
+
+        <input
+          type="number"
+          placeholder="Search Stock"
+          value={searchStock}
+          onChange={(e) => setSearchStock(e.target.value)}
           className="w-full md:w-1/3 px-3 py-2 text-white bg-gray-600 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
         />
 
