@@ -9,7 +9,6 @@ const OrderList = () => {
   const { data, isLoading, error } = useGetAllOrdersQuery();
   const { orders, cashOrders } = data || { orders: [], cashOrders: [] };
 
-  // State untuk pencarian
   const [searchTerm, setSearchTerm] = useState('');
 
   // State untuk filter

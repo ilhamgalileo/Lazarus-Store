@@ -54,15 +54,10 @@ export const fetchNewProducts = asyncHandler(async (req, res) => {
 })
 
 export const fetchAllProducts = asyncHandler(async (req, res) => {
-    try {
-        const products = await Product.find({})
-            .populate("category")
-            .sort({ createdAt: -1 })
-        res.json(products)
-    } catch (error) {
-        console.error(error)
-        res.status(500).json({ error: "Server error" })
-    }
+    const products = await Product.find({})
+        .populate("category")
+        .sort({ createdAt: -1 })
+    res.json(products)
 })
 
 export const addProductReview = asyncHandler(async (req, res) => {

@@ -38,7 +38,7 @@ const Navigation = () => {
       }
     }
   };
-  
+
   const closeDropdown = () => {
     setDropdownOpen(false);
   };
@@ -147,13 +147,22 @@ const Navigation = () => {
                     </>
                   )}
                   {userInfo.user.superAdmin && (
-                    <Link
-                      to="/admin/userlist"
-                      className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
-                      onClick={closeDropdown}
-                    >
-                      Users
-                    </Link>
+                    <>
+                      <Link
+                        to="/admin/userlist"
+                        className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
+                        onClick={closeDropdown}
+                      >
+                        Users
+                      </Link>
+                      <Link
+                        to="/admin/product/table"
+                        className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
+                        onClick={closeDropdown}
+                      >
+                        Product Table
+                      </Link>
+                    </>
                   )}
                   <Link
                     to="/profile"
