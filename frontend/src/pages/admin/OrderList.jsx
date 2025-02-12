@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Message from "../../components/Message";
 import Loader from "../../components/loader";
 import { Link } from "react-router-dom";
@@ -6,31 +6,114 @@ import { useGetAllOrdersQuery } from "../../redux/api/orderApiSlice";
 import AdminMenu from "./AdminMenu";
 
 const OrderList = () => {
-  const { data, isLoading, error } = useGetAllOrdersQuery()
+  const { data, isLoading, error } = useGetAllOrdersQuery();
+  const { orders, cashOrders } = data || { orders: [], cashOrders: [] };
 
-  const { orders, cashOrders } = data || { orders: [], cashOrders: [] }
+  // State untuk pencarian
+  const [searchTerm, setSearchTerm] = useState('');
 
+  // State untuk filter
+  const [paymentFilter, setPaymentFilter] = useState('all'); // 'all', 'paid', 'unpaid'
+  const [deliveryFilter, setDeliveryFilter] = useState('all'); // 'all', 'complete', 'pending'
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState('all'); // 'all', 'cash', 'non-cash'
+
+  // Komponen StatusBadge
   const StatusBadge = ({ isComplete, label }) => (
-    <span className={`px-3 py-1 rounded-full text-sm font-medium ${isComplete ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-      }`}>
+    <span className={`px-3 py-1 rounded-full text-sm font-medium ${isComplete ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
       {label}
     </span>
-  )
+  );
+
+  // Fungsi untuk memfilter dan mencari data
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearchTerm =
+      order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.user?.username?.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    const matchesPaymentFilter =
+      paymentFilter === 'all' ||
+      (paymentFilter === 'paid' && order.isPaid) ||
+      (paymentFilter === 'unpaid' && !order.isPaid);
+
+    const matchesDeliveryFilter =
+      deliveryFilter === 'all' ||
+      (deliveryFilter === 'complete' && order.isDelivered) ||
+      (deliveryFilter === 'pending' && !order.isDelivered);
+
+    return matchesSearchTerm && matchesPaymentFilter && matchesDeliveryFilter;
+  });
+
+  const filteredCashOrders = cashOrders.filter((order) => {
+    const matchesSearchTerm =
+      order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customerName.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesPaymentFilter =
+      paymentFilter === 'all' ||
+      (paymentFilter === 'paid' && order.isPaid) ||
+      (paymentFilter === 'unpaid' && !order.isPaid);
+
+    const matchesPaymentMethodFilter =
+      paymentMethodFilter === 'all' ||
+      (paymentMethodFilter === 'cash' && order.paymentMethod === 'cash') ||
+      (paymentMethodFilter === 'non-cash' && order.paymentMethod !== 'cash');
+
+    return matchesSearchTerm && matchesPaymentFilter && matchesPaymentMethodFilter;
+  });
 
   if (isLoading) return <Loader />;
-
-  if (error) {
-    return (
-      <Message variant='danger'>
-        {error?.data?.message || error.error}
-      </Message>
-    );
-  }
+  if (error) return <Message variant='danger'>{error?.data?.message || error.error}</Message>;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <AdminMenu />
 
+      {/* Input Pencarian dan Filter */}
+      <div className="mt-8 flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+        {/* Input Pencarian */}
+        <input
+          type="text"
+          placeholder="Search by ID or Customer Name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full md:w-1/3 px-3 py-2 text-white bg-gray-600 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+        />
+
+        {/* Filter Pembayaran */}
+        <select
+          value={paymentFilter}
+          onChange={(e) => setPaymentFilter(e.target.value)}
+          className="bg-gray-600 w-full md:w-1/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+        >
+          <option value="all">All Payments</option>
+          <option value="paid">Paid</option>
+          <option value="unpaid">Unpaid</option>
+        </select>
+
+        {/* Filter Pengiriman */}
+        <select
+          value={deliveryFilter}
+          onChange={(e) => setDeliveryFilter(e.target.value)}
+          className="bg-gray-600 w-full md:w-1/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+        >
+          <option value="all">All Deliveries</option>
+          <option value="complete">Complete</option>
+          <option value="pending">Pending</option>
+        </select>
+
+        {/* Filter Metode Pembayaran */}
+        <select
+          value={paymentMethodFilter}
+          onChange={(e) => setPaymentMethodFilter(e.target.value)}
+          className="bg-gray-600 w-full md:w-1/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+        >
+          <option value="all">All Payment Methods</option>
+          <option value="cash">Cash</option>
+          <option value="non-cash">Non-Cash</option>
+        </select>
+      </div>
+
+      {/* Tabel Order */}
       <div className="mt-8 flex flex-col">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle">
@@ -49,7 +132,7 @@ const OrderList = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-gray-700">
-                  {orders.map((order) => (
+                  {filteredOrders.map((order) => (
                     <tr key={order._id}>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
                         {order?.orderItems?.length || 0} Items
@@ -86,7 +169,7 @@ const OrderList = () => {
                     </tr>
                   ))}
 
-                  {cashOrders.map((order, index) => (
+                  {filteredCashOrders.map((order) => (
                     <tr key={order._id} className="bg-gray-800">
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
                         {order?.items?.length || 0} Items
@@ -129,7 +212,7 @@ const OrderList = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default OrderList
+export default OrderList;

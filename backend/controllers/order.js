@@ -12,7 +12,7 @@ function calcPrice(orderItems) {
     const shippingPrice = itemsPrice > 100 ? 0 : 10
     const subtotal = itemsPrice + shippingPrice
     const taxPrice = Math.round(subtotal * 0.11)
-    const totalPrice = Math.round(subtotal + taxPrce)
+    const totalPrice = Math.round(subtotal + taxPrice)
 
     return {
         itemsPrice: Math.round(itemsPrice),
