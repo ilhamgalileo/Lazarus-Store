@@ -80,7 +80,7 @@ export const addProductReview = asyncHandler(async (req, res) => {
                 name: req.user.username,
                 rating: Number(rating),
                 comment,
-                user: req.user._id, 
+                user: req.user._id,
             };
             product.reviews.push(review)
             product.numReviews = product.reviews.length
@@ -88,7 +88,7 @@ export const addProductReview = asyncHandler(async (req, res) => {
             product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length
 
             await product.save()
-            res.status(201).json({ message: "review added" })   
+            res.status(201).json({ message: "review added" })
         } else {
             res.status(404)
             throw new Error("product not found")
@@ -100,33 +100,34 @@ export const addProductReview = asyncHandler(async (req, res) => {
 })
 
 export const createProduct = asyncHandler(async (req, res) => {
-    try {
-      const { name, brand, quantity, category, description, price } = req.body
+    const { name, brand, quantity, category, description, price, countInStock } = req.body;
 
-      const imagePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'));
-  
-      const product = new Product({
+    if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ message: "No images uploaded" });
+    }
+
+    const imagePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'));
+
+    const product = new Product({
         name,
         brand,
         quantity,
         category,
         description,
+        countInStock,
         price,
-        images: imagePaths
-      })
-  
-      await product.save()
-      res.status(201).json({
-        message: 'Product created successfully',
-        product
-      })
-    } catch (error) {
-      console.error('Error creating product:', error)
-      res.status(500).json({ error: 'Server error' })
-    }
-  })
+        images: imagePaths,
+    });
 
-  export const update = asyncHandler(async (req, res) => {
+    await product.save();
+
+    res.status(201).json({
+        message: "Product created successfully",
+        product,
+    })
+})
+
+export const update = asyncHandler(async (req, res) => {
     try {
         const { name, brand, quantity, category, description, price, countInStock } = req.body;
 
@@ -185,8 +186,8 @@ export const filterProducts = asyncHandler(async (req, res) => {
 
         let args = {}
         if (checked.length > 0) args.category = checked
-        if (radio.length)args.price = { $gte: radio[0], $lte: radio[1]}
-        
+        if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] }
+
         const products = await Product.find(args)
         res.json(products)
 

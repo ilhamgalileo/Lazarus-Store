@@ -11,10 +11,10 @@ import {
   FaStar,
   FaStore,
   FaCommentDots
-} from "react-icons/fa";
+} from "react-icons/fa"
 
 const ProductCarousel = () => {
-  const { data: products, isLoading, error } = useGetTopProductsQuery();
+  const { data: products, isLoading, error } = useGetTopProductsQuery()
 
   const settings = {
     dots: false,

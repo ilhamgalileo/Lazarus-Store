@@ -47,7 +47,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="ml-[21rem] mt-4">
+      <div className="ml-[23rem] mt-4">
         <h1 className="text-xl font-semibold">Our New Releases</h1>
       </div>
 

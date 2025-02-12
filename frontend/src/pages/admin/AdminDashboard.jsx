@@ -166,7 +166,7 @@ const AdminDashboard = () => {
 
         <div className="bg-black rounded-lg shadow-lg p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-white">Recent Orders</h2>
+            <h2 className="text-lg font-bold text-white">All Order</h2>
           </div>
           <OrderList limit={5} />
         </div>
