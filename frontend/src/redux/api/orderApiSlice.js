@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-import { ORDERS_URL, MIDTRANS_URL, CASH_ORDERS_URL } from "../constants";
+import { ORDERS_URL, MIDTRANS_URL, CASH_ORDERS_URL, STORE_ORDERS_URL } from "../constants";
 
 export const orderApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -13,9 +13,17 @@ export const orderApiSlice = apiSlice.injectEndpoints({
 
         createCashOrder: builder.mutation({
             query: (cashOrder) => ({
-                url: `${CASH_ORDERS_URL}`,
+                url: CASH_ORDERS_URL,
                 method: 'POST',
                 body: cashOrder
+            })
+        }),
+
+        createStoreTransferOrder: builder.mutation({
+            query: (storeTransfer) => ({
+                url: STORE_ORDERS_URL,
+                method: 'POST',
+                body: storeTransfer
             })
         }),
 
@@ -34,6 +42,19 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         payOrder: builder.mutation({
             query: ({ orderId, details }) => ({
                 url: `${ORDERS_URL}/${orderId}/pay`,
+                method: "PUT",
+                body: {
+                    status: details.status,
+                    updatedAt: details.updatedAt,
+                    id: details.id,
+                    payment_type: details.payment_type
+                }
+            }),
+        }),
+
+        payOrderStore: builder.mutation({
+            query: ({ orderId, details }) => ({
+                url: `${STORE_ORDERS_URL}/${orderId}/pay`,
                 method: "PUT",
                 body: {
                     status: details.status,
@@ -117,6 +138,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
 export const {
     useCreateOrderMutation,
     useCreateCashOrderMutation,
+    useCreateStoreTransferOrderMutation,
     useDeliverOrderMutation,
     useGetMyOrdersQuery,
     useGetMidtransTokenMutation,
@@ -128,6 +150,7 @@ export const {
     useGetTotalSalesQuery,
     useGetTotalSalesByDateQuery,
     usePayOrderMutation,
+    usePayOrderStoreMutation,
     useReturnOrderMutation,
     useGetOrdersQuery,
     useGetAllOrdersQuery,

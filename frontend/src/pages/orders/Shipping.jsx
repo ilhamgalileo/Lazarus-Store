@@ -8,7 +8,7 @@ import { saveShippingAddress, savePaymentMethod } from "../../redux/features/car
 const Shipping = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const { userInfo } = useSelector((state) => state.auth);
   const { shippingAddress } = useSelector((state) => state.cart);
 
@@ -34,8 +34,6 @@ const Shipping = () => {
   };
 
   const handleContinue = () => {
-    console.log("Shipping Address Before Dispatch:", qrisBankDetails);
-    console.log("Payment Method Before Dispatch:", paymentMethod);
 
     if (paymentMethod === "qris/bank") {
       dispatch(saveShippingAddress(qrisBankDetails));
@@ -43,10 +41,12 @@ const Shipping = () => {
       navigate("/placeorder");
     } else if (paymentMethod === "cash") {
       navigate("/placeorder/cash");
+    } else if (paymentMethod === "store-transfer") {
+      navigate("/placeorder/store-transfer")
     } else {
       toast.error("Please select a payment method.");
     }
-  };
+  }
 
   return (
     <div className="container mx-auto">
@@ -57,33 +57,50 @@ const Shipping = () => {
 
           <div className="mb-4">
             <label className="block text-gray-400">Select Payment Method</label>
-            <div className="mt-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  className="form-radio text-orange-500"
-                  name="paymentMethod"
-                  value="qris/bank"
-                  checked={paymentMethod === "qris/bank"}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                />
-                <span className="ml-2">Qris or Transfer</span>
-              </label>
-            </div>
-            {userInfo.user.isAdmin && (
+            {!userInfo.user.isAdmin && (
               <div className="mt-2">
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
                     className="form-radio text-orange-500"
                     name="paymentMethod"
-                    value="cash"
-                    checked={paymentMethod === "cash"}
+                    value="qris/bank"
+                    checked={paymentMethod === "qris/bank"}
                     onChange={(e) => setPaymentMethod(e.target.value)}
                   />
-                  <span className="ml-2">Cash</span>
+                  <span className="ml-2">Qris or Transfer</span>
                 </label>
               </div>
+            )}
+            {userInfo.user.isAdmin && (
+              <>
+                <div className="mt-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio text-orange-500"
+                      name="paymentMethod"
+                      value="cash"
+                      checked={paymentMethod === "cash"}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                    />
+                    <span className="ml-2">Cash</span>
+                  </label>
+                </div>
+                <div className="mt-2">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      className="form-radio text-orange-500"
+                      name="paymentMethod"
+                      value="store-transfer"
+                      checked={paymentMethod === "store-transfer"}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                    />
+                    <span className="ml-2">In Store Transfer</span>
+                  </label>
+                </div>
+              </>
             )}
           </div>
 
@@ -130,6 +147,18 @@ const Shipping = () => {
           {paymentMethod === "cash" && (
             <div className="text-center mt-4">
               <p className="text-gray-400">You will be redirected to the cash order page.</p>
+              <button
+                className="bg-green-700 text-white py-2 px-4 rounded-lg w-full mt-4"
+                type="button"
+                onClick={handleContinue}
+              >
+                Continue
+              </button>
+            </div>
+          )}
+          {paymentMethod === "store-transfer" && (
+            <div className="text-center mt-4">
+              <p className="text-gray-400">You will be redirected to the store transfer page.</p>
               <button
                 className="bg-green-700 text-white py-2 px-4 rounded-lg w-full mt-4"
                 type="button"

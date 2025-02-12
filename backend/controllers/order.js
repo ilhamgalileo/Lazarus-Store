@@ -3,6 +3,7 @@ import Product from '../models/product.js'
 import asyncHandler from 'express-async-handler'
 import snap from '../config/midtrans.js';
 import CashOrder from '../models/cashOrder.js';
+import OrderStore from '../models/orderStore.js';
 
 function calcPrice(orderItems) {
     const itemsPrice = orderItems.reduce(
@@ -137,14 +138,16 @@ export const getAllOrder = asyncHandler(async (req, res) => {
 })
 
 export const getAllCombinedOrders = asyncHandler(async (req, res) => {
-    const [orders, cashOrders] = await Promise.all([
+    const [orders, cashOrders, orderStore] = await Promise.all([
         Order.find({}).populate("user", "id username"),
         CashOrder.find({}).populate("items.product", "name price images"),
+        OrderStore.find({}).populate("user", "id username"),
     ])
 
     res.json({
         orders,
         cashOrders,
+        orderStore
     })
 })
 
@@ -155,35 +158,49 @@ export const getMyOrder = asyncHandler(async (req, res) => {
 })
 
 export const countTotalOrders = asyncHandler(async (req, res) => {
-    const [totalTransferOrders, totalCashOrders] = await Promise.all([
+    const [totalTransferOrders, totalCashOrders, totalOrderStore] = await Promise.all([
         Order.countDocuments(),
-        CashOrder.countDocuments()
+        CashOrder.countDocuments(),
+        OrderStore.countDocuments(),
     ]);
 
-    const totalCombinedOrders = totalTransferOrders + totalCashOrders;
+    const totalCombinedOrders = totalTransferOrders + totalCashOrders + totalOrderStore;
 
     res.json({ totalOrders: totalCombinedOrders })
 })
 
 export const calcTotalSales = asyncHandler(async (req, res) => {
-    const [orders, cashOrders] = await Promise.all([
+    const [orders, cashOrders, storeOrders] = await Promise.all([
         Order.find({ isPaid: true }),
-        CashOrder.find({ isPaid: true })
+        CashOrder.find({ isPaid: true }),
+        OrderStore.find({ isPaid: true }),
     ])
 
     const totalSales = orders.reduce((sum, order) => sum + order.totalPrice, 0) +
-        cashOrders.reduce((sum, cashOrder) => sum + cashOrder.totalAmount, 0);
+        cashOrders.reduce((sum, cashOrder) => sum + cashOrder.totalAmount, 0) +
+        storeOrders.reduce((sum, storeOrders) => sum + storeOrders.totalPrice, 0)
 
     res.json({ totalSales })
 })
 
 export const calcTotalSalesByDate = asyncHandler(async (req, res) => {
-    const [salesByDateOrder, salesByDateCashOrder] = await Promise.all([
+    const [salesByDateOrder, salesByDateStoreOrder, salesByDateCashOrder] = await Promise.all([
         Order.aggregate([
             {
-                $match: {
-                    isPaid: true,
+                $match: { isPaid: true },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$paidAt" },
+                    },
+                    totalSales: { $sum: "$totalPrice" },
                 },
+            },
+        ]),
+        OrderStore.aggregate([
+            {
+                $match: { isPaid: true },
             },
             {
                 $group: {
@@ -196,9 +213,7 @@ export const calcTotalSalesByDate = asyncHandler(async (req, res) => {
         ]),
         CashOrder.aggregate([
             {
-                $match: {
-                    isPaid: true,
-                },
+                $match: { isPaid: true },
             },
             {
                 $group: {
@@ -211,14 +226,14 @@ export const calcTotalSalesByDate = asyncHandler(async (req, res) => {
         ]),
     ]);
 
-    const mergedSales = [...salesByDateOrder, ...salesByDateCashOrder].reduce((acc, sale) => {
+    const mergedSales = [...salesByDateOrder, ...salesByDateStoreOrder, ...salesByDateCashOrder].reduce((acc, sale) => {
         const existing = acc.find(item => item._id === sale._id);
         if (existing) {
             existing.totalSales += sale.totalSales;
         } else {
-            acc.push(sale)
+            acc.push(sale);
         }
-        return acc
+        return acc;
     }, [])
 
     res.json(mergedSales)
@@ -275,7 +290,7 @@ export const markOrderIsPay = asyncHandler(async (req, res) => {
 })
 
 export const markOrderAsReturned = asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id)
+    const order = await Store.findById(req.params.id)
 
     if (order) {
         if (!order.isPaid) {
@@ -288,7 +303,6 @@ export const markOrderAsReturned = asyncHandler(async (req, res) => {
             throw new Error('Order has already been returned')
         }
 
-        // Kembalikan stok produk
         await Promise.all(order.orderItems.map(async (item) => {
             const product = await Product.findById(item.product)
             if (product) {

@@ -31,6 +31,7 @@ import PlaceOrderCash from './pages/orders/placeOrderCash.jsx'
 import AboutUs from './aboutUs.jsx'
 import Footer from './footer.jsx'
 import ProductsTable from './pages/admin/ProductsTable.jsx'
+import PlaceOrderStoreTransfer from './pages/orders/PlaceOrderStoreTransfer.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -51,6 +52,7 @@ const router = createBrowserRouter(
         <Route path='/shipping' element={<Shipping />} />
         <Route path='/placeorder' element={<PlaceOrder />} />
         <Route path='/placeorder/cash' element={<PlaceOrderCash />} />
+        <Route path='/placeorder/store-transfer' element={<PlaceOrderStoreTransfer />} />
         <Route path='/order/:id' element={<Order />} />
         <Route path='/order/:id/cash' element={<CashOrder />} />
       </Route>
