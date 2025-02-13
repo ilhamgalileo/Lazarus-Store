@@ -33,7 +33,7 @@ const StatBox = ({ title, value, icon, loading }) => (
 );
 
 const generateDateRange = (startDate, endDate) => {
-  const dates = [];
+  const dates = []
   let currentDate = new Date(startDate);
 
   while (currentDate <= endDate) {
@@ -45,45 +45,45 @@ const generateDateRange = (startDate, endDate) => {
 };
 
 const generateAllWeeksInMonth = (month) => {
-  const weeks = [];
-  const year = new Date().getFullYear();
-  const firstDayOfMonth = new Date(year, month - 1, 1);
-  const lastDayOfMonth = new Date(year, month, 0);
+  const weeks = []
+  const year = new Date().getFullYear()
+  const firstDayOfMonth = new Date(year, month - 1, 1)
+  const lastDayOfMonth = new Date(year, month, 0)
 
   let currentDate = new Date(firstDayOfMonth);
   while (currentDate <= lastDayOfMonth) {
-    const weekNumber = Math.ceil((currentDate.getDate() + firstDayOfMonth.getDay()) / 7);
-    const weekId = `${month.toString().padStart(2, "0")}-${weekNumber}`;
+    const weekNumber = Math.ceil(currentDate.getDate() / 7)
+    const weekId = `${year}-${month.toString().padStart(2, "0")}-${weekNumber}`
     if (!weeks.includes(weekId)) {
       weeks.push(weekId);
     }
-    currentDate.setDate(currentDate.getDate() + 7);
+    currentDate.setDate(currentDate.getDate() + 7)
   }
 
-  return weeks;
+  return weeks
 };
 
 const formatWeekLabel = (weekId) => {
-  const [month, week] = weekId.split("-");
-  const monthName = new Date(2024, month - 1, 1).toLocaleString("default", { month: "long" });
-  return `${monthName} - Week ${week}`
-}
+  const [year, month, week] = weekId.split("-");
+  const monthName = new Date(year, month - 1, 1).toLocaleString("default", { month: "long" });
+  return `${monthName} ${year} - Week ${week}`;
+};
 
 const generateAllMonths = () => {
   const months = [];
   for (let i = 0; i < 12; i++) {
-    const date = new Date(2024, i, 1); // Tahun 2024 sebagai contoh
+    const date = new Date(2024, i, 1)
     months.push(date.toLocaleString("default", { month: "long" }));
   }
   return months;
 };
 
 const generateAllYears = (startYear, endYear) => {
-  const years = [];
+  const years = []
   for (let year = startYear; year <= endYear; year++) {
     years.push(year.toString());
   }
-  return years;
+  return years
 };
 
 const AdminDashboard = () => {
@@ -97,13 +97,10 @@ const AdminDashboard = () => {
   const { data: salesDetailMonthly } = useGetTotalSalesByMonthQuery();
   const { data: salesDetailYearly } = useGetTotalSalesByYearQuery();
 
-  const salesDetail = timeRange === "daily"
-    ? salesDetailDaily
-    : timeRange === "weekly"
-      ? salesDetailWeekly
-      : timeRange === "monthly"
-        ? salesDetailMonthly
-        : salesDetailYearly;
+  const salesDetail =
+    timeRange === "daily" ? salesDetailDaily :
+      timeRange === "weekly" ? salesDetailWeekly :
+        timeRange === "monthly" ? salesDetailMonthly : salesDetailYearly;
 
   const averageSales = sales?.totalSales && orders?.totalOrders ? Math.round(sales.totalSales / orders.totalOrders) : 0;
 

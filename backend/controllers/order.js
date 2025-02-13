@@ -354,44 +354,77 @@ export const calcTotalSalesByYear = asyncHandler(async (req, res) => {
 export const calcTotalSalesByWeek = asyncHandler(async (req, res) => {
     const [salesByMonthOrder, salesByMonthStoreOrder, salesByMonthCashOrder] = await Promise.all([
         Order.aggregate([
-            {
-                $match: { isPaid: true },
-            },
+            { $match: { isPaid: true } },
             {
                 $group: {
                     _id: {
-                        $dateToString: { format: "%m-%w", date: "$paidAt" },
+                        month: { $dateToString: { format: "%Y-%m", date: "$paidAt" } },
+                        week: { $ceil: { $divide: [{ $dayOfMonth: "$paidAt" }, 7] } } 
                     },
-                    totalSales: { $sum: "$totalPrice" },
-                },
+                    totalSales: { $sum: "$totalPrice" }
+                }
             },
+            {
+                $project: {
+                    _id: {
+                        $concat: [
+                            "$_id.month",
+                            "-",
+                            { $toString: "$_id.week" }
+                        ]
+                    },
+                    totalSales: 1
+                }
+            }
         ]),
         OrderStore.aggregate([
-            {
-                $match: { isPaid: true },
-            },
+            { $match: { isPaid: true } },
             {
                 $group: {
                     _id: {
-                        $dateToString: { format: "%m-%w", date: "$paidAt" },
+                        month: { $dateToString: { format: "%Y-%m", date: "$paidAt" } }, // Tambahkan tahun untuk menghindari konflik antar tahun
+                        week: { $ceil: { $divide: [{ $dayOfMonth: "$paidAt" }, 7] } } // Hitung minggu dalam bulan
                     },
-                    totalSales: { $sum: "$totalPrice" },
-                },
+                    totalSales: { $sum: "$totalPrice" }
+                }
             },
+            {
+                $project: {
+                    _id: {
+                        $concat: [
+                            "$_id.month",
+                            "-",
+                            { $toString: "$_id.week" }
+                        ]
+                    },
+                    totalSales: 1
+                }
+            }
         ]),
         CashOrder.aggregate([
-            {
-                $match: { isPaid: true },
-            },
+            { $match: { isPaid: true } },
             {
                 $group: {
                     _id: {
-                        $dateToString: { format: "%m-%w", date: "$createdAt" },
+                        month: { $dateToString: { format: "%Y-%m", date: "$createdAt" } }, // Tambahkan tahun untuk menghindari konflik antar tahun
+                        week: { $ceil: { $divide: [{ $dayOfMonth: "$createdAt" }, 7] } } // Hitung minggu dalam bulan
                     },
-                    totalSales: { $sum: "$totalAmount" },
-                },
+                    totalSales: { $sum: "$totalAmount" }
+                }
             },
-        ]),
+            {
+                $project: {
+                    _id: {
+                        $concat: [
+                            "$_id.month",
+                            "-",
+                            { $toString: "$_id.week" }
+                        ]
+                    },
+                    totalSales: 1
+                }
+            }
+        ])
     ]);
 
     const mergedSales = [...salesByMonthOrder, ...salesByMonthStoreOrder, ...salesByMonthCashOrder].reduce((acc, sale) => {
@@ -399,13 +432,19 @@ export const calcTotalSalesByWeek = asyncHandler(async (req, res) => {
         if (existing) {
             existing.totalSales += sale.totalSales;
         } else {
-            acc.push(sale);
+            acc.push(sale)
         }
-        return acc;
+        return acc
     }, []);
 
-    res.json(mergedSales);
-});
+    mergedSales.sort((a, b) => {
+        const [aYearMonth, aWeek] = a._id.split('-')
+        const [bYearMonth, bWeek] = b._id.split('-')
+        return aYearMonth.localeCompare(bYearMonth) || parseInt(aWeek) - parseInt(bWeek)
+    });
+
+    res.json(mergedSales)
+})
 
 export const findOrderById = asyncHandler(async (req, res) => {
     const id = req.params.id

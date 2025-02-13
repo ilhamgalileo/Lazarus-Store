@@ -183,13 +183,17 @@ const Shop = () => {
               <Loader />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ml-[20rem]">
-                {products?.map((p) => (
-                  <div key={p._id} className="flex justify-center">
-                    <div className="w-full" style={{ maxWidth: "320px" }}>
-                      <ProductCard p={p} />
-                    </div>
-                  </div>
-                ))}
+                {products
+                  ? [...products]
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                    .map((p) => (
+                      <div key={p._id} className="flex justify-center">
+                        <div className="w-full" style={{ maxWidth: "320px" }}>
+                          <ProductCard p={p} />
+                        </div>
+                      </div>
+                    ))
+                  : null}
               </div>
             )}
           </div>
