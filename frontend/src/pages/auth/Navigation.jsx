@@ -162,6 +162,13 @@ const Navigation = () => {
                       >
                         Product Record
                       </Link>
+                      <Link
+                        to="/admin/order-record"
+                        className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
+                        onClick={closeDropdown}
+                      >
+                        Order Record
+                      </Link>
                     </>
                   )}
                   <Link
