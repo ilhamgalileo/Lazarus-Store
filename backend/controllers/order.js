@@ -239,6 +239,174 @@ export const calcTotalSalesByDate = asyncHandler(async (req, res) => {
     res.json(mergedSales)
 })
 
+export const calcTotalSalesByMonth = asyncHandler(async (req, res) => {
+    const [salesByMonthOrder, salesByMonthStoreOrder, salesByMonthCashOrder] = await Promise.all([
+        Order.aggregate([
+            {
+                $match: { isPaid: true },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m", date: "$paidAt" },
+                    },
+                    totalSales: { $sum: "$totalPrice" },
+                },
+            },
+        ]),
+        OrderStore.aggregate([
+            {
+                $match: { isPaid: true },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m", date: "$paidAt" },
+                    },
+                    totalSales: { $sum: "$totalPrice" },
+                },
+            },
+        ]),
+        CashOrder.aggregate([
+            {
+                $match: { isPaid: true },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m", date: "$createdAt" },
+                    },
+                    totalSales: { $sum: "$totalAmount" },
+                },
+            },
+        ]),
+    ]);
+
+    const mergedSales = [...salesByMonthOrder, ...salesByMonthStoreOrder, ...salesByMonthCashOrder].reduce((acc, sale) => {
+        const existing = acc.find(item => item._id === sale._id);
+        if (existing) {
+            existing.totalSales += sale.totalSales;
+        } else {
+            acc.push(sale);
+        }
+        return acc;
+    }, []);
+
+    res.json(mergedSales);
+})
+
+export const calcTotalSalesByYear = asyncHandler(async (req, res) => {
+    const [salesByMonthOrder, salesByMonthStoreOrder, salesByMonthCashOrder] = await Promise.all([
+        Order.aggregate([
+            {
+                $match: { isPaid: true },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y", date: "$paidAt" },
+                    },
+                    totalSales: { $sum: "$totalPrice" },
+                },
+            },
+        ]),
+        OrderStore.aggregate([
+            {
+                $match: { isPaid: true },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y", date: "$paidAt" },
+                    },
+                    totalSales: { $sum: "$totalPrice" },
+                },
+            },
+        ]),
+        CashOrder.aggregate([
+            {
+                $match: { isPaid: true },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y", date: "$createdAt" },
+                    },
+                    totalSales: { $sum: "$totalAmount" },
+                },
+            },
+        ]),
+    ]);
+
+    const mergedSales = [...salesByMonthOrder, ...salesByMonthStoreOrder, ...salesByMonthCashOrder].reduce((acc, sale) => {
+        const existing = acc.find(item => item._id === sale._id);
+        if (existing) {
+            existing.totalSales += sale.totalSales;
+        } else {
+            acc.push(sale);
+        }
+        return acc;
+    }, []);
+
+    res.json(mergedSales);
+})
+
+export const calcTotalSalesByWeek = asyncHandler(async (req, res) => {
+    const [salesByMonthOrder, salesByMonthStoreOrder, salesByMonthCashOrder] = await Promise.all([
+        Order.aggregate([
+            {
+                $match: { isPaid: true },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%m-%w", date: "$paidAt" },
+                    },
+                    totalSales: { $sum: "$totalPrice" },
+                },
+            },
+        ]),
+        OrderStore.aggregate([
+            {
+                $match: { isPaid: true },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%m-%w", date: "$paidAt" },
+                    },
+                    totalSales: { $sum: "$totalPrice" },
+                },
+            },
+        ]),
+        CashOrder.aggregate([
+            {
+                $match: { isPaid: true },
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%m-%w", date: "$createdAt" },
+                    },
+                    totalSales: { $sum: "$totalAmount" },
+                },
+            },
+        ]),
+    ]);
+
+    const mergedSales = [...salesByMonthOrder, ...salesByMonthStoreOrder, ...salesByMonthCashOrder].reduce((acc, sale) => {
+        const existing = acc.find(item => item._id === sale._id);
+        if (existing) {
+            existing.totalSales += sale.totalSales;
+        } else {
+            acc.push(sale);
+        }
+        return acc;
+    }, []);
+
+    res.json(mergedSales);
+});
+
 export const findOrderById = asyncHandler(async (req, res) => {
     const id = req.params.id
     const order = await Order.findById(id).populate("user", "username email")

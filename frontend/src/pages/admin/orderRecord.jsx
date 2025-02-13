@@ -66,7 +66,7 @@ const OrderRecord = () => {
             (paymentMethodFilter === 'cstore' && order.paymentMethod === 'cstore') ||
             (paymentMethodFilter === 'bank_transfer' && order.paymentMethod === 'bank_transfer');
 
-        const matchesDateFilter = filterByDate(order, dateFilter);
+        const matchesDateFilter = filterByDate(order, dateFilter)
 
         return matchesSearchTerm && matchesPaymentFilter && matchesDeliveryFilter && matchesPaymentMethodFilter && matchesDateFilter;
     });
@@ -104,6 +104,7 @@ const OrderRecord = () => {
 
         const matchesPaymentMethodFilter =
             paymentMethodFilter === 'all' ||
+            
             (paymentMethodFilter === 'cash' && order.paymentMethod === 'cash') ||
             (paymentMethodFilter === 'qris' && order.paymentMethod === 'qris') ||
             (paymentMethodFilter === 'cstore' && order.paymentMethod === 'cstore') ||

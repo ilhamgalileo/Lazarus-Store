@@ -1,106 +1,123 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaBars } from "react-icons/fa";
 
 const AdminMenu = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen)
-    }
+        setIsMenuOpen(!isMenuOpen);
+    };
 
     return (
         <>
             <button
-                className={`${isMenuOpen ? "top-2 right-2" : 'top-5 right-7'} bg-
-        [#151515] p-2 fixed rounded-lg`} onClick={toggleMenu}>
+                className={`fixed top-5 right-7 bg-[#151515] p-3 rounded-lg z-50 transition-all duration-300 ${
+                    isMenuOpen ? "transform rotate-90" : ""
+                }`}
+                onClick={toggleMenu}
+            >
                 {isMenuOpen ? (
-                    <FaTimes color="white" />
+                    <FaTimes className="text-white text-xl" />
                 ) : (
-                    <>
-                        <div className=" w-6 h-0.5 bg-gray-200 my-1"></div>
-                        <div className=" w-6 h-0.5 bg-gray-200 my-1"></div>
-                        <div className=" w-6 h-0.5 bg-gray-200 my-1"></div>
-                    </>
+                    <FaBars className="text-white text-xl" />
                 )}
-
             </button>
 
+            {/* Overlay */}
             {isMenuOpen && (
-                <section className="bg-[#151515] p-4 fixed right-7 top-5">
-                    <ul className="list-none mt-2">
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                    onClick={toggleMenu}
+                ></div>
+            )}
+
+            {/* Menu */}
+            <section
+                className={`fixed top-0 right-0 h-full bg-[#151515] w-64 z-50 transform transition-transform duration-300 ${
+                    isMenuOpen ? "translate-x-0" : "translate-x-full"
+                }`}
+            >
+                <div className="p-4">
+                    <h2 className="text-white text-xl font-bold mb-4">Admin Menu</h2>
+                    <ul className="list-none">
                         <li>
                             <NavLink
-                                className="list-item py-2 px-3 mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                                className="block py-2 px-3 mb-3 hover:bg-[#2E2D2D] rounded-sm transition-colors duration-200"
                                 to="/admin/dashboard"
                                 style={({ isActive }) => ({
-                                    color: isActive ? "greenyellow" : "white",
+                                    color: isActive ? "orange" : "white",
                                 })}
+                                onClick={toggleMenu}
                             >
                                 Admin Dashboard
                             </NavLink>
                         </li>
                         <li>
                             <NavLink
-                                className="list-item py-2 px-3 mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                                className="block py-2 px-3 mb-3 hover:bg-[#2E2D2D] rounded-sm transition-colors duration-200"
                                 to="/admin/categorylist"
                                 style={({ isActive }) => ({
-                                    color: isActive ? 'greenyellow' : 'white',
+                                    color: isActive ? "orange" : "white",
                                 })}
+                                onClick={toggleMenu}
                             >
                                 Create Category
                             </NavLink>
                         </li>
-                        
                         <li>
                             <NavLink
-                                className="list-item py-2 px-3 mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                                className="block py-2 px-3 mb-3 hover:bg-[#2E2D2D] rounded-sm transition-colors duration-200"
                                 to="/admin/productlist"
                                 style={({ isActive }) => ({
-                                    color: isActive ? 'greenyellow' : 'white',
+                                    color: isActive ? "orange" : "white",
                                 })}
+                                onClick={toggleMenu}
                             >
                                 Create Product
                             </NavLink>
                         </li>
                         <li>
                             <NavLink
-                                className="list-item py-2 px-3 mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                                className="block py-2 px-3 mb-3 hover:bg-[#2E2D2D] rounded-sm transition-colors duration-200"
                                 to="/admin/allproductslist"
                                 style={({ isActive }) => ({
-                                    color: isActive ? 'greenyellow' : 'white',
+                                    color: isActive ? "orange" : "white",
                                 })}
+                                onClick={toggleMenu}
                             >
                                 All Products
                             </NavLink>
                         </li>
                         <li>
                             <NavLink
-                                className="list-item py-2 px-3 mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                                className="block py-2 px-3 mb-3 hover:bg-[#2E2D2D] rounded-sm transition-colors duration-200"
                                 to="/admin/userlist"
                                 style={({ isActive }) => ({
-                                    color: isActive ? 'greenyellow' : 'white',
+                                    color: isActive ? "orange" : "white",
                                 })}
+                                onClick={toggleMenu}
                             >
                                 Manage Users
                             </NavLink>
                         </li>
                         <li>
                             <NavLink
-                                className="list-item py-2 px-3 mb-5 hover:bg-[#2E2D2D] rounded-sm"
+                                className="block py-2 px-3 mb-3 hover:bg-[#2E2D2D] rounded-sm transition-colors duration-200"
                                 to="/admin/orderlist"
-                                stale={({ isActive }) => ({
-                                    color: isActive ? 'greenyellow' : 'white',
+                                style={({ isActive }) => ({
+                                    color: isActive ? "orange" : "white",
                                 })}
+                                onClick={toggleMenu}
                             >
                                 Manage Orders
                             </NavLink>
                         </li>
                     </ul>
-                </section>
-            )}
+                </div>
+            </section>
         </>
-    )
-}
+    );
+};
 
-export default AdminMenu
+export default AdminMenu;
