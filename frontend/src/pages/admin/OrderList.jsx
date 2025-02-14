@@ -178,7 +178,7 @@ const OrderList = () => {
                         {order.user ? order.user.username : "N/A"}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                        Rp {new Intl.NumberFormat('id-ID').format(order.totalPrice)}
+                        Rp{new Intl.NumberFormat('id-ID').format(order.totalPrice)}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
                         {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
@@ -224,7 +224,7 @@ const OrderList = () => {
                         {order.user?.username || "N/A"}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                        Rp {new Intl.NumberFormat('id-ID').format(order.totalPrice)}
+                        Rp{new Intl.NumberFormat('id-ID').format(order.totalPrice)}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
                         {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
@@ -267,7 +267,7 @@ const OrderList = () => {
                         {order?.customerName}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
-                        Rp {new Intl.NumberFormat('id-ID').format(order.totalAmount)}
+                        Rp{new Intl.NumberFormat('id-ID').format(order.totalAmount)}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
                         {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}

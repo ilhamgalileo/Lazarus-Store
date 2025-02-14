@@ -56,6 +56,14 @@ export const productApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+        deleteProductImage: builder.mutation({
+            query: (data) => ({
+                url: `${UPLOAD_URL}/delete-image`,
+                method: "DELETE",
+                body: data
+            })
+        }),
+
         deleteProduct: builder.mutation({
             query: (productId) => ({
                 url: `${PRODUCT_URL}/${productId}`,
@@ -71,7 +79,7 @@ export const productApiSlice = apiSlice.injectEndpoints({
                 body: data
             }),
         }),
-        
+
         getTopProducts: builder.query({
             query: () => `${PRODUCT_URL}/top`,
             keepUnusedDataFor: 5,
@@ -83,10 +91,10 @@ export const productApiSlice = apiSlice.injectEndpoints({
         }),
 
         getFilterProducts: builder.query({
-            query : ({checked, radio}) => ({
+            query: ({ checked, radio }) => ({
                 url: `${PRODUCT_URL}/filtered-products`,
                 method: 'POST',
-                body: {checked, radio}
+                body: { checked, radio }
             }),
         }),
     }),
@@ -104,5 +112,6 @@ export const {
     useGetProductDetailsQuery,
     useCreateReviewMutation,
     useUploadProductImageMutation,
+    useDeleteProductImageMutation,
     useGetFilterProductsQuery
 } = productApiSlice

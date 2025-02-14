@@ -78,7 +78,7 @@ const ProductDetail = () => {
 
                     <div className="lg:w-1/2 space-y-6">
                         <h1 className="text-2xl font-bold">{product.name}</h1>
-                        <p className="text-3xl font-extrabold text-orange-500">RP. {new Intl.NumberFormat('id-ID').format(product.price)}</p>
+                        <p className="text-3xl font-extrabold text-orange-500">Rp{new Intl.NumberFormat('id-ID').format(product.price)}</p>
                         <p className="text-gray-300 text-sm">{product.description}</p>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="text-sm space-y-2">

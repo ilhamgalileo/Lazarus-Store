@@ -62,7 +62,7 @@ const ProductCarousel = () => {
                   <div className="one text-xs">
                     <h2 className="font-medium text-xl">{name}</h2>
                     <p className="text-orange-500 text-lg font-bold">
-                      RP. {isLoading ? "Loading..." : new Intl.NumberFormat('id-ID').format(price)}
+                      Rp{isLoading ? "Loading..." : new Intl.NumberFormat('id-ID').format(price)}
                     </p>
                     <br />
                     <br />

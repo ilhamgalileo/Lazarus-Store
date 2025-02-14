@@ -1,5 +1,7 @@
 import Product from '../models/product.js';
 import asyncHandler from 'express-async-handler';
+import fs from 'fs';
+import path from 'path';
 
 export const FindMany = asyncHandler(async (req, res) => {
     try {
@@ -166,15 +168,32 @@ export const deleteImage = asyncHandler(async (req, res) => {
 
     const product = await Product.findById(productId);
     if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
+        return res.status(404).json({ message: "Product not found" });
     }
 
-    // Hapus gambar dari array
-    product.images = product.images.filter(img => img !== imagePath);
+    // Pastikan imagePath ada dalam array sebelum menghapusnya
+    if (!product.images.includes(imagePath)) {
+        return res.status(400).json({ message: "Image not found in product" });
+    }
 
+    // Hapus gambar dari array di database
+    product.images = product.images.filter(img => img !== imagePath);
     await product.save();
-    res.status(200).json({ message: 'Image deleted successfully', images: product.images });
-})
+
+    // Pastikan imagePath diawali dengan '/uploads/' lalu ambil hanya nama file
+    const fileName = imagePath.replace(/^\/uploads\//, ""); // Menghapus "/uploads/" dari path
+    const filePath = path.join("uploads", fileName); // Path file yang akan dihapus
+
+    // Hapus file dari folder uploads
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            console.error("Error deleting file:", err);
+            return res.status(500).json({ message: "Failed to delete image file" });
+        }
+    });
+
+    res.status(200).json({ message: "Image deleted successfully", images: product.images });
+});
 
 export const deleteProduct = asyncHandler(async (req, res) => {
     const deletedProduct = await Product.findByIdAndDelete(req.params.id)

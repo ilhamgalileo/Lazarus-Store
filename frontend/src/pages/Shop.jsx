@@ -84,7 +84,12 @@ const Shop = () => {
         <div className="flex md:flex-row">
           <div
             className="bg-[#151515] p-3 mt-2 mb-4 w-64 flex-shrink-0 top-0"
-            style={{ position: "fixed", height: "100vh", overflowY: "auto", top: "0" }}
+            style={{
+              position: "fixed",
+              height: "100vh",
+              overflowY: "auto",
+              top: "0"
+            }}
           >
             <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
               Search by Name

@@ -4,7 +4,8 @@ import {
     useDeleteProductMutation,
     useGetProductByIdQuery,
     useUploadProductImageMutation,
-    useUpdateProductMutation
+    useUpdateProductMutation,
+    useDeleteProductImageMutation, 
 } from "../../redux/api/productApiSlice"
 import { useFetchCateQuery } from "../../redux/api/categoryApiSlice"
 import { toast } from "react-toastify"
@@ -20,6 +21,7 @@ const ProductUpdate = () => {
     const [uploadProductImage] = useUploadProductImageMutation()
     const [updateProduct] = useUpdateProductMutation()
     const [deleteProduct] = useDeleteProductMutation()
+    const [deleteImage] = useDeleteProductImageMutation()
 
     const [newFiles, setNewFiles] = useState([])
     const [formData, setFormData] = useState({
@@ -33,6 +35,28 @@ const ProductUpdate = () => {
         images: [],
     })
     const [loading, setLoading] = useState(false)
+
+    const handleDeleteImage = async (imagePath) => {
+        if (!window.confirm("Are you sure you want to delete this image?")) return;
+
+        try {
+            await deleteImage({
+                productId: params.id,
+                imagePath,
+            }).unwrap();
+
+            // Hapus gambar dari state formData.images
+            setFormData((prev) => ({
+                ...prev,
+                images: prev.images.filter((img) => img !== imagePath),
+            }));
+
+            toast.success("Image deleted successfully");
+        } catch (err) {
+            console.error("Error deleting image:", err);
+            toast.error(err?.data?.message || "Failed to delete image");
+        }
+    };
 
     useEffect(() => {
         if (productData && productData._id) {
@@ -135,17 +159,6 @@ const ProductUpdate = () => {
         }
     }
 
-    const removeImage = (indexToRemove) => {
-        setFormData(prev => ({
-            ...prev,
-            images: prev.images.filter((_, index) => index !== indexToRemove)
-        }));
-    };
-
-    if (isLoadingProduct || isLoadingCategories) {
-        return <Loader />
-    }
-
     return (
         <div className="container xl:mx-[9rem] sm:mx-[0]">
             <div className="flex flex-col md:flex-row">
@@ -178,7 +191,7 @@ const ProductUpdate = () => {
                                             className="w-full h-full object-cover rounded-lg"
                                         />
                                         <button
-                                            onClick={() => removeImage(index)}
+                                            onClick={() => handleDeleteImage(image)}
                                             className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
                                             type="button"
                                             disabled={loading}

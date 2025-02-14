@@ -58,7 +58,7 @@ const Cart = () => {
 
                     <div className="mt-2 text-white">{item.brand}</div>
                     <div className="mt-2 text-white font-bold">
-                      RP.{new Intl.NumberFormat('id-ID').format(item.price)}
+                      Rp{new Intl.NumberFormat('id-ID').format(item.price)}
                     </div>
                   </div>
 
