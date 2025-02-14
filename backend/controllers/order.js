@@ -497,7 +497,7 @@ export const markOrderIsPay = asyncHandler(async (req, res) => {
 })
 
 export const markOrderAsReturned = asyncHandler(async (req, res) => {
-    const order = await Store.findById(req.params.id)
+    const order = await Order.findById(req.params.id)
 
     if (order) {
         if (!order.isPaid) {

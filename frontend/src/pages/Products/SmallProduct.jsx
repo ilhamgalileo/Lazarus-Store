@@ -6,7 +6,7 @@ const SmallProduct = ({ product }) => {
 
   return (
     <div className="w-full sm:w-[18rem] md:w-[18rem] lg:w-[18rem] max-w-xs mx-auto p-3">
-      <Link to={`/product/${product._id}`} className="block relative">
+      <a href={`/product/${product._id}`} className="block relative">
         <img
           src={product.images[0]}
           alt={product.name}
@@ -22,7 +22,7 @@ const SmallProduct = ({ product }) => {
             </span>
           </h2>
         </div>
-      </Link>
+      </a>
     </div>
   )
 }

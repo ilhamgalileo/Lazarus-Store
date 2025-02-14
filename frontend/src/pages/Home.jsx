@@ -46,7 +46,7 @@ const Home = () => {
       </div>
 
       <div className="ml-[23rem] mt-4">
-        <h1 className="text-xl font-semibold">Our New Releases</h1>
+        <h1 className="text-xl font-semibold">New Releases</h1>
       </div>
 
       {!keyword ? <Header /> : null}

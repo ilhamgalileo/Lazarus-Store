@@ -12,40 +12,40 @@ import ProductTabs from "./ProductTabs";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 
 const ProductDetail = () => {
-    const { id: productId } = useParams()
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
+    const { id: productId } = useParams();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const [qty, setQty] = useState(1)
-    const [rating, setRating] = useState(0)
-    const [comment, setComment] = useState('')
-    const [activeTab, setActiveTab] = useState(1)
-    const [mainImage, setMainImage] = useState('')
-    const [selectedImage, setSelectedImage] = useState(null)
+    const [qty] = useState(1);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+    const [activeTab, setActiveTab] = useState(1);
+    const [mainImage, setMainImage] = useState('');
+    const [selectedImage, setSelectedImage] = useState(null);
 
-    const { data: product, isLoading, refetch, error } = useGetProductDetailsQuery(productId)
-    const { userInfo } = useSelector((state) => state.auth)
-    const [createReview, { isLoading: loadingProductReview }] = useCreateReviewMutation()
+    const { data: product, isLoading, refetch, error } = useGetProductDetailsQuery(productId);
+    const { userInfo } = useSelector((state) => state.auth);
+    const [createReview, { isLoading: loadingProductReview }] = useCreateReviewMutation();
 
     useEffect(() => {
         if (product && !mainImage) {
-            setMainImage(product.images?.[0])
-            setSelectedImage(product.images?.[0])
+            setMainImage(product.images?.[0]);
+            setSelectedImage(product.images?.[0]);
         }
-    }, [product, mainImage])
+    }, [product, mainImage]);
 
     const submitHandler = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         try {
             await createReview({
                 productId,
                 rating,
                 comment,
-            }).unwrap()
-            refetch()
+            }).unwrap();
+            refetch();
             toast.success("Review created successfully");
         } catch (error) {
-            toast.error(error?.data || error.message);
+            toast.error(error?.data?.message || "Failed to create review");
         }
     };
 
@@ -91,8 +91,8 @@ const ProductDetail = () => {
                                     className={`w-16 h-16 rounded-md cursor-pointer transition-all object-cover ${selectedImage === imgSrc ? 'border-2 border-orange-500' : 'border border-gr'
                                         }`}
                                     onClick={() => {
-                                        setMainImage(imgSrc)
-                                        setSelectedImage(imgSrc)
+                                        setMainImage(imgSrc);
+                                        setSelectedImage(imgSrc);
                                     }}
                                 />
                             ))}
@@ -158,7 +158,7 @@ const ProductDetail = () => {
                 </div>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default ProductDetail
+export default ProductDetail;

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import Ratings from "./Ratings"
 import SmallProduct from "./SmallProduct"
-import { useGetTopProductsQuery } from "../../redux/api/productApiSlice"
+import { useGetNewProductsQuery } from "../../redux/api/productApiSlice"
 import Loader from "../../components/loader"
 
 const ProductTabs = ({
@@ -16,7 +16,7 @@ const ProductTabs = ({
     activeTab,
     setActiveTab
 }) => {
-    const { data, isLoading } = useGetTopProductsQuery();
+    const { data, isLoading } = useGetNewProductsQuery()
 
     const handleTabClick = (tabNumber) => {
         setActiveTab(tabNumber);
