@@ -15,7 +15,7 @@ const ProductCard = ({ p }) => {
   };
 
   return (
-    <div className="group relative bg-neutral-900 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/10">
+    <div className="group relative bg-neutral-900 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-orange-600">
       <div className="aspect-square overflow-hidden">
         <Link to={`/product/${p._id}`}>
           <img
@@ -28,7 +28,7 @@ const ProductCard = ({ p }) => {
         </Link>
       </div>
 
-      <div className="p-6 space-y-4">
+      <div className="p-6 space-y-9">
         <div className="space-y-2">
           <h3 className="font-medium text-sm text-white truncate">
             {p?.name}
