@@ -135,7 +135,7 @@ export const createProduct = asyncHandler(async (req, res) => {
 
 export const update = asyncHandler(async (req, res) => {
     try {
-        const { name, brand, quantity, category, description, price, countInStock } = req.body;
+        const { name, brand, quantity, category, description, price, countInStock, images } = req.body;
 
         const product = await Product.findById(req.params.id);
         if (!product) {
@@ -150,18 +150,27 @@ export const update = asyncHandler(async (req, res) => {
         product.description = description;
         product.price = price;
 
+        let updatedImages = images ? (Array.isArray(images) ? images : [images]) : product.images;
+
         if (req.files && req.files.length > 0) {
             const imagePaths = req.files.map(file => `/uploads/${file.filename}`.replace(/\\/g, '/'));
-            product.images = [...product.images, ...imagePaths]
+            updatedImages = [...updatedImages, ...imagePaths];
         }
 
+        product.images = updatedImages;
+
         await product.save();
-        res.status(200).json({ message: 'Product updated successfully!', product });
+
+        res.json({
+            message: 'Product updated successfully!',
+            product,
+        });
+
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error' });
+        console.error('Update Error:', error);
+        res.status(500).json({ message: 'Failed to update product' });
     }
-})
+});
 
 export const deleteImage = asyncHandler(async (req, res) => {
     const { productId, imagePath } = req.body;
@@ -171,20 +180,16 @@ export const deleteImage = asyncHandler(async (req, res) => {
         return res.status(404).json({ message: "Product not found" });
     }
 
-    // Pastikan imagePath ada dalam array sebelum menghapusnya
     if (!product.images.includes(imagePath)) {
         return res.status(400).json({ message: "Image not found in product" });
     }
 
-    // Hapus gambar dari array di database
     product.images = product.images.filter(img => img !== imagePath);
     await product.save();
 
-    // Pastikan imagePath diawali dengan '/uploads/' lalu ambil hanya nama file
-    const fileName = imagePath.replace(/^\/uploads\//, ""); // Menghapus "/uploads/" dari path
-    const filePath = path.join("uploads", fileName); // Path file yang akan dihapus
+    const fileName = imagePath.replace(/^\/uploads\//, "")
+    const filePath = path.join("uploads", fileName)
 
-    // Hapus file dari folder uploads
     fs.unlink(filePath, (err) => {
         if (err) {
             console.error("Error deleting file:", err);

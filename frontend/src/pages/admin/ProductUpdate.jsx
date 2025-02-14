@@ -5,7 +5,7 @@ import {
     useGetProductByIdQuery,
     useUploadProductImageMutation,
     useUpdateProductMutation,
-    useDeleteProductImageMutation, 
+    useDeleteProductImageMutation,
 } from "../../redux/api/productApiSlice"
 import { useFetchCateQuery } from "../../redux/api/categoryApiSlice"
 import { toast } from "react-toastify"
@@ -45,7 +45,6 @@ const ProductUpdate = () => {
                 imagePath,
             }).unwrap();
 
-            // Hapus gambar dari state formData.images
             setFormData((prev) => ({
                 ...prev,
                 images: prev.images.filter((img) => img !== imagePath),
@@ -81,27 +80,26 @@ const ProductUpdate = () => {
             [name]: value
         }))
     }
-
     const submitHandler = async (e) => {
         e.preventDefault();
         setLoading(true);
-
+    
         try {
             let uploadedImagePaths = [];
+            
             if (newFiles.length > 0) {
                 const uploadFormData = new FormData();
                 newFiles.forEach((file) => uploadFormData.append("images", file));
-
+    
                 const uploadResponse = await uploadProductImage(uploadFormData).unwrap();
-                uploadedImagePaths = uploadResponse.images
+                uploadedImagePaths = uploadResponse.images || [];
             }
-
-
+            
             const updatedImages = [
-                ...formData.images.filter(img => typeof img === 'string' && img.startsWith('/uploads/')),
-                ...uploadedImagePaths
+                ...formData.images.filter(img => typeof img === "string" && img.startsWith("/uploads/")),
+                ...uploadedImagePaths,
             ];
-
+    
             const productFormData = new FormData();
             productFormData.append("name", formData.name);
             productFormData.append("description", formData.description);
@@ -110,31 +108,34 @@ const ProductUpdate = () => {
             productFormData.append("brand", formData.brand);
             productFormData.append("quantity", formData.quantity);
             productFormData.append("countInStock", formData.countInStock);
-
-            newFiles.forEach((file) => {
-                productFormData.append("images", file)
-            })
-
+    
+            updatedImages.forEach((path) => {
+                productFormData.append("images[]", path);
+            });
+    
             const data = await updateProduct({
                 productId: params.id,
                 formData: productFormData,
-            }).unwrap()
+            }).unwrap();
+    
+            console.log("Updated Product:", data);
             toast.success("Product updated successfully");
             navigate("/admin/allproductslist");
-
+    
         } catch (err) {
             console.error("Error details:", err);
             toast.error(err?.data?.message || "Failed to update product");
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const uploadFileHandler = (e) => {
         const files = Array.from(e.target.files);
+
         setNewFiles((prev) => [...prev, ...files]);
 
-        const previewUrls = files.map((file) => URL.createObjectURL(file))
+        const previewUrls = files.map((file) => URL.createObjectURL(file));
 
         setFormData((prev) => ({
             ...prev,
@@ -142,7 +143,7 @@ const ProductUpdate = () => {
         }));
 
         toast.success("Images added successfully");
-    }
+    };
 
     const deleteHandler = async () => {
         if (!window.confirm('Are you sure you want to delete this product?')) return

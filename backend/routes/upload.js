@@ -5,21 +5,19 @@ import { update, deleteImage } from "../controllers/product.js";
 
 const router = express.Router();
 
-// Konfigurasi penyimpanan file dengan multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
   },
 
   filename: (req, file, cb) => {
-    const originalName = file.originalname.toLowerCase().replace(/\s+/g, '-'); // Mengubah nama file menjadi lowercase dan mengganti spasi dengan tanda hubung
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9); // Tambahkan timestamp dan angka acak
-    const fileName = `${uniqueSuffix}-${originalName}`; // Gabungkan timestamp dengan nama asli file
+    const originalName = file.originalname.toLowerCase().replace(/\s+/g, '-')
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
+    const fileName = `${uniqueSuffix}-${originalName}`
     cb(null, fileName);
   },
 });
 
-// Filter file yang diizinkan
 const fileFilter = (req, file, cb) => {
   const filetypes = /jpe?g|png|webp/;
   const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
@@ -34,16 +32,14 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ storage, fileFilter });
-const uploadImages = upload.array("images", 5); // Maksimal 5 file
+const upload = multer({ storage, fileFilter })
+const uploadImages = upload.array("images", 5)
 
-// Endpoint untuk mengupdate produk
+
 router.put("/:id", uploadImages, update);
 
-// Endpoint untuk menghapus gambar
 router.delete("/delete-image", deleteImage);
 
-// Endpoint untuk mengunggah gambar
 router.post("/", (req, res) => {
   uploadImages(req, res, (err) => {
     if (err) {
