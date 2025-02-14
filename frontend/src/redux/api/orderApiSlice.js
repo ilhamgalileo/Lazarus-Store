@@ -85,6 +85,13 @@ export const orderApiSlice = apiSlice.injectEndpoints({
             }),
         }),
 
+        returnStoreOrder: builder.mutation({
+            query: (orderId) => ({
+                url: `${STORE_ORDERS_URL}/${orderId}/return`,
+                method: "PUT",
+            }),
+        }),
+
         getMidtransToken: builder.mutation({
             query: (orderId) => ({
                 url: `${MIDTRANS_URL}/${orderId}/token`,
@@ -182,6 +189,7 @@ export const {
     usePayOrderMutation,
     usePayOrderStoreMutation,
     useReturnOrderMutation,
+    useReturnStoreOrderMutation,
     useGetOrdersQuery,
     useGetAllOrdersQuery,
     useReturnCashOrderMutation,

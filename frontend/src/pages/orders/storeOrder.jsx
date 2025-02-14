@@ -8,13 +8,13 @@ import html2canvas from "html2canvas";
 import Message from "../../components/Message";
 import Loader from "../../components/loader";
 import logo from '../../assets/1-removebg-preview.png'
-import { useReturnOrderMutation, useGetStoreOrderDetailsQuery } from "../../redux/api/orderApiSlice";
+import { useReturnStoreOrderMutation, useGetStoreOrderDetailsQuery } from "../../redux/api/orderApiSlice";
 
 const StoreOrder = () => {
     const { id: orderId } = useParams();
     const invoiceRef = useRef();
     const { data: order, refetch, isLoading, error } = useGetStoreOrderDetailsQuery(orderId);
-    const [returnOrder, { isLoading: loadingReturn }] = useReturnOrderMutation();
+    const [returnOrder, { isLoading: loadingReturn }] = useReturnStoreOrderMutation();
     const { userInfo } = useSelector((state) => state.auth);
 
     useEffect(() => {

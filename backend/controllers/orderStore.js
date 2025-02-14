@@ -165,3 +165,38 @@ export const findOrderById = asyncHandler(async (req, res) => {
         res.status(404).json("order not found")
     }
 })
+
+export const markOrderAsReturned = asyncHandler(async (req, res) => {
+    const order = await OrderStore.findById(req.params.id);
+  
+    if (order) {
+        if (!order.isPaid) {
+            res.status(400)
+            throw new Error('Order has not valid');
+        }
+  
+        if (order.isPaid === false) {
+            res.status(400)
+            throw new Error('Order has already been returned');
+        }
+  
+        await Promise.all(order.orderItems.map(async (item) => {
+            const product = await Product.findById(item.product);
+            if (product) {
+                product.countInStock += item.qty
+                await product.save()
+            } else {
+                res.status(404);
+                throw new Error(`Product not found: ${item.product}`);
+            }
+        }))
+  
+        order.isPaid = false
+  
+        const updatedOrder = await order.save()
+        res.json(updatedOrder)
+    } else {
+        res.status(404);
+        throw new Error('Order not found');
+    }
+  })

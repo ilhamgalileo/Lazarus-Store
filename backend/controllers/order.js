@@ -505,11 +505,6 @@ export const markOrderAsReturned = asyncHandler(async (req, res) => {
             throw new Error('Order has not been paid yet')
         }
 
-        if (order.isReturned) {
-            res.status(400);
-            throw new Error('Order has already been returned')
-        }
-
         await Promise.all(order.orderItems.map(async (item) => {
             const product = await Product.findById(item.product)
             if (product) {
