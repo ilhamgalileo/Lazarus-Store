@@ -10,24 +10,27 @@ function checkId(req, res, next) {
 }
 
 export const checkUserPurchase = async (req, res, next) => {
-  const { id: productId } = req.params; // Ambil productId dari parameter route
-  const userId = req.user._id; // Ambil userId dari user yang terautentikasi
+  const { id: productId } = req.params
+  const userId = req.user._id
+  const isAdmin = req.user.isAdmin
 
+  if (isAdmin) {
+    return res.status(403).json({ message: "Admin cannot leave reviews" });
+  }
   try {
-      // Cari order yang mengandung productId dan userId
-      const order = await Order.findOne({
-          user: userId,
-          "orderItems.product": productId,
-          isPaid: true,
-      });
+    const order = await Order.findOne({
+      user: userId,
+      "orderItems.product": productId,
+      isPaid: true,
+    });
 
-      if (order) {
-          next();
-      } else {
-          res.status(403).json({ message: "You must purchase the product to leave a review" });
-      }
+    if (order) {
+      next();
+    } else {
+      res.status(403).json({ message: "You must purchase the product to leave a review" });
+    }
   } catch (error) {
-      res.status(500).json({ message: "Failed to check purchase", error: error.message });
+    res.status(500).json({ message: "Failed to check purchase", error: error.message });
   }
 };
 
