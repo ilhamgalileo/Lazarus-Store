@@ -10,7 +10,6 @@ import {
 import { useFetchCateQuery } from "../../redux/api/categoryApiSlice"
 import { toast } from "react-toastify"
 import AdminMenu from "./AdminMenu"
-import Loader from "../../components/loader"
 
 const ProductUpdate = () => {
     const params = useParams()

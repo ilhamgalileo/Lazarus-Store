@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     useCreateProductMutation,
-    useUploadProductImageMutation,
 } from "../../redux/api/productApiSlice";
 import { useFetchCateQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
