@@ -41,7 +41,7 @@ const UserOrder = () => {
                 <td className="py-2 text-center w-[11rem]">
                   <img
                     src={order.orderItems[0]?.images[0]}
-                    alt={order.user}
+                    alt={order.returnedItems[0]?.name}
                     className="w-[15rem] mb-5 mx-auto"
                   />
                 </td>

@@ -26,7 +26,7 @@ const orderSchema = mongoose.Schema(
     },
 
     paymentMethod: { type: String, required: true },
-    
+
     paymentResult: {
       id: { type: String },
       status: { type: String },
@@ -34,7 +34,26 @@ const orderSchema = mongoose.Schema(
       email_address: { type: String },
       payment_type: { type: String },
     },
-
+    returnAmount: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    isReturned: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    returnedItems: [
+      {
+        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+        name: String,
+        image: String,
+        price: Number,
+        qty: Number,
+        returnedAt: { type: Date, default: Date.now },
+      },
+    ],
     itemsPrice: { type: Number, required: true },
     taxPrice: { type: Number, required: true, default: 0.0 },
     shippingPrice: { type: Number, required: true, default: 0.0 },
