@@ -14,10 +14,42 @@ const CashOrder = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [returnOrder, { isLoading: loadingReturn }] = useReturnCashOrderMutation();
   const invoiceRef = useRef();
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [editedQuantities, setEditedQuantities] = useState({});
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     refetch()
   }, [refetch])
+
+  const toggleSelectAll = () => {
+    if (selectAll) {
+      setSelectedItems([]);
+    } else {
+      const allItems = cashOrder.items.map((item) => ({
+        product: item.product,
+        quantity: item.quantity,
+        price: item.price,
+      }));
+      setSelectedItems(allItems);
+    }
+    setSelectAll(!selectAll);
+  };
+
+  const toggleItemSelection = (item) => {
+    setSelectedItems((prev) => {
+      return prev.some((selected) => selected.product === item.product)
+        ? prev.filter((selected) => selected.product !== item.product)
+        : [...prev, { product: item.product, quantity: item.quantity, price: item.price }];
+    });
+  };
+
+  const handleQuantityChange = (productId, quantity) => {
+    setEditedQuantities((prev) => ({
+      ...prev,
+      [productId]: quantity,
+    }));
+  };
 
   const handleDownloadPDF = useCallback(async () => {
     if (!invoiceRef.current) return;
@@ -28,16 +60,28 @@ const CashOrder = () => {
   }, [orderId]);
 
   const returnHandler = useCallback(async () => {
-    if (window.confirm("Are you sure you want to return this order?")) {
+    if (selectedItems.length === 0) {
+      toast.error("Please select at least one item to return.");
+      return;
+    }
+    if (window.confirm("Are you sure you want to return the selected items?")) {
       try {
-        await returnOrder(orderId).unwrap();
-        toast.success("Order returned successfully");
+        const returnedItems = selectedItems.map((item) => ({
+          product: item.product._id,
+          quantity: editedQuantities[item.product._id] || item.quantity,
+        }));
+        await returnOrder({ orderId, returnedItems }).unwrap();
+        toast.success("Order items returned successfully");
+        setSelectedItems([]);
+        setEditedQuantities({});
+        setSelectAll(false);
         refetch();
       } catch {
-        toast.error("Failed to return order");
+        toast.error("Failed to return order items");
       }
     }
-  }, [returnOrder, orderId, refetch]);
+  }, [returnOrder, orderId, selectedItems, refetch, editedQuantities]);
+
 
   return isLoading ? (
     <p>Loading...</p>
@@ -51,9 +95,10 @@ const CashOrder = () => {
         </button>
       </div>
 
-      <div ref={invoiceRef} className="bg-gray-700 p-2 mt-2 shadow-lg relative">
+      <div ref={invoiceRef} className="p-2 mt-2 shadow-lg relative">
         <img src={logo} alt="Logo" className="absolute top-2 left-2 w-[8rem] h-auto" />
         <h2 className="text-2xl font-medium mb-[5rem] text-center">INVOICE</h2>
+        <h3 className="text-xl font-semibold mb-3 mt-[1rem]">Order Information</h3>
         <p className="mb-1"><strong>Order ID:</strong> {cashOrder._id}</p>
         <p className="mb-1"><strong>Payment On:</strong>  {moment(cashOrder.createdAt).format("DD MMMM YYYY")}</p>
         <p className="mb-1"><strong>Payment Status:</strong> {cashOrder.isPaid ?
@@ -65,46 +110,139 @@ const CashOrder = () => {
         <p className="mb-1"><strong>Method:</strong> {cashOrder.paymentMethod}</p>
 
         <div className="overflow-x-auto mt-3">
-          <table className="w-full border-collapse border">
-            <thead>
-              <tr className="bg-orange-600">
-                <th className="p-1.5 border">Image</th>
-                <th className="p-1.5 border">Product</th>
-                <th className="p-1.5 border">Quantity</th>
-                <th className="p-1.5 border">Price</th>
-                <th className="p-1.5 border">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cashOrder.items.map((item, index) => (
-                <tr key={index} className="text-center">
-                  <td className="p-1.5 border">
-                    <img
-                      src={item?.product?.images[0]}
-                      alt={item.product.name}
-                      className="w-20 h-20 object-cover"
-                    />
-                  </td>
-                  <td className="p-1.5 border">
-                    <Link to={`/product/${item.product._id}`} className="text-yellow-400 hover:text-yellow-700">
-                      {item.product.name}
-                    </Link>
-                  </td>
-                  <td className="p-1.5 border">{item.quantity}</td>
-                  <td className="p-1.5 border">RP. {new Intl.NumberFormat('id-ID').format(item.product.price)}</td>
-                  <td className="p-1.5 border">RP. {new Intl.NumberFormat('id-ID').format(item.quantity * item.product.price)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {cashOrder?.items?.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold mt-4 text-orange-400">Ordered Items</h3>
+              <table className="w-full border-collapse border bg-gray-900">
+                <thead>
+                  <tr className="bg-orange-600">
+                    {userInfo.user?.isAdmin && (
+                      <th className="p-2 border">
+                        <input
+                          type="checkbox"
+                          checked={selectAll}
+                          onChange={toggleSelectAll}
+                          className="w-6 h-5 mt-3 cursor-pointer"
+                        />
+                      </th>
+                    )}
+                    <th className="p-2 border">Image</th>
+                    <th className="p-2 border">Product</th>
+                    <th className="p-2 border">Quantity</th>
+                    <th className="p-2 border">Price</th>
+                    <th className="p-2 border">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  {cashOrder.items.map((item, index) => (
+                    <tr key={index} className="text-center">
+                      {userInfo.user.isAdmin && (
+                        <td className="p-2 border">
+                          <input
+                            type="checkbox"
+                            className="w-6 h-5 mt-3 cursor-pointer"
+                            checked={selectedItems.some((selected) => selected.product === item.product)}
+                            onChange={() => toggleItemSelection(item)}
+                          />
+                        </td>
+                      )}
+                      <td className="p-2 border">
+                        <img
+                          src={item.product.images[0]}
+                          alt={item.product.name}
+                          className="h-[8rem] w-[8rem] object-cover mx-auto"
+                        />
+                      </td>
+                      <td className="p-2 border">
+                        <Link to={`/product/${item.product._id}`} className="text-yellow-400 hover:text-yellow-700">
+                          {item.product.name}
+                        </Link>
+                      </td>
+                      <td className="p-2 border">
+                        {userInfo.user.isAdmin && selectedItems.some((selected) => selected.product === item.product) ? (
+                          <input
+                            type="number"
+                            min="1"
+                            max={item.quantity}
+                            value={editedQuantities[item.product] || item.quantity}
+                            onChange={(e) => handleQuantityChange(item.product, parseInt(e.target.value))}
+                            className="w-16 text-center"
+                          />
+                        ) : (
+                          item.quantity
+                        )}
+                      </td>
+                      <td className="p-2 border">Rp{new Intl.NumberFormat('id-ID').format(item.product.price)}</td>
+                      <td className="p-2 border">Rp{new Intl.NumberFormat('id-ID').format(item.quantity * item.product.price)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
-        <div className="mt-4">
-          <p><strong>Total Amount:</strong> RP. {new Intl.NumberFormat('id-ID').format(cashOrder.totalAmount)}</p>
-          <p><strong>Received Amount:</strong> RP. {new Intl.NumberFormat('id-ID').format(cashOrder.receivedAmount)}</p>
-          <p><strong>Change:</strong> RP. {new Intl.NumberFormat('id-ID').format(cashOrder.change)}</p>
+        {cashOrder?.returnedItems?.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold text-red-400">Returned Items</h3>
+            <table className="w-full border-collapse border bg-gray-900">
+              <thead>
+                <tr className="bg-red-600">
+                  <th className="p-2 border">Product</th>
+                  <th className="p-2 border">Quantity</th>
+                  <th className="p-2 border">Unit Price</th>
+                  <th className="p-2 border">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cashOrder?.returnedItems.map((item, index) => (
+                  <tr key={index} className="text-center">
+                    <td className="p-2 border">
+                      <Link to={`/product/${item.product}`} className="text-yellow-300 hover:text-yellow-500">
+                        {item.name}
+                      </Link>
+                    </td>
+                    <td className="p-2 border">{item.quantity}</td>
+                    <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                    <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.quantity * item.price)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <div className="mt-[3rem] flex justify-between gap-4 text font-medium">
+          <div className="border p-4 rounded-lg bg-green-700 text-white w-1/3">
+            <div className="flex justify-between mb-2">
+              <span>Total Amount:</span>
+              <span>Rp{new Intl.NumberFormat('id-ID').format(cashOrder.totalAmount)}</span>
+            </div>
+            <div className="flex justify-between mb-2">
+              <span>TAX (PPN 11%):</span>
+              <span>Rp{new Intl.NumberFormat('id-ID').format(cashOrder.taxPrice)}</span>
+            </div>
+            <div className="flex justify-between mb-2">
+              <span>Received Amount:</span>
+              <span>Rp{new Intl.NumberFormat('id-ID').format(cashOrder.receivedAmount)}</span>
+            </div>
+            <div className="flex justify-between font-bold mt-2 pt-2 border-t">
+              <span>Change:</span>
+              <span>Rp{new Intl.NumberFormat('id-ID').format(cashOrder.change)}</span>
+            </div>
+          </div>
+          {cashOrder.returnedItems && cashOrder.returnedItems.length > 0 && (
+            <div className="border p-4 rounded-lg bg-red-700 text-white w-1/3">
+              <h3 className="text-lg font-semibold mb-2">Return Details</h3>
+              <p className="mb-1"><strong>Return Status:</strong> {cashOrder.isReturned ? "True" : "False"}</p>
+              <p className="mb-1"><strong>Return Date:</strong> {cashOrder.returnedItems[0]?.returnedAt ? moment(cashOrder.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}</p>
+              <p className="mb-1"><strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(cashOrder.returnAmount || 0)}</p>
+            </div>
+          )}
         </div>
       </div>
+
       {userInfo.user.isAdmin && cashOrder.isPaid && (
         <div className="mt-6">
           <button
@@ -113,7 +251,7 @@ const CashOrder = () => {
             onClick={returnHandler}
             disabled={loadingReturn}
           >
-            {loadingReturn ? "Processing..." : "Return Order"}
+            {loadingReturn ? "Processing..." : "Return Selected Items"}
           </button>
         </div>
       )}

@@ -80,9 +80,10 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         }),
 
         returnCashOrder: builder.mutation({
-            query: (orderId) => ({
+            query: ({ orderId, returnedItems }) => ({
                 url: `${CASH_ORDERS_URL}/${orderId}/return`,
                 method: "PUT",
+                body: {returnedItems}
             }),
         }),
 

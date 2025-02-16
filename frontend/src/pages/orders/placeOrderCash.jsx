@@ -14,11 +14,10 @@ const PlaceCashOrder = () => {
   const cart = useSelector((state) => state.cart)
 
   const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.qty * item.price, 0) || 0
-  const shippingPrice = itemsPrice > 100 ? 0 : 10
 
-  const taxPrice = Math.round(0.11 * (itemsPrice + shippingPrice))
+  const taxPrice = Math.round(0.11 * itemsPrice)
 
-  const totalPrice = Math.round((itemsPrice + shippingPrice + taxPrice) || 0)
+  const totalPrice = Math.round((itemsPrice + taxPrice) || 0)
 
   const [createCashOrder, { isLoading, error }] = useCreateCashOrderMutation()
   const [cashDetails, setCashDetails] = useState({
@@ -54,6 +53,7 @@ const PlaceCashOrder = () => {
 
       const orderItems = cart.cartItems.map((item) => ({
         product: item._id,
+        name: item.name,
         quantity: item.qty,
         price: item.price
       }))
@@ -64,7 +64,6 @@ const PlaceCashOrder = () => {
         cust_address: cashDetails.cust_address,
         receivedAmount,
         orderItems,
-        shippingPrice,
         taxPrice,
         totalAmount: totalPrice
       }).unwrap()
@@ -126,10 +125,6 @@ const PlaceCashOrder = () => {
                 <div className="flex justify-between text-white">
                   <span>Items:</span>
                   <span>Rp. {itemsPrice.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-white">
-                  <span>Shipping:</span>
-                  <span>Rp. {shippingPrice.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-white">
                   <span>Tax (PPN 11%):</span>

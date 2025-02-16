@@ -9,10 +9,10 @@ export const createCashOrder = async (req, res) => {
     cust_address,
     orderItems,
     receivedAmount,
-    shippingPrice,
+    taxPrice,
   } = req.body
 
-  if (!customerName || !phone || !cust_address || !orderItems || !receivedAmount) {
+  if (!customerName || !phone || !cust_address || !orderItems || !receivedAmount || !taxPrice) {
     return res.status(400).json({ message: "All fields are required" })
   }
 
@@ -39,12 +39,13 @@ export const createCashOrder = async (req, res) => {
 
       validatedItems.push({
         product: item.product,
+        name:product.name,
         quantity: item.quantity,
         price: product.price,
       })
     }
 
-    const totalAmountBeforeTax = calculatedTotal + shippingPrice
+    const totalAmountBeforeTax = calculatedTotal
 
     const taxPrice = 0.11 * totalAmountBeforeTax
 
@@ -61,7 +62,6 @@ export const createCashOrder = async (req, res) => {
       phone,
       address: cust_address,
       items: validatedItems,
-      shippingPrice,
       taxPrice,
       totalAmount,
       receivedAmount,
@@ -114,36 +114,75 @@ export const getCashOrderById = asyncHandler(async (req, res) => {
 })
 
 export const markOrderAsReturned = asyncHandler(async (req, res) => {
-  const order = await CashOrder.findById(req.params.id);
+  const { returnedItems } = req.body;
+  const order = await CashOrder.findById(req.params.id)
 
-  if (order) {
-      if (!order.isPaid) {
-          res.status(400)
-          throw new Error('Order has not valid');
-      }
-
-      if (order.isPaid === false) {
-          res.status(400)
-          throw new Error('Order has already been returned');
-      }
-
-      await Promise.all(order.items.map(async (item) => {
-          const product = await Product.findById(item.product);
-          if (product) {
-              product.countInStock += item.quantity
-              await product.save()
-          } else {
-              res.status(404);
-              throw new Error(`Product not found: ${item.product}`);
-          }
-      }))
-
-      order.isPaid = false
-
-      const updatedOrder = await order.save()
-      res.json(updatedOrder)
-  } else {
+  if (!order) {
       res.status(404);
       throw new Error('Order not found');
   }
+
+  if (!order.isPaid) {
+      res.status(400);
+      throw new Error('Order has not been paid yet');
+  }
+
+  let totalRefund = 0;
+
+  for (const returnedItem of returnedItems) {
+      const { product, quantity } = returnedItem;
+
+      const itemIndex = order.items.findIndex(item => item.product.toString() === product);
+      if (itemIndex === -1) {
+          res.status(404);
+          throw new Error(`Product ${product} not found in order`);
+      }
+
+      const item = order.items[itemIndex];
+
+      if (quantity > item.quantity) {
+          res.status(400);
+          throw new Error(`Return quantity exceeds purchased quantity for product ${product}`);
+      }
+
+      const productData = await Product.findById(product);
+      if (!productData) {
+          res.status(404);
+          throw new Error(`Product ${product} not found`);
+      }
+
+      productData.countInStock += quantity;
+      await productData.save();
+
+      const refundAmount = (item.price || 0) * quantity;
+      totalRefund += refundAmount;
+
+      order.returnedItems.push({
+          product: item.product,
+          name: item.name,
+          price: item.price,
+          quantity,
+          returnedAt: new Date(),
+      });
+
+      item.quantity -= quantity;
+      if (item.quantity === 0) {
+          order.items.splice(itemIndex, 1);
+      }
+  }
+
+  order.totalAmount = Math.max(((order.totalAmount || 0) - totalRefund), 0);
+  order.returnAmount = Math.max(((order.returnAmount || 0) + totalRefund), 0);
+
+  if (order.items.length === 0) {
+      order.isReturned = true;
+      order.isPaid = false;
+      order.taxPrice = 0;
+      order.receivedAmount = 0;
+      order.change = 0;
+      order.totalAmount = 0;
+  }
+  
+  const updatedOrder = await order.save();
+  res.json(updatedOrder);
 })
