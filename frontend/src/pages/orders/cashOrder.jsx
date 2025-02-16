@@ -24,11 +24,16 @@ const CashOrder = () => {
 
   const handleDownloadPDF = useCallback(async () => {
     if (!invoiceRef.current) return;
-    const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true });
+    const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true, backgroundColor: "#0f0f10" });
+    const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
-    pdf.addImage(canvas.toDataURL("image/png"), "PNG", 20, 20, 171, (canvas.height * 171) / canvas.width);
-    pdf.save(`invoice-${orderId}.pdf`);
-  }, [orderId]);
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    pdf.setFillColor(15, 15, 15)
+    pdf.rect(0, 0, pageWidth, pageHeight, "F")
+    pdf.addImage(imgData, "PNG", 20, 20, 171, (canvas.height * 171) / canvas.width);
+    pdf.save(`invoice-cash-${orderId}.pdf`);
+}, [orderId]);
 
   const toggleSelectAll = () => {
     if (selectAll) {
@@ -203,8 +208,8 @@ const CashOrder = () => {
                       </Link>
                     </td>
                     <td className="p-2 border">{item.quantity}</td>
-                    <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
-                    <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.quantity * item.price)}</td>
+                    <td className="p-2 border">Rp{new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                    <td className="p-2 border">Rp{new Intl.NumberFormat('id-ID').format(item.quantity * item.price)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -234,7 +239,7 @@ const CashOrder = () => {
           {cashOrder.returnedItems && cashOrder.returnedItems.length > 0 && (
             <div className="border p-4 rounded-lg bg-red-700 text-white w-1/3">
               <h3 className="text-lg font-semibold mb-2">Return Details</h3>
-              <p className="mb-1"><strong>Return Status:</strong> {cashOrder.isReturned ? "True" : "False"}</p>
+              <p className="mb-1"><strong>Return All:</strong> {cashOrder.isReturned ? "True" : "False"}</p>
               <p className="mb-1"><strong>Return Date:</strong> {cashOrder.returnedItems[0]?.returnedAt ? moment(cashOrder.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}</p>
               <p className="mb-1"><strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(cashOrder.returnAmount || 0)}</p>
             </div>

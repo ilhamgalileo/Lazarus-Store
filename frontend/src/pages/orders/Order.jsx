@@ -54,16 +54,19 @@ const Order = () => {
     }));
   };
 
-  const handleDownloadPDF = async () => {
-    const input = invoiceRef.current;
-    const canvas = await html2canvas(input, { scale: 1.8, useCORS: true });
+  
+  const handleDownloadPDF = useCallback(async () => {
+    if (!invoiceRef.current) return;
+    const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true, backgroundColor: "#0f0f10" });
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
-    const imgWidth = 171;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    pdf.addImage(imgData, "PNG", 20, 20, imgWidth, imgHeight);
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    pdf.setFillColor(15, 15, 15)
+    pdf.rect(0, 0, pageWidth, pageHeight, "F")
+    pdf.addImage(imgData, "PNG", 20, 20, 171, (canvas.height * 171) / canvas.width);
     pdf.save(`invoice-${orderId}.pdf`);
-  };
+}, [orderId]);
 
   const deliverHandler = async () => {
     try {
