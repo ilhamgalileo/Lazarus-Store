@@ -177,7 +177,7 @@ export const markOrderAsReturned = asyncHandler(async (req, res) => {
   if (order.items.length === 0) {
       order.isReturned = true;
       order.isPaid = false;
-      order.taxPrice = 0;
+      // order.taxPrice = 0;
       order.receivedAmount = 0;
       order.change = 0;
       order.totalAmount = 0;

@@ -22,6 +22,14 @@ const CashOrder = () => {
     refetch()
   }, [refetch])
 
+  const handleDownloadPDF = useCallback(async () => {
+    if (!invoiceRef.current) return;
+    const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true });
+    const pdf = new jsPDF("p", "mm", "a4");
+    pdf.addImage(canvas.toDataURL("image/png"), "PNG", 20, 20, 171, (canvas.height * 171) / canvas.width);
+    pdf.save(`invoice-${orderId}.pdf`);
+  }, [orderId]);
+
   const toggleSelectAll = () => {
     if (selectAll) {
       setSelectedItems([]);
@@ -51,14 +59,6 @@ const CashOrder = () => {
     }));
   };
 
-  const handleDownloadPDF = useCallback(async () => {
-    if (!invoiceRef.current) return;
-    const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true });
-    const pdf = new jsPDF("p", "mm", "a4");
-    pdf.addImage(canvas.toDataURL("image/png"), "PNG", 20, 20, 171, (canvas.height * 171) / canvas.width);
-    pdf.save(`invoice-${orderId}.pdf`);
-  }, [orderId]);
-
   const returnHandler = useCallback(async () => {
     if (selectedItems.length === 0) {
       toast.error("Please select at least one item to return.");
@@ -81,7 +81,6 @@ const CashOrder = () => {
       }
     }
   }, [returnOrder, orderId, selectedItems, refetch, editedQuantities]);
-
 
   return isLoading ? (
     <p>Loading...</p>
@@ -165,8 +164,8 @@ const CashOrder = () => {
                             type="number"
                             min="1"
                             max={item.quantity}
-                            value={editedQuantities[item.product] || item.quantity}
-                            onChange={(e) => handleQuantityChange(item.product, parseInt(e.target.value))}
+                            value={editedQuantities[item.product._id] || item.quantity}
+                            onChange={(e) => handleQuantityChange(item.product._id, parseInt(e.target.value))}
                             className="w-16 text-center"
                           />
                         ) : (
