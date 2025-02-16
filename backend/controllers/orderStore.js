@@ -167,36 +167,73 @@ export const findOrderById = asyncHandler(async (req, res) => {
 })
 
 export const markOrderAsReturned = asyncHandler(async (req, res) => {
+    const { returnedItems } = req.body;
     const order = await OrderStore.findById(req.params.id);
-  
-    if (order) {
-        if (!order.isPaid) {
-            res.status(400)
-            throw new Error('Order has not valid');
-        }
-  
-        if (order.isPaid === false) {
-            res.status(400)
-            throw new Error('Order has already been returned');
-        }
-  
-        await Promise.all(order.orderItems.map(async (item) => {
-            const product = await Product.findById(item.product);
-            if (product) {
-                product.countInStock += item.qty
-                await product.save()
-            } else {
-                res.status(404);
-                throw new Error(`Product not found: ${item.product}`);
-            }
-        }))
-  
-        order.isPaid = false
-  
-        const updatedOrder = await order.save()
-        res.json(updatedOrder)
-    } else {
+
+    if (!order) {
         res.status(404);
         throw new Error('Order not found');
     }
-  })
+
+    if (!order.isPaid) {
+        res.status(400);
+        throw new Error('Order has not been paid yet');
+    }
+
+    let totalRefund = 0;
+
+    for (const returnedItem of returnedItems) {
+        const { product, qty } = returnedItem;
+
+        const itemIndex = order.orderItems.findIndex(item => item.product.toString() === product);
+        if (itemIndex === -1) {
+            res.status(404);
+            throw new Error(`Product ${product} not found in order`);
+        }
+
+        const item = order.orderItems[itemIndex];
+
+        if (qty > item.qty) {
+            res.status(400);
+            throw new Error(`Return quantity exceeds purchased quantity for product ${product}`);
+        }
+
+        const productData = await Product.findById(product);
+        if (!productData) {
+            res.status(404);
+            throw new Error(`Product ${product} not found`);
+        }
+
+        productData.countInStock += qty;
+        await productData.save();
+
+        const refundAmount = item.price * qty;
+        totalRefund += refundAmount;
+
+        order.returnedItems.push({
+            product: item.product,
+            name: item.name,
+            price: item.price,
+            qty,
+            returnedAt: new Date(),
+        });
+
+        item.qty -= qty;
+        if (item.qty === 0) {
+            order.orderItems.splice(itemIndex, 1);
+        }
+    }
+
+    order.totalPrice = Math.max(order.totalPrice - totalRefund, 0);
+    order.returnAmount += totalRefund;
+
+    if (order.orderItems.length === 0) {
+        order.isReturned = true
+        order.isPaid = false
+        order.taxPrice = 0
+        order.totalPrice = 0
+    }
+
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+});

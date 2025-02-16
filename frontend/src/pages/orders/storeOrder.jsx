@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -16,36 +16,78 @@ const StoreOrder = () => {
     const { data: order, refetch, isLoading, error } = useGetStoreOrderDetailsQuery(orderId);
     const [returnOrder, { isLoading: loadingReturn }] = useReturnStoreOrderMutation();
     const { userInfo } = useSelector((state) => state.auth);
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [editedQuantities, setEditedQuantities] = useState({});
+    const [selectAll, setSelectAll] = useState(false);
 
     useEffect(() => {
         refetch();
     }, [refetch]);
 
-    
-  const handleDownloadPDF = useCallback(async () => {
-    if (!invoiceRef.current) return;
-    const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true, backgroundColor: "#0f0f10" });
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    pdf.setFillColor(15, 15, 15)
-    pdf.rect(0, 0, pageWidth, pageHeight, "F")
-    pdf.addImage(imgData, "PNG", 20, 20, 171, (canvas.height * 171) / canvas.width);
-    pdf.save(`invoice-order-${orderId}.pdf`);
-}, [orderId]);
+    const handleDownloadPDF = useCallback(async () => {
+        if (!invoiceRef.current) return;
+        const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true, backgroundColor: "#0f0f10" });
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        pdf.setFillColor(15, 15, 15)
+        pdf.rect(0, 0, pageWidth, pageHeight, "F")
+        pdf.addImage(imgData, "PNG", 20, 20, 171, (canvas.height * 171) / canvas.width);
+        pdf.save(`invoice-order-${orderId}.pdf`);
+    }, [orderId]);
+
+    const toggleSelectAll = () => {
+        if (selectAll) {
+            setSelectedItems([]);
+        } else {
+            const allItems = order.orderItems.map((item) => ({
+                product: item.product,
+                qty: item.qty,
+                price: item.price,
+            }));
+            setSelectedItems(allItems);
+        }
+        setSelectAll(!selectAll);
+    };
+
+    const toggleItemSelection = (item) => {
+        setSelectedItems((prev) => {
+            return prev.some((selected) => selected.product === item.product)
+                ? prev.filter((selected) => selected.product !== item.product)
+                : [...prev, { product: item.product, qty: item.qty, price: item.price }];
+        });
+    };
+
+    const handleQuantityChange = (productId, quantity) => {
+        setEditedQuantities((prev) => ({
+            ...prev,
+            [productId]: quantity,
+        }));
+    };
 
     const returnHandler = useCallback(async () => {
-        if (window.confirm("Are you sure you want to return this order?")) {
+        if (selectedItems.length === 0) {
+            toast.error("Please select at least one item to return.");
+            return;
+        }
+        if (window.confirm("Are you sure you want to return the selected items?")) {
             try {
-                await returnOrder(orderId).unwrap();
-                toast.success("Order returned successfully");
+                const returnedItems = selectedItems.map((item) => ({
+                    ...item,
+                    qty: editedQuantities[item.product] || item.qty,
+                }));
+                await returnOrder({ orderId, returnedItems }).unwrap();
+                toast.success("Order items returned successfully");
+                setSelectedItems([]);
+                setEditedQuantities({});
+                setSelectAll(false);
                 refetch();
             } catch {
-                toast.error("Failed to return order");
+                toast.error("Failed to return order items");
             }
         }
-    }, [returnOrder, orderId, refetch]);
+    }, [returnOrder, orderId, selectedItems, refetch, editedQuantities]);
 
     return isLoading ? (
         <Loader />
@@ -68,63 +110,134 @@ const StoreOrder = () => {
                         <p className="mb-1"><strong>Order ID:</strong> {order._id}</p>
                         <p className="mb-1"><strong>Date:</strong> {moment(order.createdAt).format("DD MMMM YYYY")}</p>
                         <p className="mb-1"><strong>Payment Status:</strong> {order.isPaid ?
-                            <span className="text-green-300">Paid on {moment(order.paidAt).format("DD MMMM YYYY")}</span> :
-                            <span className="text-red-300">Cancelled</span>
+                            <span className="text-green-400">Paid on {moment(order.paidAt).format("DD MMMM YYYY")}</span> :
+                            <span className="text-red-400">Cancelled</span>
                         }</p>
                         <p className="mb-1"><strong>Method:</strong> {order.paymentMethod}</p>
                     </div>
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border">
-                        <thead>
-                            <tr className="bg-orange-600">
-                                <th className="p-2 border">Image</th>
-                                <th className="p-2 border">Product</th>
-                                <th className="p-2 border">Quantity</th>
-                                <th className="p-2 border">Unit Price</th>
-                                <th className="p-2 border">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {order.orderItems.map((item, index) => (
-                                <tr key={index} className="text-center">
-                                    <td className="p-2 border">
-                                        <img
-                                            src={item?.images[0]}
-                                            alt={item.name}
-                                            className="w-16 h-16 object-cover mx-auto"
-                                        />
-                                    </td>
-                                    <td className="p-2 border">
-                                        <Link to={`/product/${item.product}`} className="text-yellow-300 hover:text-yellow-500">
-                                            {item.name}
-                                        </Link>
-                                    </td>
-                                    <td className="p-2 border">{item.qty}</td>
-                                    <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
-                                    <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    {order?.orderItems?.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold mt-4 text-orange-400">Ordered Items</h3>
+                            <table className="w-full border-collapse border bg-gray-900">
+                                <thead>
+                                    <tr className="bg-orange-600">
+                                        {userInfo.user?.isAdmin && (
+                                            <th className="p-2 border">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectAll}
+                                                    onChange={toggleSelectAll}
+                                                    className="w-6 h-5 mt-3 cursor-pointer"
+                                                />
+                                            </th>
+                                        )}
+                                        <th className="p-2 border">Image</th>
+                                        <th className="p-2 border">Product</th>
+                                        <th className="p-2 border">Quantity</th>
+                                        <th className="p-2 border">Unit Price</th>
+                                        <th className="p-2 border">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {order?.orderItems.map((item, index) => (
+                                        <tr key={index} className="text-center">
+                                            {userInfo.user.isAdmin && (
+                                                <td className="p-2 border">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="w-6 h-5 mt-3 cursor-pointer"
+                                                        checked={selectedItems.some((selected) => selected.product === item.product)}
+                                                        onChange={() => toggleItemSelection(item)}
+                                                    />
+                                                </td>
+                                            )}
+                                            <td className="p-2 border">
+                                                <img src={item?.images[0]} alt={item.name} className="h-[8rem] w-[8rem] object-cover mx-auto" />
+                                            </td>
+                                            <td className="p-2 border">
+                                                <Link to={`/product/${item.product}`} className="text-yellow-300 hover:text-yellow-500">
+                                                    {item.name}
+                                                </Link>
+                                            </td>
+                                            <td className="p-2 border">
+                                                {userInfo.user.isAdmin && selectedItems.some((selected) => selected.product === item.product) ? (
+                                                    <input
+                                                        type="number"
+                                                        min="1"
+                                                        max={item.qty}
+                                                        value={editedQuantities[item.product] || item.qty}
+                                                        onChange={(e) => handleQuantityChange(item.product, parseInt(e.target.value))}
+                                                        className="w-16 text-center"
+                                                    />
+                                                ) : (
+                                                    item.qty
+                                                )}
+                                            </td>
+                                            <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                                            <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    {order?.returnedItems?.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold text-red-400">Returned Items</h3>
+                            <table className="w-full border-collapse border bg-gray-900">
+                                <thead>
+                                    <tr className="bg-red-600">
+                                        <th className="p-2 border">Product</th>
+                                        <th className="p-2 border">Quantity</th>
+                                        <th className="p-2 border">Unit Price</th>
+                                        <th className="p-2 border">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {order?.returnedItems.map((item, index) => (
+                                        <tr key={index} className="text-center">
+                                            <td className="p-2 border">
+                                                <Link to={`/product/${item.product}`} className="text-yellow-300 hover:text-yellow-500">
+                                                    {item.name}
+                                                </Link>
+                                            </td>
+                                            <td className="p-2 border">{item.qty}</td>
+                                            <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                                            <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
-
-                <div className="mt-[3rem] flex justify text font-medium">
-                    <div className="w-64">
+                <div className="mt-[3rem] flex justify-between gap-4 text font-medium">
+                    <div className="border p-4 rounded-lg bg-green-700 text-white w-1/3">
                         <div className="flex justify-between mb-2">
                             <span>Items Subtotal:</span>
-                            <span>RP. {new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</span>
+                            <span>Rp{new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</span>
                         </div>
                         <div className="flex justify-between mb-2">
                             <span>Tax (PPN 11%):</span>
-                            <span>RP. {new Intl.NumberFormat('id-ID').format(order.taxPrice)}</span>
+                            <span>Rp{new Intl.NumberFormat('id-ID').format(order.taxPrice)}</span>
                         </div>
                         <div className="flex justify-between font-bold mt-2 pt-2 border-t">
                             <span>Total:</span>
-                            <span>RP. {new Intl.NumberFormat('id-ID').format(order.totalPrice)}</span>
+                            <span>Rp{new Intl.NumberFormat('id-ID').format(order.totalPrice)}</span>
                         </div>
                     </div>
+
+                    {order.returnedItems && order.returnedItems.length > 0 && (
+                        <div className="border p-4 rounded-lg bg-red-700 text-white w-1/3">
+                            <h3 className="text-lg font-semibold mb-2">Return Details</h3>
+                            <p className="mb-1"><strong>Return Status:</strong> {order.isReturned ? "True" : "False"}</p>
+                            <p className="mb-1"><strong>Return Date:</strong> {order.returnedItems[0]?.returnedAt ? moment(order.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}</p>
+                            <p className="mb-1"><strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(order.returnAmount || 0)}</p>
+                        </div>
+                    )}
                 </div>
             </div>
             {userInfo.user.isAdmin && order.isPaid && (
@@ -135,7 +248,7 @@ const StoreOrder = () => {
                         onClick={returnHandler}
                         disabled={loadingReturn}
                     >
-                        {loadingReturn ? "Processing..." : "Return Order"}
+                        {loadingReturn ? "Processing..." : "Return Selected Items"}
                     </button>
                 </div>
             )}

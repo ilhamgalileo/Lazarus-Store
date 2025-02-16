@@ -54,7 +54,6 @@ const Order = () => {
     }));
   };
 
-  
   const handleDownloadPDF = useCallback(async () => {
     if (!invoiceRef.current) return;
     const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true, backgroundColor: "#0f0f10" });
@@ -66,7 +65,7 @@ const Order = () => {
     pdf.rect(0, 0, pageWidth, pageHeight, "F")
     pdf.addImage(imgData, "PNG", 20, 20, 171, (canvas.height * 171) / canvas.width);
     pdf.save(`invoice-${orderId}.pdf`);
-}, [orderId]);
+  }, [orderId]);
 
   const deliverHandler = async () => {
     try {
