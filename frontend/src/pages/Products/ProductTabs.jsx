@@ -27,25 +27,22 @@ const ProductTabs = ({
             <div className="flex flex-col lg:flex-row gap-8">
                 <div className="lg:w-18">
                     <div
-                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${
-                            activeTab === 1 ? "bg-orange-600 text-white font-bold" : "hover:bg-gray-800"
-                        }`}
+                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${activeTab === 1 ? "bg-orange-600 text-white font-bold" : "hover:bg-gray-800"
+                            }`}
                         onClick={() => handleTabClick(1)}
                     >
                         All Reviews
                     </div>
                     <div
-                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${
-                            activeTab === 2 ? "bg-orange-600 text-white font-bold" : "hover:bg-gray-800"
-                        }`}
+                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${activeTab === 2 ? "bg-orange-600 text-white font-bold" : "hover:bg-gray-800"
+                            }`}
                         onClick={() => handleTabClick(2)}
                     >
                         Write Review
                     </div>
                     <div
-                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${
-                            activeTab === 3 ? "bg-orange-600 text-white font-bold" : "hover:bg-gray-800"
-                        }`}
+                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${activeTab === 3 ? "bg-orange-600 text-white font-bold" : "hover:bg-gray-800"
+                            }`}
                         onClick={() => handleTabClick(3)}
                     >
                         Related Product
@@ -61,7 +58,7 @@ const ProductTabs = ({
                                 product.reviews.map((review) => (
                                     <div
                                         key={review._id}
-                                        className="bg-gray-900 p-4 rounded-lg"
+                                        className="bg-gray-800 p-4 rounded-lg"
                                     >
                                         <div className="flex justify-between mb-2 text-sm">
                                             <strong className="text-[#B0B0B0]">{review.name}</strong>
@@ -94,11 +91,11 @@ const ProductTabs = ({
                                             className="w-[10rem] p-1 text-sm rounded-lg bg-gray-800 border border-gray-700 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
                                         >
                                             <option value="">Select Rating</option>
-                                            <option value="1">WTF ⭐</option>
-                                            <option value="2">Skibidi ⭐⭐</option>
-                                            <option value="3">Mid ⭐⭐⭐</option>
-                                            <option value="4">Well ⭐⭐⭐⭐</option>
-                                            <option value="5">Sigma ⭐⭐⭐⭐⭐</option>
+                                            <option value="1">⭐</option>
+                                            <option value="2">⭐⭐</option>
+                                            <option value="3">⭐⭐⭐</option>
+                                            <option value="4">⭐⭐⭐⭐</option>
+                                            <option value="5">⭐⭐⭐⭐⭐</option>
                                         </select>
                                     </div>
                                     <div>

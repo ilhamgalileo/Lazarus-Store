@@ -457,27 +457,29 @@ export const findOrderById = asyncHandler(async (req, res) => {
 })
 
 export const markOrderIsPay = asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id)
+    const order = await Order.findById(req.params.id);
 
     if (order) {
-        const { status, updatedAt, id, payment_type } = req.body
+        const { status, updatedAt, id, payment_type } = req.body;
 
-        order.isPaid = true
-        order.paidAt = Date.now()
-        order.paymentMethod = payment_type
+        order.isPaid = true;
+        order.paidAt = Date.now();
+        order.paymentMethod = payment_type;
         order.paymentResult = {
             status,
             update_time: updatedAt,
             id,
-        }
+        };
 
         await Promise.all(order.orderItems.map(async (item) => {
-            const product = await Product.findById(item.product)
+            const product = await Product.findById(item.product);
             if (product) {
                 product.countInStock -= item.qty
 
+                product.sold += item.qty
+
                 if (product.countInStock < 0) {
-                    res.status(400);
+                    res.status(400)
                     throw new Error(`Stock insufficient for product: ${product.name}`)
                 }
 
@@ -488,57 +490,64 @@ export const markOrderIsPay = asyncHandler(async (req, res) => {
             }
         }))
 
-        const updatedOrder = await order.save()
-        res.json(updatedOrder)
+        const updatedOrder = await order.save();
+        res.json(updatedOrder);
     } else {
         res.status(404);
-        throw new Error('Order not found')
+        throw new Error('Order not found');
     }
 })
 
 export const markOrderAsReturned = asyncHandler(async (req, res) => {
-    const { returnedItems } = req.body;
-    const order = await Order.findById(req.params.id);
+    const { returnedItems } = req.body
+    const order = await Order.findById(req.params.id)
 
     if (!order) {
-        res.status(404);
-        throw new Error('Order not found');
+        res.status(404)
+        throw new Error('Order not found')
     }
 
     if (!order.isPaid) {
         res.status(400);
-        throw new Error('Order has not been paid yet');
+        throw new Error('Order has not been paid yet')
     }
 
-    let totalRefund = 0;
+    let totalRefund = 0
 
     for (const returnedItem of returnedItems) {
-        const { product, qty } = returnedItem;
+        const { product, qty } = returnedItem
 
-        const itemIndex = order.orderItems.findIndex(item => item.product.toString() === product);
+        const itemIndex = order.orderItems.findIndex(item => item.product.toString() === product)
         if (itemIndex === -1) {
-            res.status(404);
-            throw new Error(`Product ${product} not found in order`);
+            res.status(404)
+            throw new Error(`Product ${product} not found in order`)
         }
 
-        const item = order.orderItems[itemIndex];
+        const item = order.orderItems[itemIndex]
 
         if (qty > item.qty) {
             res.status(400);
-            throw new Error(`Return quantity exceeds purchased quantity for product ${product}`);
+            throw new Error(`Return quantity exceeds purchased quantity for product ${product}`)
         }
 
-        const productData = await Product.findById(product);
+        const productData = await Product.findById(product)
         if (!productData) {
-            res.status(404);
-            throw new Error(`Product ${product} not found`);
+            res.status(404)
+            throw new Error(`Product ${product} not found`)
         }
 
         productData.countInStock += qty;
-        await productData.save();
 
-        const refundAmount = item.price * qty;
-        totalRefund += refundAmount;
+        productData.sold -= qty;
+
+        if (productData.sold < 0) {
+            productData.sold = 0
+        }
+
+        await productData.save()
+
+        const refundAmount = item.price * qty
+        totalRefund += refundAmount
 
         order.returnedItems.push({
             product: item.product,
@@ -546,16 +555,16 @@ export const markOrderAsReturned = asyncHandler(async (req, res) => {
             price: item.price,
             qty,
             returnedAt: new Date(),
-        });
+        })
 
         item.qty -= qty;
         if (item.qty === 0) {
-            order.orderItems.splice(itemIndex, 1);
+            order.orderItems.splice(itemIndex, 1)
         }
     }
 
-    order.totalPrice = Math.max(order.totalPrice - totalRefund, 0);
-    order.returnAmount += totalRefund;
+    order.totalPrice = Math.max(order.totalPrice - totalRefund, 0)
+    order.returnAmount += totalRefund
 
     if (order.orderItems.length === 0) {
         order.isReturned = true
@@ -564,9 +573,9 @@ export const markOrderAsReturned = asyncHandler(async (req, res) => {
         order.totalPrice = 0
     }
 
-    const updatedOrder = await order.save();
-    res.json(updatedOrder);
-});
+    const updatedOrder = await order.save()
+    res.json(updatedOrder)
+})
 
 export const markOrderIsDeliver = asyncHandler(async (req, res) => {
     const id = req.params.id

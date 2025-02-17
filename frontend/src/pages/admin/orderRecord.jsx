@@ -30,15 +30,14 @@ const OrderRecord = () => {
         const now = new Date();
 
         switch (dateFilter) {
-            case 'weekly':
-                const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-                return orderDate >= startOfWeek;
             case 'monthly':
                 const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-                return orderDate >= startOfMonth;
+                const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                return orderDate >= startOfMonth && orderDate <= endOfMonth;
             case 'yearly':
                 const startOfYear = new Date(now.getFullYear(), 0, 1);
-                return orderDate >= startOfYear;
+                const endOfYear = new Date(now.getFullYear(), 11, 31);
+                return orderDate >= startOfYear && orderDate <= endOfYear;
             default:
                 return true;
         }
@@ -104,7 +103,7 @@ const OrderRecord = () => {
 
         const matchesPaymentMethodFilter =
             paymentMethodFilter === 'all' ||
-            
+
             (paymentMethodFilter === 'cash' && order.paymentMethod === 'cash') ||
             (paymentMethodFilter === 'qris' && order.paymentMethod === 'qris') ||
             (paymentMethodFilter === 'cstore' && order.paymentMethod === 'cstore') ||
@@ -209,7 +208,6 @@ const OrderRecord = () => {
                     className="bg-gray-600 w-full md:w-1/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
                     <option value="all">All Dates</option>
-                    <option value="weekly">Weekly</option>
                     <option value="monthly">Monthly</option>
                     <option value="yearly">Yearly</option>
                 </select>

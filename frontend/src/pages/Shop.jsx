@@ -83,93 +83,97 @@ const Shop = () => {
       <div className="container mx-auto px-5 text-sm" style={{ maxWidth: "90%" }}>
         <div className="flex md:flex-row">
           <div
-            className="bg-[#151515] p-3 mt-2 mb-4 w-64 flex-shrink-0 top-0"
+            className="bg-neutral-700 p-3 mt-2 mb-4 w-64 flex-shrink-0 top-0"
             style={{
               position: "fixed",
               height: "100vh",
               overflowY: "auto",
-              top: "0"
+              top: "0",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
             }}
           >
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
-              Search by Name
-            </h2>
-
-            <div className="p-5">
+            <div className="mb-4">
+              <label
+                htmlFor="search"
+                className="block text-sm font-medium text-gray-300 bg-black px-3 py-2 rounded-full text-center"
+              >
+                Search by Name
+              </label>
               <input
                 type="text"
+                id="search"
                 placeholder="Enter product name"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+                className="w-full px-3 py-2 mt-2 placeholder-gray-600 border border-gray-600 bg-gray-300 text-black rounded-lg focus:outline-none focus:ring focus:border-orange-500"
               />
             </div>
 
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
-              Filter by Price
-            </h2>
-
-            <div className="p-5">
+            <div className="mb-4">
+              <label
+                htmlFor="priceFilter"
+                className="block text-sm font-medium text-gray-300 bg-black px-3 py-2 rounded-full text-center"
+              >
+                Filter by Price
+              </label>
               <input
                 type="text"
+                id="priceFilter"
                 placeholder="Enter price"
                 value={priceFilter}
                 onChange={handlePriceChange}
-                className="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+                className="w-full px-3 py-2 mt-2 placeholder-gray-600 border border-gray-600 bg-gray-300 text-white rounded-lg focus:outline-none focus:ring focus:border-orange-500"
               />
             </div>
 
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2 text-white">
-              Filter by categories
-            </h2>
-
-            <div className="p-5">
-              {categories?.map((c) => (
-                <div key={c._id} className="mb-2">
-                  <div className="flex items-center mr-4">
+            {/* Filter by Categories */}
+            <div className="mb-4">
+              <p className="block text-sm font-medium text-gray-300 bg-black px-3 py-2 rounded-full text-center">
+                Filter by Categories
+              </p>
+              <div className="p-3">
+                {categories?.map((c) => (
+                  <div key={c._id} className="mb-2 flex items-center">
                     <input
                       type="checkbox"
                       id={`checkbox-${c._id}`}
                       checked={checked.includes(c._id)}
                       onChange={(e) => handleCheck(e.target.checked, c._id)}
-                      className="w-4 h4 text-orange-600 bg-gray-100 border-gray-300 rounded
-                      focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800
-                      focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500"
                     />
                     <label
                       htmlFor={`checkbox-${c._id}`}
-                      className="ml-2 text-sm font-medium
-                    text-white dark:text-gray-300">
+                      className="ml-2 text-sm font-medium text-white"
+                    >
                       {c.name}
                     </label>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-            <h2 className="h4 text-center py-2 bg-black rounded-full mb-2">
-              Filter by Brand
-            </h2>
 
-            <div className="p-5">
-              {uniqueBrands?.map((brand) => (
-                <div key={brand} className="flex items-center mr-4 mb-5">
-                  <input
-                    type="radio"
-                    id={brand}
-                    name="brand"
-                    onChange={() => handleBrandClick(brand)}
-                    className="w-4 h4 bg-gray-100 border-gray-300 rounded
-                      focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800
-                      focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    htmlFor={brand}
-                    className="ml-2 text-sm font-medium
-                    text-white dark:text-gray-300">
-                    {brand}
-                  </label>
-                </div>
-              ))}
+            {/* Filter by Brand */}
+            <div className="mb-4">
+              <p className="block text-sm font-medium text-gray-300 bg-black px-3 py-2 rounded-full text-center">
+                Filter by Brand
+              </p>
+              <div className="p-3">
+                {uniqueBrands?.map((brand) => (
+                  <div key={brand} className="flex items-center mb-2">
+                    <input
+                      type="radio"
+                      id={brand}
+                      name="brand"
+                      onChange={() => handleBrandClick(brand)}
+                      className="w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-orange-500"
+                    />
+                    <label htmlFor={brand} className="ml-2 text-sm font-medium text-white">
+                      {brand}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="p-5 pt-0">
