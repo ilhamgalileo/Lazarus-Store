@@ -37,7 +37,7 @@ export const findOne = asyncHandler(async (req, res) => {
 
 export const fetchTopProducts = asyncHandler(async (req, res) => {
     try {
-        const products = await Product.find({}).sort({ rating: -1 }).limit(4)
+        const products = await Product.find({}).sort({ rating: -1, sold: -1 }).limit(4)
         res.json(products)
     } catch (error) {
         console.error(error)

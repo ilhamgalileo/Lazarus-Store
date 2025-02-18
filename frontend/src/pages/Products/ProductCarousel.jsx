@@ -3,14 +3,13 @@ import Message from "../../components/Message";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import moment from "moment";
 import {
   FaBox,
-  FaClock,
   FaShoppingCart,
   FaStar,
   FaStore,
-  FaCommentDots
+  FaCommentDots,
+  FaCartPlus
 } from "react-icons/fa"
 
 const ProductCarousel = () => {
@@ -44,12 +43,12 @@ const ProductCarousel = () => {
               name,
               price,
               brand,
-              createdAt,
               numReviews,
               rating,
               quantity,
+              sold,
               images,
-              countInStock,
+              countInStock, 
             }) => (
               <div key={_id}>
                 <img
@@ -74,8 +73,7 @@ const ProductCarousel = () => {
                         <FaStore className="mr-2 text-white" /> Brand: {brand}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                        <FaClock className="mr-2 text-white" /> Added:{" "}
-                        {moment(createdAt).fromNow()}
+                      <FaCartPlus className="mr-2 text-white" /> Sold: {sold}
                       </h1>
                       <h1 className="flex items-center mb-6">
                         <FaCommentDots className="mr-2 text-white" /> Reviews:{" "}
