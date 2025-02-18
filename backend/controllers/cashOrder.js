@@ -39,7 +39,7 @@ export const createCashOrder = async (req, res) => {
 
       validatedItems.push({
         product: item.product,
-        name:product.name,
+        name: product.name,
         quantity: item.quantity,
         price: product.price,
       })
@@ -77,8 +77,9 @@ export const createCashOrder = async (req, res) => {
           message: `Not enough stock for product: ${product.name}`,
         })
       }
-      product.countInStock -= item.quantity;
-      await product.save();
+      product.countInStock -= item.quantity
+      product.sold += item.quantity
+      await product.save()
     }
 
     res.status(201).json({
@@ -118,71 +119,71 @@ export const markOrderAsReturned = asyncHandler(async (req, res) => {
   const order = await CashOrder.findById(req.params.id)
 
   if (!order) {
-      res.status(404);
-      throw new Error('Order not found');
+    res.status(404);
+    throw new Error('Order not found');
   }
 
   if (!order.isPaid) {
-      res.status(400);
-      throw new Error('Order has not been paid yet');
+    res.status(400);
+    throw new Error('Order has not been paid yet');
   }
 
   let totalRefund = 0;
 
   for (const returnedItem of returnedItems) {
-      const { product, quantity } = returnedItem;
+    const { product, quantity } = returnedItem;
 
-      const itemIndex = order.items.findIndex(item => item.product.toString() === product);
-      if (itemIndex === -1) {
-          res.status(404);
-          throw new Error(`Product ${product} not found in order`);
-      }
+    const itemIndex = order.items.findIndex(item => item.product.toString() === product);
+    if (itemIndex === -1) {
+      res.status(404);
+      throw new Error(`Product ${product} not found in order`);
+    }
 
-      const item = order.items[itemIndex];
+    const item = order.items[itemIndex];
 
-      if (quantity > item.quantity) {
-          res.status(400);
-          throw new Error(`Return quantity exceeds purchased quantity for product ${product}`);
-      }
+    if (quantity > item.quantity) {
+      res.status(400);
+      throw new Error(`Return quantity exceeds purchased quantity for product ${product}`);
+    }
 
-      const productData = await Product.findById(product);
-      if (!productData) {
-          res.status(404);
-          throw new Error(`Product ${product} not found`);
-      }
+    const productData = await Product.findById(product);
+    if (!productData) {
+      res.status(404);
+      throw new Error(`Product ${product} not found`);
+    }
 
-      productData.countInStock += quantity;
-      await productData.save();
+    productData.countInStock += quantity
+    productData.sold -= quantity
+    await productData.save()
 
-      const refundAmount = (item.price || 0) * quantity;
-      totalRefund += refundAmount;
+    const refundAmount = (item.price || 0) * quantity
+    totalRefund += refundAmount
 
-      order.returnedItems.push({
-          product: item.product,
-          name: item.name,
-          price: item.price,
-          quantity,
-          returnedAt: new Date(),
-      });
+    order.returnedItems.push({
+      product: item.product,
+      name: item.name,
+      price: item.price,
+      quantity,
+      returnedAt: new Date(),
+    })
 
-      item.quantity -= quantity;
-      if (item.quantity === 0) {
-          order.items.splice(itemIndex, 1);
-      }
+    item.quantity -= quantity
+    if (item.quantity === 0) {
+      order.items.splice(itemIndex, 1)
+    }
   }
 
-  order.totalAmount = Math.max(((order.totalAmount || 0) - totalRefund), 0);
-  order.returnAmount = Math.max(((order.returnAmount || 0) + totalRefund), 0);
+  order.totalAmount = Math.max(((order.totalAmount || 0) - totalRefund), 0)
+  order.returnAmount = Math.max(((order.returnAmount || 0) + totalRefund), 0)
 
   if (order.items.length === 0) {
-      order.isReturned = true;
-      order.isPaid = false;
-      // order.taxPrice = 0;
-      order.receivedAmount = 0;
-      order.change = 0;
-      order.totalAmount = 0;
+    order.isReturned = true;
+    order.isPaid = false; 
+    order.receivedAmount = 0;
+    order.change = 0;
+    order.totalAmount = 0;
   }
-  
+
   const updatedOrder = await order.save();
   res.json(updatedOrder);
 })
