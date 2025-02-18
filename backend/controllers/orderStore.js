@@ -130,6 +130,7 @@ export const markOrderIsPay = asyncHandler(async (req, res) => {
             const product = await Product.findById(item.product)
             if (product) {
                 product.countInStock -= item.qty
+                product.sold -= item.qty
 
                 if (product.countInStock < 0) {
                     res.status(400);
@@ -205,6 +206,7 @@ export const markOrderAsReturned = asyncHandler(async (req, res) => {
         }
 
         productData.countInStock += qty;
+        productData.sold += qty;
         await productData.save();
 
         const refundAmount = item.price * qty;
