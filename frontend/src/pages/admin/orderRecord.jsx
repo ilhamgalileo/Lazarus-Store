@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useGetAllOrdersQuery } from "../../redux/api/orderApiSlice";
 import AdminMenu from "./AdminMenu";
 import jsPDF from 'jspdf';
+import moment from 'moment';
 import 'jspdf-autotable';
 
 const OrderRecord = () => {
@@ -166,7 +167,7 @@ const OrderRecord = () => {
                 ]),
             ],
         })
-        doc.save('orders.pdf')
+        doc.save(`orders-${moment().format('dddd-DD-MM-YYYY')}.pdf`)
     }
 
     return (

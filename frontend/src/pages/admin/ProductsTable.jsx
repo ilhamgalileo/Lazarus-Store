@@ -48,7 +48,7 @@ const ProductsTable = () => {
         product.countInStock,
       ]),
     });
-    doc.save('products.pdf');
+    doc.save(`products-${moment().format('dddd-DD-MM-YYYY')}.pdf`)
   };
 
   return (
