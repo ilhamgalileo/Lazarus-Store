@@ -116,8 +116,8 @@ const Order = () => {
           <img src={logo} alt="Logo" className="bg-black absolute top-2 left-2 w-[12rem] h-auto" />
           <h2 className="text-black text-2xl font-medium mr-[2rem] mt-[1rem] mb-[5rem] text-right">INVOICE</h2>
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="text-gray-900 ml-[1rem]">
-              <h3 className="text-2xl font-bold mb-3 mt-[5rem]">Order Information</h3>
+            <div className="text-gray-950">
+              <h3 className="text-2xl font-bold mb-3 mt-[5rem]">Order Information: </h3>
               <p className="mb-1">Order ID: <strong>{order._id}</strong></p>
               <p className="mb-1">Date: <strong>{moment(order.createdAt).format("DD MMMM YYYY")}</strong></p>
               <p className="mb-1">Payment Status: <strong>{order.isPaid ?
@@ -260,7 +260,7 @@ const Order = () => {
                 <h3 className="text-lg font-semibold mb-2">Return Details</h3>
                 <p className="mb-1"><strong>Return Status:</strong> {order.isReturned ? "True" : "False"}</p>
                 <p className="mb-1"><strong>Return Date:</strong> {order.returnedItems[0]?.returnedAt ? moment(order.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}</p>
-                <p className="mb-1"><strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(order.returnAmount || 0)}</p>
+                <p className="mb-1 border-t pt-2 mt-2"><strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(order.returnAmount || 0)}</p>
               </div>
             )}
           </div>
