@@ -106,9 +106,9 @@ const Order = () => {
     <Message variant="danger">{error.data.message}</Message>
   ) : (
     <div className="bg-[#f0f0ef] min-h-screen">
-      <div className="container mx-auto max-w-[87%] mr-[2rem] ml-[9rem] mt-[1rem]">
-        <div className="flex justify-end mb-4">
-          <button onClick={handleDownloadPDF} className="bg-blue-500 text-white px-4 py-2 rounded">
+      <div className="container mx-auto max-w-[90%] mr-[5%] ml-[7%] mt-[1rem]">
+        <div className="flex justify-end mb-2">
+          <button onClick={handleDownloadPDF} className="bg-blue-500 text-white px-4 py-3 mt-3 rounded">
             Download Invoice
           </button>
         </div>
@@ -141,7 +141,6 @@ const Order = () => {
 
           <div className="overflow-x-auto">
             {order?.orderItems?.length > 0 && (
-              
               <div className="mt-4">
                 <h3 className="text-lg font-semibold mt-3 text-gray-950">Ordered Items: </h3>
                 <table className="w-full border-collapse border bg-gray-300">

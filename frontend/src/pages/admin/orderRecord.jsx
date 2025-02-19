@@ -30,6 +30,17 @@ const OrderRecord = () => {
         const now = new Date();
 
         switch (dateFilter) {
+            case 'weekly':
+                const startOfWeek = new Date(now)
+                startOfWeek.setDate(now.getDate() - now.getDay() + 1)
+                startOfWeek.setHours(0, 0, 0, 0)
+
+                const endOfWeek = new Date(startOfWeek)
+                endOfWeek.setDate(startOfWeek.getDate() + 6)
+                endOfWeek.setHours(23, 59, 59, 999)
+
+                return orderDate >= startOfWeek && orderDate <= endOfWeek;
+
             case 'monthly':
                 const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
                 const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -208,6 +219,7 @@ const OrderRecord = () => {
                     className="bg-gray-600 w-full md:w-1/4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
                     <option value="all">All Dates</option>
+                    <option value="weekly">Weekly</option>
                     <option value="monthly">Monthly</option>
                     <option value="yearly">Yearly</option>
                 </select>

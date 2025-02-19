@@ -45,11 +45,11 @@ const StoreOrder = () => {
                 product: item.product,
                 qty: item.qty,
                 price: item.price,
-            }));
-            setSelectedItems(allItems);
+            }))
+            setSelectedItems(allItems)
         }
-        setSelectAll(!selectAll);
-    };
+        setSelectAll(!selectAll)
+    }
 
     const toggleItemSelection = (item) => {
         setSelectedItems((prev) => {
