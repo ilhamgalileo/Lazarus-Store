@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Message from "../../components/Message";
 import Loader from "../../components/loader";
+import moment from 'moment';
 import { useAllProductsQuery } from '../../redux/api/productApiSlice';
 import AdminMenu from "./AdminMenu";
 import jsPDF from 'jspdf';
@@ -110,6 +111,7 @@ const ProductsTable = () => {
                     <th className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold">Product Name</th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold">Price</th>
                     <th className="px-3 py-3.5 text-left text-sm font-semibold">Stock</th>
+                    <th className="px-3 py-3.5 text-left text-sm font-semibold">Product enter on</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-gray-700">
@@ -127,6 +129,9 @@ const ProductsTable = () => {
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
                           {product?.countInStock}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-white">
+                          {moment(product?.createdAt).format("dddd, DD-MMMM-YYYY")}
                         </td>
                       </tr>
                     ))

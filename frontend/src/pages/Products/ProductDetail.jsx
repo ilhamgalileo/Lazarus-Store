@@ -7,7 +7,6 @@ import Loader from "../../components/loader";
 import Message from "../../components/Message";
 import { FaBox, FaClock, FaShoppingCart, FaStar, FaStore } from "react-icons/fa";
 import moment from "moment";
-import HeartIcon from "./HeartIcon";
 import Product from "./Product";
 import ProductTabs from "./ProductTabs";
 import { addToCart } from "../../redux/features/cart/cartSlice";
@@ -83,7 +82,7 @@ const ProductDetail = () => {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="text-sm space-y-2">
                                 <p className="flex items-center gap-2"><FaStore className="text-orange-500" /> Brand: {product.brand}</p>
-                                <p className="flex items-center gap-2"><FaClock className="text-orange-500" /> Added: {moment(product.createdAt).format('DD MMMM YYYY')}</p>
+                                <p className="flex items-center gap-2"><FaClock className="text-orange-500" /> Sold: {product.sold}</p>
                                 <p className="flex items-center gap-2"><FaStar className="text-orange-500" /> Reviews: {product.numReviews}</p>
                             </div>
                             <div className="text-sm space-y-2">

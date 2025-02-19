@@ -56,12 +56,12 @@ const Order = () => {
 
   const handleDownloadPDF = useCallback(async () => {
     if (!invoiceRef.current) return;
-    const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true, backgroundColor: "#0f0f10" });
+    const canvas = await html2canvas(invoiceRef.current, { scale: 1.8, useCORS: true });
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-    pdf.setFillColor(15, 15, 15)
+    pdf.setFillColor(240, 240, 239)
     pdf.rect(0, 0, pageWidth, pageHeight, "F")
     pdf.addImage(imgData, "PNG", 20, 20, 171, (canvas.height * 171) / canvas.width);
     pdf.save(`invoice-${orderId}.pdf`);
@@ -112,40 +112,40 @@ const Order = () => {
         </button>
       </div>
 
-      <div ref={invoiceRef} className=" p-2 mt-2 shadow-lg relative">
-        <img src={logo} alt="Logo" className="absolute top-2 left-2 w-[8rem] h-auto" />
-        <h2 className="text-2xl font-medium mb-[5rem] text-center">INVOICE</h2>
+      <div ref={invoiceRef} className="w-full p-2 mt-2 shadow-lg relative bg-[#f0f0ef]">
+        <img src={logo} alt="Logo" className="bg-black absolute top-2 left-2 w-[12rem] h-auto" />
+        <h2 className="text-black text-2xl font-medium mr-[2rem] mt-[1rem] mb-[5rem] text-right">INVOICE</h2>
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-3 mt-[1rem]">Order Information</h3>
-            <p className="mb-1"><strong>Order ID:</strong> {order._id}</p>
-            <p className="mb-1"><strong>Date:</strong> {moment(order.createdAt).format("DD MMMM YYYY")}</p>
-            <p className="mb-1"><strong>Payment Status:</strong> {order.isPaid ?
-              <span className="text-green-400">Paid on {moment(order.paidAt).format("DD MMMM YYYY")}</span> :
-              <span className="text-red-400">Cancelled</span>
-            }</p>
-            <p className="mb-1"><strong>Delivery Status:</strong> {order.isDelivered ?
-              <span className="text-green-400">On Process {moment(order.deliveredAt).format("DD MMMM YYYY")}</span> :
-              <span className="text-red-400">Pending</span>
-            }</p>
-            <p className="mb-1"><strong>Method:</strong> {order.paymentMethod}</p>
+          <div className="text-gray-900 ml-[1rem]">
+            <h3 className="text-2xl font-bold mb-3 mt-[5rem]">Order Information</h3>
+            <p className="mb-1">Order ID: <strong>{order._id}</strong></p>
+            <p className="mb-1">Date: <strong>{moment(order.createdAt).format("DD MMMM YYYY")}</strong></p>
+            <p className="mb-1">Payment Status: <strong>{order.isPaid ?
+              <span className="text-green-600">Paid on {moment(order.paidAt).format("DD MMMM YYYY")}</span> :
+              <span className="text-red-600">Cancelled</span>
+            }</strong></p>
+            <p className="mb-1">Delivery Status: <strong>{order.isDelivered ?
+              <span className="text-green-600">On Process {moment(order.deliveredAt).format("DD MMMM YYYY")}</span> :
+              <span className="text-red-600">Pending</span>
+            }</strong></p>
+            <p className="mb-1">Method: <strong>{order.paymentMethod}</strong></p>
           </div>
 
-          <div>
-            <h3 className="text-lg font-semibold mb-2 mt-[1rem]">Customer Details</h3>
-            <p className="mb-1"><strong>Name:</strong> {order.user.username}</p>
-            <p className="mb-1"><strong>Email:</strong> {order.user.email}</p>
-            <p className="mb-1"><strong>Address:</strong> {order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}</p>
+          <div className="text-gray-900 absolute right-[2rem]">
+            <h3 className="text-lg font-semibold mb-3 mt-[5rem]">Published for: </h3>
+            <p className="mb-1">Buyer: <strong>{order.user.username}</strong></p>
+            <p className="mb-1">Email: <strong>{order.user.email}</strong></p>
+            <p className="mb-1">Address: <strong>{order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}</strong></p>
           </div>
         </div>
 
         <div className="overflow-x-auto">
           {order?.orderItems?.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-lg font-semibold mt-4 text-orange-400">Ordered Items</h3>
-              <table className="w-full border-collapse border bg-gray-900">
+              <h3 className="text-lg font-semibold mt-4 text-gray-950">Ordered Items: </h3>
+              <table className="w-full border-collapse border bg-gray-300">
                 <thead>
-                  <tr className="bg-orange-600">
+                  <tr className="bg-blue-600">
                     {userInfo.user?.isAdmin && (
                       <th className="p-2 border">
                         <input
@@ -156,14 +156,13 @@ const Order = () => {
                         />
                       </th>
                     )}
-                    <th className="p-2 border">Image</th>
                     <th className="p-2 border">Product</th>
                     <th className="p-2 border">Quantity</th>
                     <th className="p-2 border">Unit Price</th>
                     <th className="p-2 border">Total</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-gray-900">
                   {order?.orderItems.map((item, index) => (
                     <tr key={index} className="text-center">
                       {userInfo.user.isAdmin && (
@@ -177,10 +176,7 @@ const Order = () => {
                         </td>
                       )}
                       <td className="p-2 border">
-                        <img src={item?.images[0]} alt={item.name} className="w-16 object-cover mx-auto" />
-                      </td>
-                      <td className="p-2 border">
-                        <Link to={`/product/${item.product}`} className="text-yellow-300 hover:text-yellow-500">
+                        <Link to={`/product/${item.product}`} className="text-gray-700 hover:text-gray-400">
                           {item.name}
                         </Link>
                       </td>
@@ -210,8 +206,8 @@ const Order = () => {
 
         {order?.returnedItems?.length > 0 && (
           <div className="mt-4">
-            <h3 className="text-lg font-semibold text-red-400">Returned Items</h3>
-            <table className="w-full border-collapse border bg-gray-900">
+            <h3 className="text-lg font-semibold text-red-500">Returned Items</h3>
+            <table className="w-full border-collapse border bg-gray-300">
               <thead>
                 <tr className="bg-red-600">
                   <th className="p-2 border">Product</th>
@@ -222,9 +218,9 @@ const Order = () => {
               </thead>
               <tbody>
                 {order?.returnedItems.map((item, index) => (
-                  <tr key={index} className="text-center">
+                  <tr key={index} className="text-center text-gray-950">
                     <td className="p-2 border">
-                      <Link to={`/product/${item.product}`} className="text-yellow-300 hover:text-yellow-500">
+                      <Link to={`/product/${item.product}`} className="text-gray-700 hover:text-gray-400">
                         {item.name}
                       </Link>
                     </td>
@@ -239,7 +235,7 @@ const Order = () => {
         )}
 
         <div className="mt-[3rem] flex justify-between gap-4 text font-medium">
-          <div className="border p-4 rounded-lg bg-green-700 text-white w-1/3">
+          <div className="border p-4 rounded-lg bg-blue-600 text-white w-1/3">
             <div className="flex justify-between mb-2">
               <span>Items Subtotal:</span>
               <span>Rp{new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</span>
@@ -267,19 +263,20 @@ const Order = () => {
             </div>
           )}
         </div>
-        {loadingDeliver && <Loader />}
-        {userInfo && userInfo.user?.isAdmin && order.isPaid && !order.isDelivered && (
-          <div className="mt-6">
-            <button
-              type="button"
-              className="bg-orange-500 text-white w-full py-2 rounded"
-              onClick={deliverHandler}
-            >
-              Mark As Delivered
-            </button>
-          </div>
-        )}
+
       </div>
+      {loadingDeliver && <Loader />}
+      {userInfo && userInfo.user?.isAdmin && order.isPaid && !order.isDelivered && (
+        <div className="mt-6">
+          <button
+            type="button"
+            className="bg-orange-500 text-white w-full py-2 rounded"
+            onClick={deliverHandler}
+          >
+            Mark As Delivered
+          </button>
+        </div>
+      )}
 
       {userInfo.user.isAdmin && order.isPaid && (
         <div className="mt-6">
