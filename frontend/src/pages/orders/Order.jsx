@@ -261,7 +261,7 @@ const Order = () => {
                   <strong>Return Status:</strong>{" "}
                   {order.orderItems.length === 0
                     ? "True"
-                    : `${order.returnedItems.length} item${order.returnedItems.length > 1 ? "s" : ""} returned`}
+                    : `${order.returnedItems.length} item ${order.returnedItems.length > 1 ? "s" : ""} returned`}
                 </p>
                 <p className="mb-1"><strong>Return Date:</strong> {order.returnedItems[0]?.returnedAt ? moment(order.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}</p>
                 <p className="mb-1 border-t pt-2 mt-2"><strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(order.returnAmount || 0)}</p>

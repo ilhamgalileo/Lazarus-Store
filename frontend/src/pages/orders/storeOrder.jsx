@@ -229,7 +229,12 @@ const StoreOrder = () => {
                         {order.returnedItems && order.returnedItems.length > 0 && (
                             <div className="border p-4 rounded-lg bg-red-700 text-white w-1/3">
                                 <h3 className="text-lg font-semibold mb-2">Return Details</h3>
-                                <p className="mb-1"><strong>Return Status:</strong> {order.isReturned ? "True" : "False"}</p>
+                                <p className="mb-1">
+                                    <strong>Return Status:</strong>{' '}
+                                    {order.orderItems.length === 0
+                                        ? "true"
+                                        : `${order.returnedItems.length} item ${order.returnedItems.length > 1 ? 's' : ""}returned`
+                                    }</p>
                                 <p className="mb-1"><strong>Return Date:</strong> {order.returnedItems[0]?.returnedAt ? moment(order.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}</p>
                                 <p className="mb-1 border-t pt-2 mt-2"><strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(order.returnAmount || 0)}</p>
                             </div>
