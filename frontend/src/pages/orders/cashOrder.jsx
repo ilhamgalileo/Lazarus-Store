@@ -238,8 +238,13 @@ const CashOrder = () => {
             </div>
             {cashOrder.returnedItems && cashOrder.returnedItems.length > 0 && (
               <div className="border p-4 rounded-lg bg-red-700 text-white w-1/3">
-                <h3 className="text-lg font-semibold mb-2">Return Details</h3>
-                <p className="mb-1"><strong>Return All:</strong> {cashOrder.isReturned ? "True" : "False"}</p>
+                <h3 className="text-lg font-semibold mb-2">Return Details: </h3>
+                <p className="mb-1">
+                  <strong>Return Status:</strong>{" "}
+                  {cashOrder.items.length === 0 ?
+                    "true"
+                    : `${cashOrder.returnedItems.length} item${cashOrder.returnedItems.length > 1 ? "s" : ""} returned`
+                  }</p>
                 <p className="mb-1"><strong>Return Date:</strong> {cashOrder.returnedItems[0]?.returnedAt ? moment(cashOrder.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}</p>
                 <p className="mb-1 border-t pt-2 mt-2"><strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(cashOrder.returnAmount || 0)}</p>
               </div>
