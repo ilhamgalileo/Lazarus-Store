@@ -21,7 +21,6 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
-    "flowbite": "^2.5.1",
     "html2canvas": "^1.4.1",
     "joi": "^17.13.3",
     "js-cookie": "^3.0.5",

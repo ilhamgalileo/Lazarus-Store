@@ -4,91 +4,86 @@ import { Link } from "react-router-dom";
 import { useGetMyOrdersQuery } from "../../redux/api/orderApiSlice";
 
 const UserOrder = () => {
-  const { data: orders, isLoading, error } = useGetMyOrdersQuery()
+  const { data: orders, isLoading, error } = useGetMyOrdersQuery();
 
   return (
-    <div className="container mx-auto">
-      <h2 className="text-2xl font-semibold mb-3 ml-[4rem]">My Orders</h2>
+    <div className="container mx-auto px-4 py-8">
+      <h2 className="text-2xl font-semibold mb-6 ml-[5rem]">My Orders</h2>
 
       {isLoading ? (
-        <Loader />
+        <div className="flex justify-center items-center h-64">
+          <Loader />
+        </div>
       ) : error ? (
         <Message variant="danger">{error?.data?.error || error.error}</Message>
       ) : (
-        <table className="w-full">
-          <thead
-            style={{
-              position: "sticky",
-              top: 0,
-              zIndex: 10,
-              background: "#0f0f10",
-              padding: "1rem 0",
-            }}
-          >
-            <tr>
-              <th className="py-2 text-center w-[11rem]">IMAGE</th>
-              <th className="py-2 text-center w-[6rem]">ID</th>
-              <th className="py-2 text-center w-[6rem]">DATE</th>
-              <th className="py-2 text-center w-[6rem]">TOTAL</th>
-              <th className="py-2 text-center w-[6rem]">PAID</th>
-              <th className="py-2 text-center w-[6rem]">DELIVERED</th>
-              <th className="py-2 text-center w-[6rem]"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order._id}>
-                <td className="py-2 text-center w-[11rem]">
-                  <img
-                    src={order.orderItems[0]?.images[0]}
-                    alt={order.returnedItems[0]?.name}
-                    className="w-[15rem] mb-5 mx-auto"
-                  />
-                </td>
-                <td className="py-2 text-center w-[6rem]">{order._id}</td>
-                <td className="py-2 text-center w-[6rem]">
-                  {new Date(order.createdAt).toLocaleDateString()}
-                </td>
-                <td className="py-2 text-center w-[6rem]">
-                  RP. {isLoading ? <Loader /> : new Intl.NumberFormat("id-ID").format(order.totalPrice)}
-                </td>
-                <td className="py-2 text-center w-[6rem]">
-                  {order.isPaid ? (
-                    <p className="p-1 text-center bg-green-600 w-full rounded-full">
-                      Completed
-                    </p>
-                  ) : (
-                    <p className="p-1 text-center bg-red-500 w-full rounded-full">
-                      Pending
-                    </p>
-                  )}
-                </td>
-                <td className="py-2 text-center w-[6rem]">
-                  {order.isDelivered ? (
-                    <p className="p-1 text-center bg-green-600 w-full rounded-full">
-                      Completed
-                    </p>
-                  ) : (
-                    <p className="p-1 text-center bg-red-500 w-full rounded-full">
-                      Pending
-                    </p>
-                  )}
-                </td>
-                <td className="py-2 text-center w-[6rem]">
-                  <Link to={`/order/${order._id}`}>
-                    <button className="bg-orange-600 text-white py-2 px-3 rounded">
-                      View Details
-                    </button>
-                  </Link>
-                </td>
+        <div className="overflow-x-auto ml-[3rem]">
+          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead className="bg-orange-600 text-white">
+              <tr>
+                <th className="py-3 px-4 text-left">IMAGE</th>
+                <th className="py-3 px-4 text-left">ID</th>
+                <th className="py-3 px-4 text-left">DATE</th>
+                <th className="py-3 px-4 text-center">Items Purchased</th>
+                <th className="py-3 px-4 text-left">TOTAL</th>
+                <th className="py-3 px-4 text-left">PAID</th>
+                <th className="py-3 px-4 text-left">DELIVERED</th>
+                <th className="py-3 px-4 text-left">ACTIONS</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-
+            </thead>
+            <tbody className="text-gray-100 bg-gray-700">
+              {orders.map((order) => (
+                <tr key={order._id}>
+                  <td className="py-4 px-4 border-b">
+                    <img
+                      src={order.orderItems[0]?.images[0]}
+                      alt={order.orderItems[0]?.name}
+                      className="w-24 h-24 object-cover rounded"
+                    />
+                  </td>
+                  <td className="py-4 px-4 border-b">{order._id}</td>
+                  <td className="py-4 px-4 border-b">
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="py-4 px-4 border-b text-center">
+                    {order.orderItems?.length}
+                  </td>
+                  <td className="py-4 px-4 border-b">
+                    RP. {new Intl.NumberFormat("id-ID").format(order.totalPrice)}
+                  </td>
+                  <td className="py-4 px-4 border-b">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-sm ${
+                        order.isPaid ? "bg-green-600 text-green-100" : "bg-red-600 text-red-100"
+                      }`}
+                    >
+                      {order.isPaid ? "Completed" : "Cancelled"}
+                    </span>
+                  </td>
+                  <td className="py-4 px-4 border-b">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-sm ${
+                        order.isDelivered ? "bg-green-600 text-green-100" : "bg-red-600 text-red-100"
+                      }`}
+                    >
+                      {order.isDelivered ? "Completed" : "Pending"}
+                    </span>
+                  </td>
+                  <td className="py-4 px-4 border-b">
+                    <Link to={`/order/${order._id}`}>
+                      <button className="bg-orange-600 text-white py-2 px-4 rounded hover:bg-orange-700 transition-colors">
+                        View Details
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default UserOrder
+export default UserOrder;
