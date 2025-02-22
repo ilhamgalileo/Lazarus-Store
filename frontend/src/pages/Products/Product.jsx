@@ -29,7 +29,6 @@ const Product = React.memo(({ product }) => {
                     </h2>
                 </Link>
             </div>
-
         </div >
     )
 })

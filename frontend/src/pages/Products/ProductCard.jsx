@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 import { toast } from "react-toastify";
 import { FaShoppingCart, FaArrowRight } from "react-icons/fa";
+import HeartIcon from "./HeartIcon";
 
 const ProductCard = ({ p }) => {
   const [isHovered, setIsHovered] = useState(false)
@@ -15,7 +16,7 @@ const ProductCard = ({ p }) => {
   };
 
   return (
-    <div className="group relative bg-neutral-900 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-orange-600">
+    <div className="group relative bg-neutral-700 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-orange-600">
       <div className="aspect-square overflow-hidden">
         <Link to={`/product/${p._id}`}>
           <img
@@ -52,13 +53,12 @@ const ProductCard = ({ p }) => {
             View Details
             <FaArrowRight className="w-3 h-3 ml-2" />
           </Link>
-
+          <HeartIcon product={p} />
           <button
             onClick={() => addToCartHandler(p, 1)}
             disabled={p.countInStock === 0}
-            className={`p-2 rounded-full ${
-              p.countInStock === 0 ? "bg-gray-500 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"
-            } text-white transition-colors`}
+            className={`p-2 rounded-full ${p.countInStock === 0 ? "bg-gray-500 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"
+              } text-white transition-colors`}
           >
             <FaShoppingCart className="w-4 h-4" />
           </button>

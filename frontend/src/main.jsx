@@ -29,7 +29,6 @@ import CashOrder from './pages/orders/cashOrder.jsx'
 import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 import PlaceOrderCash from './pages/orders/placeOrderCash.jsx'
 import AboutUs from './aboutUs.jsx'
-import Footer from './footer.jsx'
 import ProductsTable from './pages/admin/ProductsTable.jsx'
 import PlaceOrderStoreTransfer from './pages/orders/PlaceOrderStoreTransfer.jsx'
 import StoreOrder from './pages/orders/storeOrder.jsx'
@@ -46,7 +45,6 @@ const router = createBrowserRouter(
       <Route path='/cart' element={<Cart />} />
       <Route path='/shop' element={<Shop />} />
       <Route path='/about' element={<AboutUs />} />
-      <Route path='/footer' element={<Footer />} />
       <Route path='/user-orders' element={<UserOrder />} />
 
       <Route path='' element={<PrivateRoute />} >
