@@ -70,28 +70,28 @@ const ProductCarousel = () => {
                   <div className="flex justify-between w-[20rem]">
                     <div className="one text-sm">
                       <h1 className="flex items-center mb-6">
-                        <FaStore className="mr-2 text-white" /> Brand: {brand}
+                        <FaStore className="mr-2" /> Brand: {brand}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                      <FaCartPlus className="mr-2 text-white" /> Sold: {sold}
+                      <FaCartPlus className="mr-2" /> Sold: {sold}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                        <FaCommentDots className="mr-2 text-white" /> Reviews:{" "}
+                        <FaCommentDots className="mr-2" /> Reviews:{" "}
                         {numReviews}
                       </h1>
                     </div>
 
                     <div className="two text-sm">
                       <h1 className="flex items-center mb-6">
-                        <FaStar className="mr-2 text-white" /> Ratings:{" "}
+                        <FaStar className="mr-2" /> Ratings:{" "}
                         {Math.round(rating)}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                        <FaShoppingCart className="mr-2 text-white" /> Quantity:{" "}
+                        <FaShoppingCart className="mr-2" /> Quantity:{" "}
                         {quantity}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                        <FaBox className="mr-2 text-white" /> In Stock:{" "}
+                        <FaBox className="mr-2" /> In Stock:{" "}
                         {countInStock}
                       </h1>
                     </div>

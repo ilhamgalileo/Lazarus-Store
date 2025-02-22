@@ -10,7 +10,7 @@ export const register = asyncHandler(async (req, res) => {
     if (existingUser) {
         return res.status(400).json({
             status: 'error',
-            message: 'Email sudah ada',
+            message: 'Email existed, please create another',
         })
     }
 
@@ -19,7 +19,7 @@ export const register = asyncHandler(async (req, res) => {
 
     res.status(201).json({
         status: 'success',
-        message: 'Pendaftaran berhasil',
+        message: 'Registration Successfully',
         user: {
             _id: user._id,
             username: user.username,
@@ -35,7 +35,7 @@ export const login = asyncHandler(async (req, res) => {
     if (!user) {
         return res.status(400).json({
             status: 'error',
-            message: 'Email atau password salah',
+            message: 'Email or password not valid',
         })
     }
 
@@ -43,7 +43,7 @@ export const login = asyncHandler(async (req, res) => {
     if (!isPasswordMatch) {
         return res.status(400).json({
             status: 'error',
-            message: 'Email atau password salah',
+            message: 'Email or password not valid',
         })
     }
 
@@ -67,7 +67,7 @@ export const login = asyncHandler(async (req, res) => {
 
     res.status(200).json({
         status: 'success',
-        message: 'Login berhasil',
+        message: 'Login successfully',
         token,
         user: {
             _id: user._id,
@@ -84,7 +84,7 @@ export const logout = asyncHandler(async (req, res) => {
         httpOnly: true,
         expires: new Date(0),
     });
-    res.status(200).json({ message: "Logout Berhasil" })
+    res.status(200).json({ message: "Logout successfully" })
 })
 
 export const getAllUsers = asyncHandler(async (req, res) => {
@@ -95,7 +95,6 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 export const getUserCount = asyncHandler(async (req, res) => {
     const userCount = await User.countDocuments({
         isAdmin: null,
-        // superAdmin: false,
     })
     res.status(200).json({
         userCount,
@@ -107,7 +106,7 @@ export const getUserById = asyncHandler(async (req, res) => {
     if (user) {
         res.json({ user });
     } else {
-        res.status(404).json({ message: 'Pengguna tidak ditemukan' });
+        res.status(404).json({ message: 'User not found' });
     }
 })
 
@@ -143,7 +142,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
             email: user.email,
         })
     } else {
-        res.status(404).send("Pengguna tidak ditemukan");
+        res.status(404).send("User not found");
     }
 })
 
@@ -168,7 +167,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
             },
         })
     } else {
-        res.status(404).json({ message: "Pengguna tidak ditemukan" });
+        res.status(404).json({ message: "User not found" });
     }
 })
 
@@ -182,11 +181,11 @@ export const deleteUserByAdmin = asyncHandler(async (req, res) => {
 
     if (user) {
         if (user.isAdmin) {
-            res.status(400).json({ message: 'Tidak bisa hapus akun admin' })
+            res.status(400).json({ message: "Can't delete an admin account" })
         }
         await User.findOneAndDelete({ _id: user._id })
         res.json({ message: 'Berhasil menghapus akun' })
     } else {
-        res.status(404).json({ message: 'Pengguna tidak ditemukan' })
+        res.status(404).json({ message: 'User not found' })
     }
 })

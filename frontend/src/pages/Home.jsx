@@ -5,7 +5,7 @@ import Loader from "../components/loader"
 import Header from "../components/Header"
 import Message from "../components/Message"
 import Product from "./Products/Product"
-import logo from '../assets/1-removebg-preview.png'
+import logo from '../assets/galileoStore.png'
 import ProductCarousel from "./Products/ProductCarousel"
 import Footer from "../footer"
 
@@ -21,7 +21,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between px-6 py-4 bg-[#0f0f10] top-0 z-50 ml-[4rem]">
+      <div className="flex items-center justify-between px-6 py-4 text-gray-950 top-0 z-50 ml-[4rem]">
         <div className="flex items-center gap-8">
           <Link to="/">
             <img
@@ -46,7 +46,7 @@ const Home = () => {
       </div>
 
       <div className="ml-[23rem] mt-4">
-        <h1 className="text-xl font-semibold">New Releases</h1>
+        <h1 className="text-xl font-semibold text-gray-950">New Releases</h1>
       </div>
 
       {!keyword ? <Header /> : null}
@@ -59,8 +59,8 @@ const Home = () => {
         </Message>
       ) : (
         <>
-          <div className="flex flex-col items-center sm:flex-row sm:justify-between sticky top-0 z-40 bg-[#0f0f10] py-4 px-6">
-            <h1 className="text-[3rem] ml-[17rem]">Special Products</h1>
+          <div className="flex flex-col items-center sm:flex-row sm:justify-between sticky bg-[#f0f0ef] top-0 z-40 py-4 px-6">
+            <h1 className="text-[3rem] ml-[17rem] text-gray-950">Special Products</h1>
             <Link
               to="/shop"
               className="bg-orange-600 font-bold rounded-full py-3 px-10 sm:mt-8 mr-[20rem]"

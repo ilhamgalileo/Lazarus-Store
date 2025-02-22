@@ -16,7 +16,7 @@ const Header = () => {
     }
     return <>
         <div className="flex ml-[10rem]">
-            <div className="xl:block lg:hidden mf:hidden sm:hidden">
+            <div className="xl:block lg:hidden mf:hidden sm:hidden text-gray-950">
                 <div className="grid grid-cols-2">
                     {data.map((product) => (
                         <div key={product._id}>
@@ -25,7 +25,6 @@ const Header = () => {
                     ))}
                 </div>
             </div>
-                {/* <ProductCarousel/> */}
         </div>
     </>
 
