@@ -34,13 +34,13 @@ const ProductCard = ({ p }) => {
           <h3 className="font-medium text-sm text-white truncate">
             {p?.name}
           </h3>
-          <span className="block text-orange-500 font-semibold whitespace-nowrap">
+          <span className="block text-orange-500 font-bold text-lg whitespace-nowrap">
             {p?.price?.toLocaleString("id-ID", {
               style: "currency",
               currency: "IDR",
             })}
           </span>
-          <p className="text-sm text-neutral-400 line-clamp-2">
+          <p className="text-sm text-neutral-300 line-clamp-2">
             {p?.description}
           </p>
         </div>

@@ -6,7 +6,6 @@ import { useGetProductDetailsQuery, useCreateReviewMutation, useGetProductsQuery
 import Loader from "../../components/loader";
 import Message from "../../components/Message";
 import { FaBox, FaClock, FaShoppingCart, FaStar, FaStore } from "react-icons/fa";
-import moment from "moment";
 import Product from "./Product";
 import ProductTabs from "./ProductTabs";
 import { addToCart } from "../../redux/features/cart/cartSlice";
@@ -55,7 +54,7 @@ const ProductDetail = () => {
     return (
         <div className="container mx-auto px-4 max-w-7xl">
             <div className="mb-6">
-                <Link to="/" className="text-white font-semibold hover:underline">Go Back</Link>
+                <Link to="/" className="text-black font-semibold hover:underline">Go Back</Link>
             </div>
 
             {isLoading ? <Loader /> : error ? <Message variant="danger">{error?.data?.message || error.message}</Message> : (
@@ -76,16 +75,16 @@ const ProductDetail = () => {
                     </div>
 
                     <div className="lg:w-1/2 space-y-6">
-                        <h1 className="text-2xl font-bold">{product.name}</h1>
+                        <h1 className="text-2xl font-bold text-gray-950">{product.name}</h1>
                         <p className="text-3xl font-extrabold text-orange-500">Rp{new Intl.NumberFormat('id-ID').format(product.price)}</p>
-                        <p className="text-gray-300 text-sm">{product.description}</p>
+                        <p className="text-gray-800 text-sm">{product.description}</p>
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="text-sm space-y-2">
-                                <p className="flex items-center gap-2"><FaStore className="text-orange-500" /> Brand: {product.brand}</p>
-                                <p className="flex items-center gap-2"><FaClock className="text-orange-500" /> Sold: {product.sold}</p>
-                                <p className="flex items-center gap-2"><FaStar className="text-orange-500" /> Reviews: {product.numReviews}</p>
+                            <div className="text-sm space-y-2 text-black">
+                                <p className="flex items-center gap-2"><FaStore className="text-orange-600" /> Brand: {product.brand}</p>
+                                <p className="flex items-center gap-2"><FaClock className="text-orange-600" /> Sold: {product.sold}</p>
+                                <p className="flex items-center gap-2"><FaStar className="text-orange-600" /> Reviews: {product.numReviews}</p>
                             </div>
-                            <div className="text-sm space-y-2">
+                            <div className="text-sm space-y-2 text-black">
                                 <p className="flex items-center gap-2"><FaStar className="text-orange-500" /> Rating: {product.rating}</p>
                                 <p className="flex items-center gap-2"><FaShoppingCart className="text-orange-500" /> Quantity: {product.quantity}</p>
                                 <p className="flex items-center gap-2"><FaBox className="text-orange-500" /> Stock: {product.countInStock}</p>
@@ -95,7 +94,7 @@ const ProductDetail = () => {
                             className="w-full bg-orange-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed">
                             {product.countInStock === 0 ? 'Out of Stock' : 'Add to Cart'}
                         </button>
-                        <div className="bg-gray-800 rounded-lg p-6">
+                        <div className="bg-neutral-700 rounded-lg p-6">
                             <ProductTabs activeTab={activeTab} setActiveTab={setActiveTab} loadingProductReview={loadingProductReview}
                                 userInfo={userInfo} submitHandler={submitHandler} rating={rating} setRating={setRating}
                                 comment={comment} setComment={setComment} product={product} />
@@ -104,7 +103,7 @@ const ProductDetail = () => {
                 </div>
             )}
             <div className="mt-[2.5rem]">
-                <h2 className="text-2xl sticky bg-[#0f0f10] py-4 px-6 top-0 z-40 font-bold mb-8 text-center will-change-transform">Recommended Products</h2>
+                <h2 className="text-2xl sticky text-gray-950 bg-[#f0f0ef] py-4 px-6 top-0 z-40 font-bold mb-8 text-center">Recommended Products</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 px-4">
                     {shuffledProducts.slice(0, 6).map((product) => (
                         <div key={product._id} className="w-full"><Product product={product} /></div>
