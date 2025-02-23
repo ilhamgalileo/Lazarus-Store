@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import Ratings from "./Ratings";
 import SmallProduct from "./SmallProduct";
-import { useGetNewProductsQuery } from "../../redux/api/productApiSlice";
 import Loader from "../../components/loader";
 
 const ProductTabs = ({
@@ -16,7 +15,6 @@ const ProductTabs = ({
     activeTab,
     setActiveTab,
 }) => {
-    const { data, isLoading } = useGetNewProductsQuery();
 
     const handleTabClick = (tabNumber) => {
         setActiveTab(tabNumber);
@@ -27,38 +25,25 @@ const ProductTabs = ({
             <div className="flex flex-col lg:flex-row gap-8">
                 <div className="lg:w-18">
                     <div
-                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${
-                            activeTab === 1
-                                ? "bg-orange-600 text-white font-bold"
-                                : "bg-white text-gray-800 hover:bg-orange-100"
-                        }`}
+                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${activeTab === 1
+                            ? "bg-orange-600 text-white font-bold"
+                            : "bg-white text-gray-800 hover:bg-orange-100"
+                            }`}
                         onClick={() => handleTabClick(1)}
                     >
                         All Reviews
                     </div>
                     <div
-                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${
-                            activeTab === 2
-                                ? "bg-orange-600 text-white font-bold"
-                                : "bg-white text-gray-800 hover:bg-orange-100"
-                        }`}
+                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${activeTab === 2
+                            ? "bg-orange-600 text-white font-bold"
+                            : "bg-white text-gray-800 hover:bg-orange-100"
+                            }`}
                         onClick={() => handleTabClick(2)}
                     >
                         Write Review
                     </div>
-                    <div
-                        className={`p-3 cursor-pointer text-sm mb-2 rounded-lg transition-colors ${
-                            activeTab === 3
-                                ? "bg-orange-600 text-white font-bold"
-                                : "bg-white text-gray-800 hover:bg-orange-100"
-                        }`}
-                        onClick={() => handleTabClick(3)}
-                    >
-                        Related Products
-                    </div>
-                </div>
 
-                {/* Tab Content */}
+                </div>
                 <div className="flex-1">
                     {activeTab === 1 && (
                         <div className="space-y-4">
@@ -142,20 +127,6 @@ const ProductTabs = ({
                                     </Link>{" "}
                                     to write a review
                                 </p>
-                            )}
-                        </div>
-                    )}
-
-                    {activeTab === 3 && (
-                        <div className="grid md:grid-cols-1 gap-2">
-                            {isLoading ? (
-                                <Loader />
-                            ) : (
-                                data?.map((product) => (
-                                    <div key={product._id} className="bg-white rounded-lg shadow-sm overflow-hidden">
-                                        <SmallProduct product={product} />
-                                    </div>
-                                ))
                             )}
                         </div>
                     )}

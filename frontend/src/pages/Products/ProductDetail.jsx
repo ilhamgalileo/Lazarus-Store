@@ -94,7 +94,7 @@ const ProductDetail = () => {
                             className="w-full bg-orange-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed">
                             {product.countInStock === 0 ? 'Out of Stock' : 'Add to Cart'}
                         </button>
-                        <div className="bg-neutral-700 rounded-lg p-6">
+                        <div>
                             <ProductTabs activeTab={activeTab} setActiveTab={setActiveTab} loadingProductReview={loadingProductReview}
                                 userInfo={userInfo} submitHandler={submitHandler} rating={rating} setRating={setRating}
                                 comment={comment} setComment={setComment} product={product} />
@@ -105,7 +105,7 @@ const ProductDetail = () => {
             <div className="mt-[2.5rem]">
                 <h2 className="text-2xl sticky text-gray-950 bg-[#f0f0ef] py-4 px-6 top-0 z-40 font-bold mb-8 text-center">Recommended Products</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 px-4">
-                    {shuffledProducts.slice(0, 6).map((product) => (
+                    {shuffledProducts.slice(0, 9).map((product) => (
                         <div key={product._id} className="w-full"><Product product={product} /></div>
                     ))}
                 </div>

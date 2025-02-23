@@ -1,47 +1,47 @@
-import { useState, useEffect } from "react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
-import { useLoginMutation } from "../../redux/api/usersApiSlice"
-import { setCredientials } from "../../redux/features/auth/authSlice"
-import { toast } from "react-toastify"
-import Loader from "../../components/loader"
-import logo from '../../assets/1-removebg-preview.png'
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useLoginMutation } from "../../redux/api/usersApiSlice";
+import { setCredientials } from "../../redux/features/auth/authSlice";
+import { toast } from "react-toastify";
+import Loader from "../../components/loader";
+import logo from '../../assets/1-removebg-preview.png';
 
 const Login = () => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const [login, { isLoading }] = useLoginMutation()
+    const [login, { isLoading }] = useLoginMutation();
 
-    const { userInfo } = useSelector(state => state.auth)
+    const { userInfo } = useSelector((state) => state.auth);
 
-    const { search } = useLocation()
-    const sp = new URLSearchParams(search)
-    const redirect = sp.get('redirect') || '/'
+    const { search } = useLocation();
+    const sp = new URLSearchParams(search);
+    const redirect = sp.get('redirect') || '/';
 
     useEffect(() => {
         if (userInfo) {
-            navigate(redirect)
+            navigate(redirect);
         }
-    }, [navigate, redirect, userInfo])
+    }, [navigate, redirect, userInfo]);
 
     const submitHandler = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         try {
-            const res = await login({ email, password }).unwrap()
-            console.log(res)
-            dispatch(setCredientials({ user: res.user, token: res.token }))
-        } catch (error) {
-            toast.error(error?.data?.message || error.message)
+            const res = await login({ email, password }).unwrap();
+            dispatch(setCredientials({ ...res }));
+            navigate(redirect);
+        } catch (err) {
+            toast.error(err?.data?.message || err.error);
         }
-    }
+    };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="w-full max-w-2xl bg-gray-800 rounded-lg shadow-xl p-8 flex items-center">
+        <div className="fixed inset-0 overflow-hidden h-screen flex items-center justify-center bg-login-regist">
+            <div className="w-full max-w-2xl bg-gray-800 bg-opacity-90 rounded-lg shadow-xl p-8 flex items-center">
                 <div className="w-1/3 flex justify-center">
                     <img
                         src={logo}
@@ -49,10 +49,10 @@ const Login = () => {
                         className="w-full object-cover"
                     />
                 </div>
-    
+
                 <div className="w-2/3">
                     <h1 className="text-2xl font-semibold text-center text-white mb-6">Sign In</h1>
-    
+
                     <form onSubmit={submitHandler} className="space-y-6">
                         {/* Email Input */}
                         <div className="relative">
@@ -71,7 +71,7 @@ const Login = () => {
                                 Email
                             </label>
                         </div>
-    
+
                         {/* Password Input */}
                         <div className="relative">
                             <input
@@ -89,7 +89,7 @@ const Login = () => {
                                 Password
                             </label>
                         </div>
-    
+
                         <button
                             disabled={isLoading}
                             type="submit"
@@ -97,9 +97,9 @@ const Login = () => {
                         >
                             {isLoading ? "Signing in..." : "Sign In"}
                         </button>
-    
+
                         {isLoading && <Loader />}
-    
+
                         <div className="text-center">
                             <p className="text-white">
                                 New Customer?{" "}
@@ -116,6 +116,6 @@ const Login = () => {
             </div>
         </div>
     );
-}
+};
 
-export default Login
+export default Login;

@@ -33,8 +33,8 @@ const Cart = () => {
     <>
       <div className="container flex justify-around items-start wrap mx-auto mt-8">
         {cartItems.length === 0 ? (
-          <div>
-            Your cart is empty <Link to="/shop">Go To Shop</Link>
+          <div className="text-gray-800">
+            Your cart is empty <Link to="/shop" className="hover:text-orange-500">Go To Shop</Link>
           </div>
         ) : (
           <>
