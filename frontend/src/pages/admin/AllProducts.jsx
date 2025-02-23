@@ -19,14 +19,14 @@ const AllProducts = () => {
             <div className="container mx-[9rem]">
                 <div className="flex flex-col md:flex-row mr-[5rem]">
                     <div className="p-3">
-                        <div className="ml-[2rem] text-xl font-bold h-12">
+                        <div className="ml-[2rem] text-xl font-bold h-12 text-gray-950">
                             All Products ({products.length})
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {products.map((product) => (
                                 <div
                                     key={product._id}
-                                    className="border rounded-lg shadow-lg p-4 mb-4 overflow-hidden"
+                                    className="border rounded-lg shadow-lg p-4 mb-4 overflow-hidden bg-neutral-700"
                                 >
                                     <div className="flex">
                                         <img

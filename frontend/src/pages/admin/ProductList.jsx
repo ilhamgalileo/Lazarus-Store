@@ -87,14 +87,14 @@ const ProductList = () => {
 
     return (
         <div className="container xl:mx-[9rem] sm:mx-[0]">
-            <div className="flex flex-col md:flex-row">
+            <div className="flex flex-col md:flex-row text-gray-950">
                 <AdminMenu />
                 <div className="md:w-3/4 p-3">
                     <h2 className="h-12">Create Product</h2>
                     <form onSubmit={submitHandler}>
                         <div className="mb-3">
                             <label
-                                className={`border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11 ${
+                                className={`border text-black border-gray-800 px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11 ${
                                     loading ? "opacity-50" : ""
                                 }`}
                             >
@@ -233,7 +233,7 @@ const ProductList = () => {
 
                             <button
                                 type="submit"
-                                className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-orange-600 disabled:opacity-50"
+                                className="py-4 px-10 text-white mt-5 rounded-lg text-lg font-bold bg-orange-600 disabled:opacity-50"
                                 disabled={loading}
                             >
                                 {loading ? "Creating..." : "Create Product"}

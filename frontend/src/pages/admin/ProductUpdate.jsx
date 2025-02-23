@@ -163,11 +163,11 @@ const ProductUpdate = () => {
         <div className="container xl:mx-[9rem] sm:mx-[0]">
             <div className="flex flex-col md:flex-row">
                 <AdminMenu />
-                <div className="md:w-3/4 p-3">
+                <div className="md:w-3/4 p-3 text-gray-950">
                     <h2 className="h-12">Update Product</h2>
                     <form onSubmit={submitHandler}>
                         <div className="mb-3">
-                            <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
+                            <label className="border border-gray-800 text-black px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
                                 {loading ? "Uploading..." : "Upload Images"}
                                 <input
                                     type="file"

@@ -264,10 +264,10 @@ const AdminDashboard = () => {
       <AdminMenu />
       <div className="p-6 xl:ml-[4rem] md:ml-[0rem]">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-white">Dashboard Overview</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
           <div className="flex mt-[1.5rem] items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <FaCalendarAlt className="text-white" />
+              <FaCalendarAlt className="text-gray-800" />
               <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
@@ -279,8 +279,8 @@ const AdminDashboard = () => {
                 <option value="yearly">Yearly</option>
               </select>
             </div>
-            <div className="flex items-center space-x-2 text-sm text-white">
-              <FaCalendar className="text-white" />
+            <div className="flex items-center space-x-2 text-sm text-gray-800">
+              <FaCalendar className="text-gray-800" />
               <span>{new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
             </div>
           </div>
@@ -322,11 +322,11 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        <div className="bg-black rounded-lg shadow-lg p-6">
+        <div className="rounded-lg  p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-white">All Order</h2>
+            <h2 className="text-lg font-bold text-gray-800">All Order</h2>
           </div>
-          <OrderList limit={5} />
+          <OrderList/>
         </div>
       </div>
     </div>
