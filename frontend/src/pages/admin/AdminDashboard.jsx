@@ -17,9 +17,9 @@ import { FaUser, FaMoneyBill, FaShoppingBag, FaChartLine, FaCalendar, FaCalendar
 import AdminMenu from "./AdminMenu";
 
 const StatBox = ({ title, value, icon, loading }) => (
-  <div className="rounded-lg bg-gray-700 shadow-lg p-6 w-full">
+  <div className="rounded-lg bg-neutral-700 shadow-lg p-6 w-full">
     <div className="flex items-center justify-between">
-      <div className="font-bold rounded-full w-12 h-12 bg-orange-500 flex items-center justify-center text-gray-800">
+      <div className="font-bold rounded-full w-12 h-12 bg-orange-500 flex items-center justify-center text-gray-100">
         {icon}
       </div>
     </div>
@@ -122,16 +122,7 @@ const AdminDashboard = () => {
         curve: "smooth",
         width: 2,
       },
-      colors: ["orange"],
-      fill: {
-        type: "gradient",
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.7,
-          opacityTo: 0.3,
-          stops: [0, 90, 100],
-        },
-      },
+      colors: ["#f97316"],
       tooltip: {
         theme: "dark",
         y: {
@@ -313,7 +304,7 @@ const AdminDashboard = () => {
           />
         </div>
 
-        <div className="bg-black rounded-lg shadow-lg p-6 mb-6">
+        <div className="bg-neutral-800 rounded-lg shadow-lg p-6 mb-6">
           <h2 className="text-lg font-bold text-white">Sales Trend ({timeRange})</h2>
           {chartConfig.series[0].data.length > 0 ? (
             <Chart options={chartConfig.options} series={chartConfig.series} type="area" height={350} />
