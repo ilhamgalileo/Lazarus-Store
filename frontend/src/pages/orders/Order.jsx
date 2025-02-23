@@ -158,10 +158,10 @@ const Order = () => {
                           />
                         </th>
                       )}
-                    <th className="p-2">Product</th>
-                    <th className="p-2">Quantity</th>
-                    <th className="p-2">Unit Price</th>
-                    <th className="p-2">Total</th>
+                      <th className="p-2">Product</th>
+                      <th className="p-2">Quantity</th>
+                      <th className="p-2">Unit Price</th>
+                      <th className="p-2">Total</th>
                     </tr>
                   </thead>
                   <tbody className="text-gray-900 text-sm">
@@ -237,41 +237,44 @@ const Order = () => {
           )}
 
           <div className="mt-[3rem] flex justify-between gap-4 text font-medium">
-            {order.returnedItems && order.returnedItems.length > 0 && (
-              <div className="border p-4 rounded-lg text-red-700 w-1/3">
-                <h3 className="text-lg font-semibold mb-2">Return Details: </h3>
-                <p className="mb-1">
-                  <strong>Return Status:</strong>{" "}
-                  {order.orderItems.length === 0
-                    ? "True"
-                    : `${order.returnedItems.length} item${order.returnedItems.length > 1 ? "s" : ""} returned`}
-                </p>
-                <p className="mb-1">
-                  <strong>Return Date:</strong>{" "}
-                  {order.returnedItems[0]?.returnedAt ? moment(order.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}
-                </p>
-                <p className="mb-1 border-t pt-2 mt-2 border-red-500">
-                  <strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(order.returnAmount || 0)}
-                </p>
-              </div>
-            )}
-
-            <div className="p-4 rounded-lg text-gray-950 w-1/3">
-              <div className="flex justify-between mb-2">
-                <p>Items Subtotal:</p>
-                <strong>Rp{new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</strong>
-              </div>
-              <div className="flex justify-between mb-2">
-                <p>Shipping:</p>
-                <strong>Rp{new Intl.NumberFormat('id-ID').format(order.shippingPrice)}</strong>
-              </div>
-              <div className="flex justify-between mb-2">
-                <p>Tax (PPN 11%):</p>
-                <strong>Rp{new Intl.NumberFormat('id-ID').format(order.taxPrice)}</strong>
-              </div>
-              <div className="flex justify-between mt-2 pt-2 border-t border-black">
-                <p>Total:</p>
-                <strong>Rp{new Intl.NumberFormat('id-ID').format(order.totalPrice)}</strong>
+            <div className="flex-1">
+              {order.returnedItems && order.returnedItems.length > 0 && (
+                <div className=" p-4 rounded-lg text-red-700">
+                  <h3 className="text-lg font-semibold mb-2">Return Details: </h3>
+                  <p className="mb-1">
+                    <strong>Return Status:</strong>{" "}
+                    {order.orderItems.length === 0
+                      ? "True"
+                      : `${order.returnedItems.length} item${order.returnedItems.length > 1 ? "s" : ""} returned`}
+                  </p>
+                  <p className="mb-1">
+                    <strong>Return Date:</strong>{" "}
+                    {order.returnedItems[0]?.returnedAt ? moment(order.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}
+                  </p>
+                  <p className="mb-1 border-t pt-2 mt-2 border-red-500">
+                    <strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(order.returnAmount || 0)}
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="flex-1">
+              <div className="p-4 rounded-lg text-gray-950">
+                <div className="flex justify-between mb-2">
+                  <p>Items Subtotal:</p>
+                  <strong>Rp{new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</strong>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <p>Shipping:</p>
+                  <strong>Rp{new Intl.NumberFormat('id-ID').format(order.shippingPrice)}</strong>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <p>Tax (PPN 11%):</p>
+                  <strong>Rp{new Intl.NumberFormat('id-ID').format(order.taxPrice)}</strong>
+                </div>
+                <div className="flex justify-between mt-2 pt-2 border-t border-black">
+                  <p>Total:</p>
+                  <strong>Rp{new Intl.NumberFormat('id-ID').format(order.totalPrice)}</strong>
+                </div>
               </div>
             </div>
           </div>
