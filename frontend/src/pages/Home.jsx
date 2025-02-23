@@ -5,7 +5,7 @@ import Loader from "../components/loader"
 import Header from "../components/Header"
 import Message from "../components/Message"
 import Product from "./Products/Product"
-import logo from '../assets/galileoStore.png'
+import logo from '../assets/galileo2.png'
 import ProductCarousel from "./Products/ProductCarousel"
 
 const Home = () => {

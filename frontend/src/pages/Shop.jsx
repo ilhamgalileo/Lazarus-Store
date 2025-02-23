@@ -187,7 +187,7 @@ const Shop = () => {
           </div>
 
           <div className="flex-1 p-3">
-            <h2 className="h4 text-center mb-2">{products?.length} Products</h2>
+            <h2 className="h4 text-center mb-2 text-black">{products?.length} Products</h2>
             {products.length === 0 ? (
               <Loader />
             ) : (

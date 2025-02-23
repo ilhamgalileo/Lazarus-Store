@@ -27,12 +27,12 @@ const HeartIcon = ({ product }) => {
     return (
         <div
             onClick={toggleFavorites}
-            className="absolute top-2 right-2 cursor-pointer bg-white rounded-full p-2 backdrop-blur-md bg-opacity-50"
+            className="absolute top-2 right-2 cursor-pointer bg-neutral-400 rounded-full p-2 backdrop-blur-sm bg-opacity-50"
         >
             {isFavorite ? (
-                <FaHeart className="text-orange-700" />
+                <FaHeart className="text-orange-500 shadow-xl" />
             ) : (
-                <FaRegHeart className="text-black" />
+                <FaRegHeart className="text-white" />
             )}
         </div>
     )

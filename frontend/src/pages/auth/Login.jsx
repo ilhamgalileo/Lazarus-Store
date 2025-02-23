@@ -40,9 +40,8 @@ const Login = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+        <div className="min-h-screen flex items-center justify-center p-4">
             <div className="w-full max-w-2xl bg-gray-800 rounded-lg shadow-xl p-8 flex items-center">
-                {/* Logo di kiri */}
                 <div className="w-1/3 flex justify-center">
                     <img
                         src={logo}

@@ -7,7 +7,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Message from "../../components/Message";
 import Loader from "../../components/loader";
-import logo from '../../assets/1-removebg-preview.png'
+import logo from '../../assets/galileo2.png'
 import { useGetOrderDetailsQuery, useDeliverOrderMutation, useReturnOrderMutation } from "../../redux/api/orderApiSlice";
 
 const Order = () => {
@@ -105,37 +105,39 @@ const Order = () => {
   ) : error ? (
     <Message variant="danger">{error.data.message}</Message>
   ) : (
-    <div className="bg-[#f0f0ef] min-h-screen">
-      <div className="container mx-auto max-w-[90%] mr-[5%] ml-[7%] mt-[1rem]">
-        <div className="flex justify-end mb-2">
-          <button onClick={handleDownloadPDF} className="bg-blue-500 text-white px-4 py-3 mt-3 rounded">
-            Download Invoice
+    <div className="min-h-screen">
+      <div className="container mx-auto max-w-[85%] ml-[9%] mt-[1rem] relative">
+        <div className="flex justify-end sticky top-0 z-10 bg-[#f0f0ef]">
+          <button onClick={handleDownloadPDF} className="bg-blue-500 text-sm text-white font-bold px-1.5 py-1 rounded-lg">
+            Download
           </button>
         </div>
         <div ref={invoiceRef} className="w-full p-2 mt-2 relative bg-[#f0f0ef]">
-          <img src={logo} alt="Logo" className="bg-black absolute top-2 left-2 w-[12rem] h-auto" />
-          <h2 className="text-black text-2xl font-medium mr-[2rem] mt-[1rem] mb-[5rem] text-right">INVOICE</h2>
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="text-gray-950">
-              <h3 className="text-2xl font-bold mb-3 mt-[5rem]">Order Information: </h3>
+          <img src={logo} alt="Logo" className="absolute top-2 left-2 w-[12rem] h-auto" />
+          <h2 className="text-black text-2xl font-medium mr-[2rem] mt-[1rem] mb-[2.5rem] text-right">INVOICE</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-gray-950 text-sm">
+              <h3 className="font-bold text-xl mb-2.5 mt-[5rem]">Order Information: </h3>
               <p className="mb-1">Order ID: <strong>{order._id}</strong></p>
               <p className="mb-1">Date: <strong>{moment(order.createdAt).format("DD MMMM YYYY")}</strong></p>
               <p className="mb-1">Payment Status: <strong>{order.isPaid ?
-                <span className="text-green-600">Paid on {moment(order.paidAt).format("DD MMMM YYYY")}</span> :
+                <span className="text-green-700">Paid on {moment(order.paidAt).format("DD MMMM YYYY")}</span> :
                 <span className="text-red-600">Cancelled</span>
               }</strong></p>
               <p className="mb-1">Delivery Status: <strong>{order.isDelivered ?
-                <span className="text-green-600">On Process {moment(order.deliveredAt).format("DD MMMM YYYY")}</span> :
+                <span className="text-green-700">On Process {moment(order.deliveredAt).format("DD MMMM YYYY")}</span> :
                 <span className="text-red-600">Pending</span>
               }</strong></p>
               <p className="mb-1">Method: <strong>{order.paymentMethod}</strong></p>
             </div>
 
             <div className="text-gray-900 absolute right-[2rem]">
-              <h3 className="text-xl font-bold mb-3 mt-[5rem]">Published for: </h3>
-              <p className="mb-1">Buyer: <strong>{order.user.username}</strong></p>
-              <p className="mb-1">Email: <strong>{order.user.email}</strong></p>
-              <p className="mb-1">Address: <strong>{order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}</strong></p>
+              <h3 className="font-bold text-xl mb-2.5 mt-[5rem]">Published for: </h3>
+              <div className="text-gray-950 text-sm">
+                <p className="mb-1">Buyer: <strong>{order.user.username}</strong></p>
+                <p className="mb-1">Email: <strong>{order.user.email}</strong></p>
+                <p className="mb-1">Address: <strong>{order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}</strong></p>
+              </div>
             </div>
           </div>
 
@@ -143,44 +145,44 @@ const Order = () => {
             {order?.orderItems?.length > 0 && (
               <div className="mt-4">
                 <h3 className="text-lg font-semibold mt-3 text-gray-950">Ordered Items: </h3>
-                <table className="w-full border-collapse border bg-gray-300">
-                  <thead>
-                    <tr className="bg-blue-600">
+                <table className="table-auto w-full text-gray-800 border-collapse">
+                  <thead className="border-b-2 border-gray-400">
+                    <tr>
                       {userInfo.user?.isAdmin && (
-                        <th className="p-2 border">
+                        <th>
                           <input
                             type="checkbox"
                             checked={selectAll}
                             onChange={toggleSelectAll}
-                            className="w-6 h-5 mt-3 cursor-pointer"
+                            className="w-6 h-5 mt-2 cursor-pointer"
                           />
                         </th>
                       )}
-                      <th className="p-2 border">Product</th>
-                      <th className="p-2 border">Quantity</th>
-                      <th className="p-2 border">Unit Price</th>
-                      <th className="p-2 border">Total</th>
+                    <th className="p-2">Product</th>
+                    <th className="p-2">Quantity</th>
+                    <th className="p-2">Unit Price</th>
+                    <th className="p-2">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="text-gray-900">
+                  <tbody className="text-gray-900 text-sm">
                     {order?.orderItems.map((item, index) => (
                       <tr key={index} className="text-center">
                         {userInfo.user.isAdmin && (
-                          <td className="p-2 border">
+                          <td className="p-2">
                             <input
                               type="checkbox"
-                              className="w-6 h-5 mt-3 cursor-pointer"
+                              className="w-6 h-5 mt-1 cursor-pointer"
                               checked={selectedItems.some((selected) => selected.product === item.product)}
                               onChange={() => toggleItemSelection(item)}
                             />
                           </td>
                         )}
-                        <td className="p-2 border">
+                        <td className="p-2">
                           <Link to={`/product/${item.product}`} className="text-gray-700 hover:text-gray-400">
                             {item.name}
                           </Link>
                         </td>
-                        <td className="p-2 border">
+                        <td className="p-2">
                           {userInfo.user.isAdmin && selectedItems.some((selected) => selected.product === item.product) ? (
                             <input
                               type="number"
@@ -194,8 +196,8 @@ const Order = () => {
                             item.qty
                           )}
                         </td>
-                        <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
-                        <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
+                        <td className="p-2">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                        <td className="p-2">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -206,27 +208,27 @@ const Order = () => {
 
           {order?.returnedItems?.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-lg font-semibold text-red-500">Returned Items</h3>
-              <table className="w-full border-collapse border bg-gray-300">
-                <thead>
-                  <tr className="bg-red-600">
-                    <th className="p-2 border">Product</th>
-                    <th className="p-2 border">Quantity</th>
-                    <th className="p-2 border">Unit Price</th>
-                    <th className="p-2 border">Total</th>
+              <h3 className="text-lg font-semibold text-red-500">Returned Items:</h3>
+              <table className="table-auto w-full text-gray-800 border-collapse">
+                <thead className="border-b-2 border-red-400">
+                  <tr className="text-red-600">
+                    <th className="p-2">Product</th>
+                    <th className="p-2">Quantity</th>
+                    <th className="p-2">Unit Price</th>
+                    <th className="p-2">Total</th>
                   </tr>
                 </thead>
                 <tbody>
                   {order?.returnedItems.map((item, index) => (
-                    <tr key={index} className="text-center text-gray-950">
-                      <td className="p-2 border">
-                        <Link to={`/product/${item.product}`} className="text-gray-700 hover:text-gray-400">
+                    <tr key={index} className="text-center text-red-500">
+                      <td className="p-2">
+                        <Link to={`/product/${item.product}`} className="text-red-500 hover:text-red-300">
                           {item.name}
                         </Link>
                       </td>
-                      <td className="p-2 border">{item.qty}</td>
-                      <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
-                      <td className="p-2 border">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
+                      <td className="p-2">{item.qty}</td>
+                      <td className="p-2">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                      <td className="p-2">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -235,41 +237,46 @@ const Order = () => {
           )}
 
           <div className="mt-[3rem] flex justify-between gap-4 text font-medium">
-            <div className="border p-4 rounded-lg bg-blue-600 text-white w-1/3">
-              <div className="flex justify-between mb-2">
-                <span>Items Subtotal:</span>
-                <span>Rp{new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</span>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span>Shipping:</span>
-                <span>Rp{new Intl.NumberFormat('id-ID').format(order.shippingPrice)}</span>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span>Tax (PPN 11%):</span>
-                <span>Rp{new Intl.NumberFormat('id-ID').format(order.taxPrice)}</span>
-              </div>
-              <div className="flex justify-between font-bold mt-2 pt-2 border-t">
-                <span>Total:</span>
-                <span>Rp{new Intl.NumberFormat('id-ID').format(order.totalPrice)}</span>
-              </div>
-            </div>
-
             {order.returnedItems && order.returnedItems.length > 0 && (
-              <div className="border p-4 rounded-lg bg-red-700 text-white w-1/3">
-                <h3 className="text-lg font-semibold mb-2">Return Details</h3>
+              <div className="border p-4 rounded-lg text-red-700 w-1/3">
+                <h3 className="text-lg font-semibold mb-2">Return Details: </h3>
                 <p className="mb-1">
                   <strong>Return Status:</strong>{" "}
                   {order.orderItems.length === 0
                     ? "True"
-                    : `${order.returnedItems.length} item ${order.returnedItems.length > 1 ? "s" : ""} returned`}
+                    : `${order.returnedItems.length} item${order.returnedItems.length > 1 ? "s" : ""} returned`}
                 </p>
-                <p className="mb-1"><strong>Return Date:</strong> {order.returnedItems[0]?.returnedAt ? moment(order.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}</p>
-                <p className="mb-1 border-t pt-2 mt-2"><strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(order.returnAmount || 0)}</p>
+                <p className="mb-1">
+                  <strong>Return Date:</strong>{" "}
+                  {order.returnedItems[0]?.returnedAt ? moment(order.returnedItems[0].returnedAt).format("DD MMMM YYYY") : "Not Available"}
+                </p>
+                <p className="mb-1 border-t pt-2 mt-2 border-red-500">
+                  <strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(order.returnAmount || 0)}
+                </p>
               </div>
             )}
-          </div>
 
+            <div className="p-4 rounded-lg text-gray-950 w-1/3">
+              <div className="flex justify-between mb-2">
+                <p>Items Subtotal:</p>
+                <strong>Rp{new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</strong>
+              </div>
+              <div className="flex justify-between mb-2">
+                <p>Shipping:</p>
+                <strong>Rp{new Intl.NumberFormat('id-ID').format(order.shippingPrice)}</strong>
+              </div>
+              <div className="flex justify-between mb-2">
+                <p>Tax (PPN 11%):</p>
+                <strong>Rp{new Intl.NumberFormat('id-ID').format(order.taxPrice)}</strong>
+              </div>
+              <div className="flex justify-between mt-2 pt-2 border-t border-black">
+                <p>Total:</p>
+                <strong>Rp{new Intl.NumberFormat('id-ID').format(order.totalPrice)}</strong>
+              </div>
+            </div>
+          </div>
         </div>
+
         {loadingDeliver && <Loader />}
         {userInfo && userInfo.user?.isAdmin && order.isPaid && !order.isDelivered && (
           <div className="mt-6">
