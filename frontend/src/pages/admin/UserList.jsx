@@ -58,7 +58,7 @@ const UserList = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 text-gray-950">
       <h1 className="text-2xl font-semibold mb-4 ml-[4rem]">Users</h1>
       {isLoading ? (
         <Loader />
@@ -151,7 +151,7 @@ const UserList = () => {
                   </td>
                   <td className="px-4 py-2">
                     {user.superAdmin ? (
-                      <FaCheck style={{ color: "yellow" }} />
+                      <FaCheck style={{ color: "blue" }} />
                     ) : (
                       <FaTimes style={{ color: "red" }} />
                     )}

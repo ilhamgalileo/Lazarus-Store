@@ -163,7 +163,6 @@ export const updateProfile = asyncHandler(async (req, res) => {
                 _id: updatedUser._id,
                 username: updatedUser.username,
                 email: updatedUser.email,
-                isAdmin: updatedUser.isAdmin,
             },
         })
     } else {
