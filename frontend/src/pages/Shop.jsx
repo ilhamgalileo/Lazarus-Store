@@ -9,6 +9,7 @@ import ProductCard from "./Products/ProductCard"
 const Shop = () => {
   const dispatch = useDispatch()
   const { categories, products, checked, radio } = useSelector((state) => state.shop)
+  const [selectedBrands, setSelectedBrands] = useState([])
 
   const categoriesQuery = useFetchCateQuery()
   const [priceFilter, setPriceFilter] = useState("")
@@ -32,21 +33,24 @@ const Shop = () => {
               product.price === parseInt(priceFilter, 10)
             const matchesName =
               product.name.toLowerCase().includes(searchTerm.toLowerCase())
-            return matchesPrice && matchesName
+            const matchesBrand = 
+              selectedBrands.length === 0 || selectedBrands.includes(product.brand)
+            return matchesPrice && matchesName && matchesBrand
           }
         )
         dispatch(setProducts(filteredProducts))
       }
     }
-  }, [checked, radio, filteredProductsQuery.data, dispatch, priceFilter, searchTerm])
+  }, [checked, radio, filteredProductsQuery.data, dispatch, priceFilter, searchTerm, selectedBrands])
 
-  const handleBrandClick = (brand) => {
-    setSelectedBrand(brand)
-    const productsByBrand = filteredProductsQuery.data?.filter(
-      (product) => product.brand === brand
-    )
-    dispatch(setSelectedBrand(brand))
-    dispatch(setProducts(productsByBrand))
+  const handleBrandCheck = (brand) => {
+    setSelectedBrands(prev => {
+      if (prev.includes(brand)) {
+        return prev.filter(b => b !== brand)
+      } else {
+        return [...prev, brand]
+      }
+    })
   }
 
   const handleCheck = (value, id) => {
@@ -59,6 +63,7 @@ const Shop = () => {
   const handleReset = () => {
     setPriceFilter("")
     setSearchTerm("")
+    setSelectedBrands([])
     dispatch(setChecked([]))
     dispatch(setSelectedBrand(null))
     dispatch(setProducts([]))
@@ -118,12 +123,12 @@ const Shop = () => {
                 Filter by Price
               </label>
               <input
-                type="text"
+                type="number"
                 id="priceFilter"
                 placeholder="Enter price"
                 value={priceFilter}
                 onChange={handlePriceChange}
-                className="w-full px-3 py-2 mt-2 placeholder-gray-600 border border-gray-600 bg-gray-300 text-white rounded-lg focus:outline-none focus:ring focus:border-orange-500"
+                className="w-full px-3 py-2 mt-2 placeholder-gray-600 border border-gray-600 bg-gray-300 text-black rounded-lg focus:outline-none focus:ring focus:border-orange-500"
               />
             </div>
 
@@ -152,8 +157,6 @@ const Shop = () => {
                 ))}
               </div>
             </div>
-
-            {/* Filter by Brand */}
             <div className="mb-4">
               <p className="block text-sm font-medium text-gray-300 bg-black px-3 py-2 rounded-full text-center">
                 Filter by Brand
@@ -162,13 +165,16 @@ const Shop = () => {
                 {uniqueBrands?.map((brand) => (
                   <div key={brand} className="flex items-center mb-2">
                     <input
-                      type="radio"
-                      id={brand}
-                      name="brand"
-                      onChange={() => handleBrandClick(brand)}
-                      className="w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-orange-500"
+                      type="checkbox"
+                      id={`brand-${brand}`}
+                      checked={selectedBrands.includes(brand)}
+                      onChange={() => handleBrandCheck(brand)}
+                      className="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500"
                     />
-                    <label htmlFor={brand} className="ml-2 text-sm font-medium text-white">
+                    <label
+                      htmlFor={`brand-${brand}`}
+                      className="ml-2 text-sm font-medium text-white"
+                    >
                       {brand}
                     </label>
                   </div>

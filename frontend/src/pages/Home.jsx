@@ -111,7 +111,7 @@ const Home = () => {
             ))}
           </div>
           <div className="sm:col-span-2 lg:col-span-1 text-sm">
-            © 2025, Lazarus Store.
+            © 2025, Galileo Store.
           </div>
         </div>
       </footer>

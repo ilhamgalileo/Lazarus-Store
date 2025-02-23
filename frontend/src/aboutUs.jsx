@@ -22,12 +22,11 @@ const AboutUs = () => {
                 </div>
             </header>
 
-            {/* Konten Utama */}
             <div className="flex-grow p-8">
                 <div className="max-w-4xl mx-auto text-center">
                     <h1 className="text-5xl font-bold text-orange-500 mb-5">About Us</h1>
                     <p className="text-lg mb-6 leading-relaxed">
-                        <strong>Lazarus Store</strong> is a PC Hardware, Peripherals, Accessories store that provides a variety of high-quality components
+                        <strong>Galileo Store</strong> is a PC Hardware, Peripherals, Accessories store that provides a variety of high-quality components
                         for gaming, productivity, and professional workstations. We are committed to providing the shopping experience with competitive pricing and responsive customer service.
                     </p>
 
