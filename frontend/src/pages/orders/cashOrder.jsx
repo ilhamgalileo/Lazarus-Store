@@ -234,7 +234,7 @@ const CashOrder = () => {
                       ? moment(cashOrder.returnedItems[0].returnedAt).format("DD MMMM YYYY")
                       : "Not Available"}
                   </p>
-                  <p className="mb-1 border-t pt-2 mt-2 border-red-500">
+                  <p className="mb-1 border-t pt-2 mt-2 border-red-500 w-1/2">
                     <strong>Return Amount:</strong> Rp{new Intl.NumberFormat('id-ID').format(cashOrder.returnAmount || 0)}
                   </p>
                 </div>

@@ -99,7 +99,7 @@ const PlaceOrder = () => {
         {cart.cartItems.length === 0 ? (
           <Message>Your cart is empty</Message>
         ) : (
-          <div className="overflow-x-auto ml-[7rem]">
+          <div className="overflow-x-auto ml-[7rem] text-gray-950">
             <table className="w-full">
               <thead>
                 <tr className="text-left">
@@ -126,16 +126,18 @@ const PlaceOrder = () => {
         )}
 
         <div className="mt-8 ml-[7rem]">
-          <h2 className="text-xl font-semibold">Order Summary</h2>
-          <ul>
-            <li>Items: Rp. {itemsPrice.toLocaleString()}</li>
-            <li>Shipping: Rp. {shippingPrice.toLocaleString()}</li>
-            <li>Tax: Rp. {taxPrice.toLocaleString()}</li>
-            <li>Total: Rp. {totalPrice.toLocaleString()}</li>
+          <h2 className="text-xl font-semibold mb-2 text-gray-950">Order Summary:</h2>
+          <ul className="text-gray-950 text-lg">
+            <li>Items: Rp{itemsPrice.toLocaleString()}</li>
+            <li>Shipping: Rp{shippingPrice.toLocaleString()}</li>
+            <li>Tax: Rp{taxPrice.toLocaleString()}</li>
+            <li
+              className="mt-1 pt-2 border-t border-black w-1/5">
+              Total: Rp{totalPrice.toLocaleString()}</li>
           </ul>
         </div>
         <button
-          className="bg-orange-500 text-white py-2 px-4 rounded w-[70rem] mt-4 ml-[10rem]"
+          className="bg-orange-500 py-2 px-4 rounded w-[70rem] mt-4 ml-[10rem]"
           onClick={placeOrderHandler}
           disabled={isLoading}
         >
