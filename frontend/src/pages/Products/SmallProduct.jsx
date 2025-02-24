@@ -13,7 +13,7 @@ const SmallProduct = ({ product }) => {
         <HeartIcon product={product} />
       </div>
 
-      <div className="mt-3 p-2 text-sm shadow-xl">
+      <div className="mt-3 p-2 text-sm shadow-2xl shadow-gray-500">
         <h2 className="flex justify-between items-center">
           <Link
             to={`/product/${product._id}`}

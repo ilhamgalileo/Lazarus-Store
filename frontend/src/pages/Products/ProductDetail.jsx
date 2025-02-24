@@ -106,7 +106,10 @@ const ProductDetail = () => {
                 <h2 className="text-2xl sticky text-gray-950 bg-[#f0f0ef] py-4 px-6 top-0 z-40 font-bold mb-8 text-center">Recommended Products</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 px-4">
                     {shuffledProducts.slice(0, 9).map((product) => (
-                        <div key={product._id} className="w-full"><Product product={product} /></div>
+                        <div 
+                        key={product._id} 
+                        className="w-full"><Product 
+                        product={product} /></div>
                     ))}
                 </div>
             </div>

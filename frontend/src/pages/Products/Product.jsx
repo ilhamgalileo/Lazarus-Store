@@ -17,8 +17,8 @@ const Product = React.memo(({ product }) => {
                 </section>
             </div>
             <div className="p-3 mt-6">
-                <Link to={`/product/${product._id}`}
-                className="hover:underline hover:underline-offset-2   "
+                <a href={`/product/${product._id}`}
+                className="hover:underline hover:underline-offset-2"
                 >
                     <h2 className="flex justify-between items-center">
                         <div className="text-lg">{product.name.substring(0, 25)}</div>
@@ -27,7 +27,7 @@ const Product = React.memo(({ product }) => {
                             Rp{new Intl.NumberFormat('id-ID').format(product.price)}
                         </span>
                     </h2>
-                </Link>
+                </a>
             </div>
         </div >
     )

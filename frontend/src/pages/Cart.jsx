@@ -38,7 +38,7 @@ const Cart = () => {
           </div>
         ) : (
           <>
-            <div className="flex flex-col w-[80%]">
+            <div className="flex flex-col w-[80%] text-gray-950">
               <h1 className="text-2xl font-semibold mb-4">Shopping Cart</h1>
 
               {cartItems.map((item) => (
@@ -52,12 +52,14 @@ const Cart = () => {
                   </div>
 
                   <div className="flex-1 ml-4">
-                    <Link to={`/product/${item._id}`} className="text-orange-500">
+                    <Link 
+                    to={`/product/${item._id}`} 
+                    className="text-orange-600 hover:underline hover:underline-offset-2">
                       {item.name}
                     </Link>
 
-                    <div className="mt-2 text-white">{item.brand}</div>
-                    <div className="mt-2 text-white font-bold">
+                    <div className="mt-2">{item.brand}</div>
+                    <div className="mt-2 font-bold">
                       Rp{new Intl.NumberFormat('id-ID').format(item.price)}
                     </div>
                   </div>
@@ -102,7 +104,7 @@ const Cart = () => {
                   </div>
 
                   <button
-                    className="bg-orange-500 mt-4 py-2 px-4 rounded-full text-lg w-full"
+                    className="bg-orange-500 mt-4 py-2 px-4 text-gray-100 rounded-full text-lg w-full"
                     disabled={cartItems.length === 0}
                     onClick={checkoutHandler}
                   >
