@@ -135,7 +135,7 @@ const Shipping = () => {
                 placeholder="Enter country"
               />
               <button
-                className="bg-orange-500 text-white py-2 px-4 rounded-lg w-full mt-4"
+                className="bg-orange-600 text-gray-100 py-2 px-4 rounded-lg w-full mt-4"
                 type="button"
                 onClick={handleContinue}
               >
@@ -176,11 +176,11 @@ const Shipping = () => {
 
 const InputField = ({ label, name, value, onChange, placeholder, type = "text" }) => (
   <div className="mb-4">
-    <label className="block text-white mb-2">{label}</label>
+    <label className="block text-gray-950 mb-2">{label}</label>
     <input
       type={type}
       name={name}
-      className="w-full p-2 border rounded"
+      className="w-full p-2 h-[3rem] border rounded shadow-xl text-white bg-neutral-700"
       placeholder={placeholder}
       value={value}
       required
