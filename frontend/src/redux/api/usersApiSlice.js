@@ -51,6 +51,13 @@ export const userApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    markUserAsAdmin: builder.mutation({
+      query: (userId) => ({
+        url: `/api/users/${userId}/as-admin`,
+        method: "PUT",
+      }),
+    }),
+
     getUserDetails: builder.query({
       query: (id) => ({
         url: `${BASE_URL}api/users/${id}`,
@@ -79,4 +86,5 @@ export const {
   useDeleteUserMutation,
   useGetUserDetailsQuery,
   useUpdateUserMutation,
+  useMarkUserAsAdminMutation
 } = userApiSlice

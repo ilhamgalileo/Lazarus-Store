@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
-import { FaTrash, FaEdit, FaCheck, FaTimes } from "react-icons/fa"
+import { FaTrash, FaEdit, FaCheck, FaTimes, FaIdBadge } from "react-icons/fa"
 import Loader from "../../components/loader"
 import { toast } from "react-toastify"
 import {
   useDeleteUserMutation,
   useGetUsersQuery,
   useUpdateUserMutation,
+  useMarkUserAsAdminMutation,
 } from "../../redux/api/usersApiSlice"
 import Message from "../../components/Message"
 import AdminMenu from "./AdminMenu"
@@ -15,6 +16,7 @@ const UserList = () => {
   const { data: users, refetch, isLoading, error } = useGetUsersQuery();
 
   const [deleteUser] = useDeleteUserMutation();
+  const [makeUserAsAdmin] = useMarkUserAsAdminMutation();
 
   const [editableUserId, setEditableUserId] = useState(null);
   const [editableUserName, setEditableUserName] = useState("");
@@ -31,6 +33,18 @@ const UserList = () => {
       try {
         await deleteUser(id);
         refetch();
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    }
+  };
+
+  const makeAdminHandler = async (id) => {
+    if (window.confirm("Are you sure you want to make this user an admin?")) {
+      try {
+        await makeUserAsAdmin(id)
+        toast.success("User has been promoted to admin");
+        refetch()
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
@@ -77,7 +91,8 @@ const UserList = () => {
                 <th className="px-4 py-2 text-left">EMAIL</th>
                 <th className="px-4 py-2 text-left">ADMIN</th>
                 <th className="px-4 py-2 text-left">SUPER ADMIN</th>
-                <th className="px-4 py-2"></th>
+                <th className="px-4 py-2 text-left">Delete</th>
+                <th className="px-4 py-2 text-left">Make As Admin</th>
               </tr>
             </thead>
             <tbody>
@@ -142,7 +157,7 @@ const UserList = () => {
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-2">
+                  <td className="px-4 py-2 ">
                     {user.isAdmin ? (
                       <FaCheck style={{ color: "green" }} />
                     ) : (
@@ -164,6 +179,18 @@ const UserList = () => {
                           className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                         >
                           <FaTrash />
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-4 py-2">
+                    {!user.superAdmin && (
+                      <div className="flex">
+                        <button
+                          onClick={() => makeAdminHandler(user._id)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        >
+                          <FaIdBadge />
                         </button>
                       </div>
                     )}
