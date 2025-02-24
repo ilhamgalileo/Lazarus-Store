@@ -84,7 +84,7 @@ const PlaceCashOrder = () => {
         <Message>Your cart is empty</Message>
       ) : (
         <div className="space-y-6 mt-8">
-          <div className="bg-gray-700 rounded-lg shadow-md p-6">
+          <div className="bg-neutral-700 rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold mb-4">Order Items</h2>
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -99,12 +99,12 @@ const PlaceCashOrder = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {cart.cartItems.map((item) => (
-                    <tr key={item._id} className="hover:bg-gray-700">
+                    <tr key={item._id} className="hover:bg-neutral-600">
                       <td className="px-4 py-3">
                         <img src={item.images[0]} alt={item.name} className="w-16 h-16 object-cover rounded" />
                       </td>
                       <td className="px-4 py-3">
-                        <Link to={`/product/${item._id}`} className="text-white hover:underline">
+                        <Link to={`/product/${item._id}`} className="text-white hover:underline hover:text-gray-400">
                           {item.name}
                         </Link>
                       </td>
@@ -119,7 +119,7 @@ const PlaceCashOrder = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-gray-700 rounded-lg shadow-md p-6">
+            <div className="bg-neutral-700 rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
               <div className="space-y-3">
                 <div className="flex justify-between text-white">
@@ -137,7 +137,7 @@ const PlaceCashOrder = () => {
               </div>
             </div>
 
-            <div className="bg-gray-700 rounded-lg shadow-md p-6">
+            <div className="bg-neutral-700 rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Cash Order Details</h2>
               <div className="space-y-4">
                 <input

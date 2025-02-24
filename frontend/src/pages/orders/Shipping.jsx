@@ -52,11 +52,11 @@ const Shipping = () => {
     <div className="container mx-auto">
       <ProgressSteps step1 step2 />
       <div className="mt-[2rem] flex justify-around items-center flex-wrap">
-        <form className="w-[40rem]">
+        <form className="w-[40rem] text-gray-950">
           <h1 className="text-2xl font-semibold mb-4">Shipping</h1>
 
           <div className="mb-4">
-            <label className="block text-gray-400">Select Payment Method</label>
+            <label className="block text-gray-500">Select Payment Method</label>
             {!userInfo.user.isAdmin && (
               <div className="mt-2">
                 <label className="inline-flex items-center">
@@ -146,7 +146,7 @@ const Shipping = () => {
 
           {paymentMethod === "cash" && (
             <div className="text-center mt-4">
-              <p className="text-gray-400">You will be redirected to the cash order page.</p>
+              <p className="text-gray-500">You will be redirected to the cash order page.</p>
               <button
                 className="bg-green-700 text-white py-2 px-4 rounded-lg w-full mt-4"
                 type="button"
@@ -158,7 +158,7 @@ const Shipping = () => {
           )}
           {paymentMethod === "store-transfer" && (
             <div className="text-center mt-4">
-              <p className="text-gray-400">You will be redirected to the store transfer page.</p>
+              <p className="text-gray-500">You will be redirected to the store transfer page.</p>
               <button
                 className="bg-green-700 text-white py-2 px-4 rounded-lg w-full mt-4"
                 type="button"
