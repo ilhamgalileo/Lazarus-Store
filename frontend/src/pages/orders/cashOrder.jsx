@@ -128,7 +128,7 @@ const CashOrder = () => {
                 <table className="table-auto w-full text-gray-800 border-collapse">
                   <thead className="border-b-2 border-gray-400">
                     <tr>
-                      {userInfo.user?.isAdmin && (
+                      {userInfo.user?.superAdmin && (
                         <th>
                           <input
                             type="checkbox"
@@ -148,7 +148,7 @@ const CashOrder = () => {
 
                     {cashOrder.items.map((item, index) => (
                       <tr key={index} className="text-center text-gray-950">
-                        {userInfo.user.isAdmin && (
+                        {userInfo.user.superAdmin && (
                           <td className="p-2">
                             <input
                               type="checkbox"
@@ -164,7 +164,7 @@ const CashOrder = () => {
                           </Link>
                         </td>
                         <td className="p-2">
-                          {userInfo.user.isAdmin && selectedItems.some((selected) => selected.product === item.product) ? (
+                          {userInfo.user.superAdmin && selectedItems.some((selected) => selected.product === item.product) ? (
                             <input
                               type="number"
                               min="1"
@@ -263,7 +263,7 @@ const CashOrder = () => {
           </div>
         </div>
 
-        {userInfo.user.isAdmin && cashOrder.isPaid && (
+        {userInfo.user.superAdmin && cashOrder.isPaid && (
           <div className="mt-6">
             <button
               type="button"
