@@ -88,7 +88,7 @@ const PlaceOrderStoreTransfer = () => {
                 {cart.cartItems.length === 0 ? (
                     <Message>Your cart is empty</Message>
                 ) : (
-                    <div className="overflow-x-auto ml-[7rem]">
+                    <div className="overflow-x-auto ml-[7rem] text-gray-950">
                         <table className="w-full">
                             <thead>
                                 <tr className="text-left">
