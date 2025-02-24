@@ -148,7 +148,7 @@ const Order = () => {
                 <table className="table-auto w-full text-gray-800 border-collapse">
                   <thead className="border-b-2 border-gray-400">
                     <tr>
-                      {userInfo.user?.isAdmin && (
+                      {userInfo.user?.superAdmin && (
                         <th>
                           <input
                             type="checkbox"
@@ -167,7 +167,7 @@ const Order = () => {
                   <tbody className="text-gray-900 text-sm">
                     {order?.orderItems.map((item, index) => (
                       <tr key={index} className="text-center">
-                        {userInfo.user.isAdmin && (
+                        {userInfo.user.superAdmin && (
                           <td className="p-2">
                             <input
                               type="checkbox"
@@ -196,8 +196,8 @@ const Order = () => {
                             item.qty
                           )}
                         </td>
-                        <td className="p-2">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
-                        <td className="p-2">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
+                        <td className="p-2">Rp{new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                        <td className="p-2">Rp{new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -227,8 +227,8 @@ const Order = () => {
                         </Link>
                       </td>
                       <td className="p-2">{item.qty}</td>
-                      <td className="p-2">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
-                      <td className="p-2">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
+                      <td className="p-2">Rp{new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                      <td className="p-2">Rp{new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -293,7 +293,7 @@ const Order = () => {
           </div>
         )}
 
-        {userInfo.user.isAdmin && order.isPaid && (
+        {userInfo.user.superAdmin && order.isPaid && (
           <div className="mt-6">
             <button
               type="button"

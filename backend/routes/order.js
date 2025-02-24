@@ -1,6 +1,6 @@
 import express from 'express'
 const router = express.Router()
-import { authenticate, authorizeAdmin } from '../middlewares/middleware.js'
+import { authenticate, authorizeAdmin, superAdminAuth } from '../middlewares/middleware.js'
 import * as order from '../controllers/order.js'
 
 router.post('/checkout', authenticate, order.createOrder)
@@ -15,7 +15,7 @@ router.get('/total-sales-by-week', authenticate, order.calcTotalSalesByWeek)
 router.get('/all-orders', authenticate, authorizeAdmin, order.getAllCombinedOrders)
 router.get('/:id', authenticate, order.findOrderById)   
 router.put('/:id/pay', authenticate, order.markOrderIsPay)
-router.put('/:id/return', authenticate, order.markOrderAsReturned)
+router.put('/:id/return', authenticate, superAdminAuth, order.markOrderAsReturned)
 router.put('/:id/deliver', authenticate, authorizeAdmin, order.markOrderIsDeliver)
 
 export default router
