@@ -5,10 +5,11 @@ import { useState, useEffect, useMemo } from "react";
 import { useGetProductDetailsQuery, useCreateReviewMutation, useGetProductsQuery } from "../../redux/api/productApiSlice";
 import Loader from "../../components/loader";
 import Message from "../../components/Message";
-import { FaBox, FaClock, FaShoppingCart, FaStar, FaStore } from "react-icons/fa";
+import { FaBox, FaClock, FaShoppingCart, FaStar, FaStore, FaCalendarTimes, FaCalendarAlt, FaWeight } from "react-icons/fa";
 import Product from "./Product";
 import ProductTabs from "./ProductTabs";
 import { addToCart } from "../../redux/features/cart/cartSlice";
+import moment from "moment";
 
 const ProductDetail = () => {
     const { id: productId, keyword } = useParams();
@@ -83,11 +84,13 @@ const ProductDetail = () => {
                                 <p className="flex items-center gap-2"><FaStore className="text-orange-600" /> Brand: {product.brand}</p>
                                 <p className="flex items-center gap-2"><FaClock className="text-orange-600" /> Sold: {product.sold}</p>
                                 <p className="flex items-center gap-2"><FaStar className="text-orange-600" /> Reviews: {product.numReviews}</p>
+                                <p className="flex items-center gap-2"><FaCalendarAlt className="text-orange-600" /> Add on: {moment(product.createdAt).format("YYYY-MM-DD")}</p>
                             </div>
                             <div className="text-sm space-y-2 text-black">
                                 <p className="flex items-center gap-2"><FaStar className="text-orange-500" /> Rating: {product.rating}</p>
                                 <p className="flex items-center gap-2"><FaShoppingCart className="text-orange-500" /> Quantity: {product.quantity}</p>
                                 <p className="flex items-center gap-2"><FaBox className="text-orange-500" /> Stock: {product.countInStock}</p>
+                                <p className="flex items-center gap-2"><FaWeight className="text-orange-500" /> Weight: {product.weight}gr</p>
                             </div>
                         </div>
                         <button onClick={addToCartHandler} disabled={product.countInStock === 0}
@@ -106,10 +109,10 @@ const ProductDetail = () => {
                 <h2 className="text-2xl sticky text-gray-950 bg-[#f0f0ef] py-4 px-6 top-0 z-40 font-bold mb-8 text-center">Recommended Products</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 px-4">
                     {shuffledProducts.slice(0, 9).map((product) => (
-                        <div 
-                        key={product._id} 
-                        className="w-full"><Product 
-                        product={product} /></div>
+                        <div
+                            key={product._id}
+                            className="w-full"><Product
+                                product={product} /></div>
                     ))}
                 </div>
             </div>

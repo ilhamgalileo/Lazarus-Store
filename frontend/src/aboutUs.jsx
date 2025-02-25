@@ -56,7 +56,7 @@ const AboutUs = () => {
 
             {/* Footer */}
             <footer className="bg-gray-700 py-6 text-center text-gray-400">
-                <p>&copy; {new Date().getFullYear()} Lazarus Store. All rights reserved.</p>
+                <p>&copy; {new Date().getFullYear()} Galileo Store. All rights reserved.</p>
             </footer>
         </div>
     );

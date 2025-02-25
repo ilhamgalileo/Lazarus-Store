@@ -48,7 +48,7 @@ const ProductCarousel = () => {
               quantity,
               sold,
               images,
-              countInStock, 
+              countInStock,
             }) => (
               <div key={_id}>
                 <img
@@ -70,28 +70,28 @@ const ProductCarousel = () => {
                   <div className="flex justify-between w-[20rem]">
                     <div className="one text-sm">
                       <h1 className="flex items-center mb-6">
-                        <FaStore className="mr-2" /> Brand: {brand}
+                        <FaStore className="mr-2 text-orange-600" /> Brand: {brand}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                      <FaCartPlus className="mr-2" /> Sold: {sold}
+                        <FaCartPlus className="mr-2 text-orange-600" /> Sold: {sold}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                        <FaCommentDots className="mr-2" /> Reviews:{" "}
+                        <FaCommentDots className="mr-2 text-orange-600" /> Reviews:{" "}
                         {numReviews}
                       </h1>
                     </div>
 
                     <div className="two text-sm">
                       <h1 className="flex items-center mb-6">
-                        <FaStar className="mr-2" /> Ratings:{" "}
+                        <FaStar className="mr-2 text-orange-600" /> Ratings:{" "}
                         {Math.round(rating)}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                        <FaShoppingCart className="mr-2" /> Quantity:{" "}
+                        <FaShoppingCart className="mr-2 text-orange-600" /> Quantity:{" "}
                         {quantity}
                       </h1>
                       <h1 className="flex items-center mb-6">
-                        <FaBox className="mr-2" /> In Stock:{" "}
+                        <FaBox className="mr-2 text-orange-600" /> In Stock:{" "}
                         {countInStock}
                       </h1>
                     </div>
