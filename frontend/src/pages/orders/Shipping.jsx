@@ -23,8 +23,6 @@ const Shipping = () => {
   });
 
   useEffect(() => {
-    console.log("Redux Shipping Address:", shippingAddress);
-    console.log("Local Storage Cart:", localStorage.getItem("cart"));
   }, [shippingAddress]);
 
   const handleQrisBankChange = (e) => {

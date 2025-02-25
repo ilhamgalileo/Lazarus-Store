@@ -15,8 +15,8 @@ const ProductUpdate = () => {
     const params = useParams()
     const navigate = useNavigate()
 
-    const { data: productData, isLoading: isLoadingProduct } = useGetProductByIdQuery(params.id)
-    const { data: categories = [], isLoading: isLoadingCategories } = useFetchCateQuery()
+    const { data: productData } = useGetProductByIdQuery(params.id)
+    const { data: categories = [] } = useFetchCateQuery()
     const [uploadProductImage] = useUploadProductImageMutation()
     const [updateProduct] = useUpdateProductMutation()
     const [deleteProduct] = useDeleteProductMutation()
@@ -31,6 +31,7 @@ const ProductUpdate = () => {
         brand: '',
         quantity: '',
         countInStock: '',
+        weight: '',
         images: [],
     })
     const [loading, setLoading] = useState(false)
@@ -67,6 +68,7 @@ const ProductUpdate = () => {
                 brand: productData.brand,
                 quantity: productData.quantity,
                 countInStock: productData.countInStock,
+                weight: productData.weight,
                 images: productData.images || [],
             }))
         }
@@ -82,23 +84,23 @@ const ProductUpdate = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         setLoading(true);
-    
+
         try {
             let uploadedImagePaths = [];
-            
+
             if (newFiles.length > 0) {
                 const uploadFormData = new FormData();
                 newFiles.forEach((file) => uploadFormData.append("images", file));
-    
+
                 const uploadResponse = await uploadProductImage(uploadFormData).unwrap();
                 uploadedImagePaths = uploadResponse.images || [];
             }
-            
+
             const updatedImages = [
                 ...formData.images.filter(img => typeof img === "string" && img.startsWith("/uploads/")),
                 ...uploadedImagePaths,
             ];
-    
+
             const productFormData = new FormData();
             productFormData.append("name", formData.name);
             productFormData.append("description", formData.description);
@@ -107,22 +109,21 @@ const ProductUpdate = () => {
             productFormData.append("brand", formData.brand);
             productFormData.append("quantity", formData.quantity);
             productFormData.append("countInStock", formData.countInStock);
-    
+            productFormData.append("weight", formData.weight);
+
             updatedImages.forEach((path) => {
                 productFormData.append("images[]", path);
             });
-    
+
             const data = await updateProduct({
                 productId: params.id,
                 formData: productFormData,
             }).unwrap();
-    
-            console.log("Updated Product:", data);
+
             toast.success("Product updated successfully");
             navigate("/admin/allproductslist");
-    
+
         } catch (err) {
-            console.error("Error details:", err);
             toast.error(err?.data?.message || "Failed to update product");
         } finally {
             setLoading(false);
@@ -280,6 +281,23 @@ const ProductUpdate = () => {
                                         </option>
                                     ))}
                                 </select>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-4">
+                            <div className="flex-1">
+                                <label htmlFor="weight">Weight</label>
+                                <div className="flex items-center">
+                                    <input
+                                        name="weight"
+                                        type="number"
+                                        value={formData.weight}
+                                        onChange={handleInputChange}
+                                        className="p-4 mb-3 w-[10rem] border rounded-lg bg-[#101011] text-white"
+                                        required
+                                    />
+                                    <span className="ml-2 text-gray-950">gr</span>
+                                </div>
                             </div>
                         </div>
 

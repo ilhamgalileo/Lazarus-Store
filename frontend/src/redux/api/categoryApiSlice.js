@@ -4,7 +4,7 @@ import { CATEGORY_URL } from "../constants";
 export const categoryApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     createCate: builder.mutation({
-      query: (newCategory) => ({
+      query: (newCategory) => ({  
         url: `${CATEGORY_URL}`,
         method: "POST",
         body: newCategory,

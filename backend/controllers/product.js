@@ -106,7 +106,7 @@ export const addProductReview = asyncHandler(async (req, res) => {
 });
 
 export const createProduct = asyncHandler(async (req, res) => {
-    const { name, brand, quantity, category, description, price, countInStock } = req.body;
+    const { name, brand, quantity, category, description, price, countInStock, weight } = req.body;
 
     if (!req.files || req.files.length === 0) {
         return res.status(400).json({ message: "No images uploaded" });
@@ -122,6 +122,7 @@ export const createProduct = asyncHandler(async (req, res) => {
         description,
         countInStock,
         price,
+        weight,
         images: imagePaths,
     });
 
@@ -135,7 +136,7 @@ export const createProduct = asyncHandler(async (req, res) => {
 
 export const update = asyncHandler(async (req, res) => {
     try {
-        const { name, brand, quantity, category, description, price, countInStock, images } = req.body;
+        const { name, brand, quantity, category, description, price, countInStock, images, weight } = req.body;
 
         const product = await Product.findById(req.params.id);
         if (!product) {
@@ -148,6 +149,7 @@ export const update = asyncHandler(async (req, res) => {
         product.category = category;
         product.countInStock = countInStock;
         product.description = description;
+        product.weight = weight;
         product.price = price;
 
         let updatedImages = images ? (Array.isArray(images) ? images : [images]) : product.images;

@@ -202,13 +202,11 @@ const StoreOrder = () => {
                                     {order?.returnedItems.map((item, index) => (
                                         <tr key={index} className="text-center text-red-500">
                                             <td className="p-2">
-                                                <Link to={`/product/${item.product}`} className="text-red-500 hover:text-red-300">
-                                                    {item.name}
-                                                </Link>
+                                                {item.name}
                                             </td>
                                             <td className="p-2">{item.qty}</td>
-                                            <td className="p-2">RP. {new Intl.NumberFormat('id-ID').format(item.price)}</td>
-                                            <td className="p-2">RP. {new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
+                                            <td className="p-2">Rp{new Intl.NumberFormat('id-ID').format(item.price)}</td>
+                                            <td className="p-2">Rp{new Intl.NumberFormat('id-ID').format(item.qty * item.price)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -242,10 +240,6 @@ const StoreOrder = () => {
                                 <div className="flex justify-between mb-2">
                                     <p>Items Subtotal:</p>
                                     <strong>Rp{new Intl.NumberFormat('id-ID').format(order.itemsPrice)}</strong>
-                                </div>
-                                <div className="flex justify-between mb-2">
-                                    <p>Shipping:</p>
-                                    <strong>Rp{new Intl.NumberFormat('id-ID').format(order.shippingPrice)}</strong>
                                 </div>
                                 <div className="flex justify-between mb-2">
                                     <p>Tax (PPN 11%):</p>

@@ -18,6 +18,7 @@ const ProductList = () => {
     const [quantity, setQuantity] = useState("");
     const [brand, setBrand] = useState("");
     const [stock, setStock] = useState(0);
+    const [weight, setWeight] = useState(0);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -42,30 +43,31 @@ const ProductList = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-    
+
         if (imageFiles.length === 0) {
             toast.error("Please upload at least one image");
             return;
         }
-    
+
         setLoading(true);
-    
+
         try {
             const formData = new FormData()
-    
+
             formData.append("name", name)
             formData.append("description", description)
             formData.append("price", price)
             formData.append("category", category)
             formData.append("quantity", quantity)
             formData.append("brand", brand)
+            formData.append("weight", weight)
             formData.append("countInStock", stock)
             imageFiles.forEach((file) => {
                 formData.append("images", file)
             })
-    
-            const  data  = await createProduct(formData).unwrap()
-    
+
+            const data = await createProduct(formData).unwrap()
+
             if (data) {
                 toast.success(`${data.product.name} created successfully`)
                 navigate("/admin/allproductslist")
@@ -94,9 +96,8 @@ const ProductList = () => {
                     <form onSubmit={submitHandler}>
                         <div className="mb-3">
                             <label
-                                className={`border text-black border-gray-800 px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11 ${
-                                    loading ? "opacity-50" : ""
-                                }`}
+                                className={`border text-black border-gray-800 px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11 ${loading ? "opacity-50" : ""
+                                    }`}
                             >
                                 {loading ? (
                                     <Loader />
@@ -217,6 +218,22 @@ const ProductList = () => {
                                             </option>
                                         ))}
                                     </select>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-wrap gap-4">
+                                <div className="flex-1">
+                                    <label htmlFor="weight">Weight</label>
+                                    <div className="flex items-center">
+                                        <input
+                                            type="number"
+                                            value={weight}
+                                            onChange={(e) => setWeight(e.target.value)}
+                                            className="p-4 mb-3 w-[10rem] border rounded-lg bg-[#101011] text-white"
+                                            required
+                                        />
+                                        <span className="ml-2 text-gray-950">gr</span>
+                                    </div>
                                 </div>
                             </div>
 

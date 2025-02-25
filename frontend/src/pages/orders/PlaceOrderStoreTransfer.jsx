@@ -105,8 +105,8 @@ const PlaceOrderStoreTransfer = () => {
                                         <td><img src={item?.images[0]} alt={item.name} className="w-16 h-16 object-cover" /></td>
                                         <td><Link to={`/product/${item.product}`}>{item.name}</Link></td>
                                         <td>{item.qty}</td>
-                                        <td>Rp. {item.price.toLocaleString()}</td>
-                                        <td>Rp. {(item.qty * item.price).toLocaleString()}</td>
+                                        <td>Rp{item.price.toLocaleString()}</td>
+                                        <td>Rp{(item.qty * item.price).toLocaleString()}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -114,12 +114,12 @@ const PlaceOrderStoreTransfer = () => {
                     </div>
                 )}
 
-                <div className="mt-8 ml-[7rem]">
+                <div className="mt-8 ml-[7rem] text-gray-950">
                     <h2 className="text-xl font-semibold">Order Summary</h2>
                     <ul>
-                        <li>Items: Rp. {itemsPrice.toLocaleString()}</li>
-                        <li>Tax: Rp. {taxPrice.toLocaleString()}</li>
-                        <li>Total: Rp. {totalPrice.toLocaleString()}</li>
+                        <li>Items: Rp{itemsPrice.toLocaleString()}</li>
+                        <li>Tax: Rp{taxPrice.toLocaleString()}</li>
+                        <li>Total: Rp{totalPrice.toLocaleString()}</li>
                     </ul>
                 </div>
                 <button

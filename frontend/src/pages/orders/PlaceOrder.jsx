@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import { useDispatch, useSelector } from "react-redux"
 import Message from "../../components/Message"
@@ -12,10 +12,12 @@ import { usePayOrderMutation } from "../../redux/api/orderApiSlice"
 const PlaceOrder = () => {
   const navigate = useNavigate()
   const cart = useSelector(state => state.cart)
-  const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.qty * item.price, 0) || 0
-  const shippingPrice = itemsPrice > 100 ? 0 : 10
-  const taxPrice = Math.round((itemsPrice + shippingPrice) * 0.11)
-  const totalPrice = Math.round(itemsPrice + shippingPrice + taxPrice)
+  const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.qty * item.price, 0) || 0;
+  const totalWeight = cart.cartItems.reduce((acc, item) => acc + (item.weight || 0) * item.qty, 0);
+  const shippingPrice = totalWeight < 1000 ? 0 : Math.ceil(totalWeight / 1000) * 15000;
+  const taxPrice = Math.round((itemsPrice + shippingPrice) * 0.11);
+  const totalPrice = Math.round(itemsPrice + shippingPrice + taxPrice);
+
   const [createOrder, { isLoading, error }] = useCreateOrderMutation()
   const [payOrder] = usePayOrderMutation()
 
@@ -79,7 +81,6 @@ const PlaceOrder = () => {
           navigate(`/order/${res.order._id}`)
         },
         onError: function (details) {
-          console.error('Payment error:', details)
           toast.error('Payment failed. Please try again.')
         },
         onClose: function () {
@@ -99,25 +100,32 @@ const PlaceOrder = () => {
         {cart.cartItems.length === 0 ? (
           <Message>Your cart is empty</Message>
         ) : (
-          <div className="overflow-x-auto ml-[7rem] text-gray-950">
+          <div className="overflow-x-auto ml-[3rem] text-gray-950">
             <table className="w-full">
               <thead>
-                <tr className="text-left">
+                <tr className="text-center">
                   <th className="py-2 px-3">Image</th>
                   <th className="py-2 px-3">Product</th>
                   <th className="py-2 px-3">Qty</th>
                   <th className="py-2 px-3">Price</th>
                   <th className="py-2 px-3">Total</th>
+                  <th className="py-2 px-3">Weight</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="text-center">
                 {cart.cartItems.map((item) => (
                   <tr key={item.product}>
-                    <td><img src={item?.images[0]} alt={item.name} className="w-16 h-16 object-cover" /></td>
-                    <td><Link to={`/product/${item.product}`}>{item.name}</Link></td>
+                    <td className="flex justify-center items-center">
+                      <img
+                        src={item?.images[0]}
+                        alt={item.name}
+                        className="w-16 h-16 object-cover" />
+                    </td>
+                    <td>{item.name}</td>
                     <td>{item.qty}</td>
-                    <td>Rp. {item.price.toLocaleString()}</td>
-                    <td>Rp. {(item.qty * item.price).toLocaleString()}</td>
+                    <td>Rp{item.price.toLocaleString()}</td>
+                    <td>Rp{(item.qty * item.price).toLocaleString()}</td>
+                    <td>{item.weight}gr</td>
                   </tr>
                 ))}
               </tbody>

@@ -13,6 +13,7 @@ import upload from "./routes/upload.js";
 import order from "./routes/order.js";
 import cashOrder from "./routes/cashOrder.js"
 import orderStore from "./routes/orderStore.js"
+import binderByte from "./routes/binderByte.js"
 
 dotenv.config()
 const port = process.env.PORT || 5000
@@ -32,6 +33,7 @@ app.use("/api/uploads", upload)
 app.use("/api/orders", order)
 app.use("/api/orders/cash", cashOrder)
 app.use("/api/orders/store", orderStore)
+app.use("/api/shipping", binderByte)
 
 const __dirname = path.resolve()
 app.use("/uploads", express.static(path.join(__dirname + "/uploads")))
