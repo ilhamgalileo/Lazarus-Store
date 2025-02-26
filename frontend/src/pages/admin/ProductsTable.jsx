@@ -35,7 +35,8 @@ const ProductsTable = () => {
       (priceFilter === 'above5m' && product.price > 5000000)
 
     return matchesSearchTerm && matchesPriceFilter && matchSearchPrice && matchSearchStock;
-  });
+  })
+    .sort((a, b) => b.sold - a.sold);
 
   const exportToPDF = () => {
     const doc = new jsPDF();
