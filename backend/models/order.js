@@ -21,6 +21,8 @@ const orderSchema = mongoose.Schema(
       address: { type: String, required: true },
       city: { type: String, required: true },
       postalCode: { type: String, required: true },
+      district: { type: String, required: true },
+      village: { type: String, required: true },
     },
 
     paymentMethod: { type: String, required: true },
@@ -44,7 +46,11 @@ const orderSchema = mongoose.Schema(
     },
     returnedItems: [
       {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
         name: String,
         image: String,
         price: Number,

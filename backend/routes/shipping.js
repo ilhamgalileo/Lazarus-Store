@@ -7,5 +7,6 @@ const router = express.Router()
 router.get('/provinces', authenticate, shipping.getProvinces)
 router.get('/cities/:provinceId', authenticate, shipping.getCities)
 router.get('/districts/:cityId', authenticate, shipping.getDistricts)
+router.get('/villages/:districtId', authenticate, shipping.getVillages)
 
 export default router

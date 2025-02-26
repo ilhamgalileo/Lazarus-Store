@@ -39,10 +39,10 @@ const userSchema = new mongoose.Schema(
 
     shippingAddress: [
       {
-        address: String,
         city: String,
+        district: String,
         postalCode: String,
-        country: String,
+        detail: String,
       },
     ],
   },

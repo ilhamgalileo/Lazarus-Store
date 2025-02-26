@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ProgressSteps from "../../components/ProgressSteps";
 import { toast } from "react-toastify";
 import { saveShippingAddress, savePaymentMethod } from "../../redux/features/cart/cartSlice";
-import { useGetProvincesQuery, useGetCitiesQuery, useGetDistrictsQuery } from "../../redux/api/shippingApiSlice";
+import { useGetProvincesQuery, useGetCitiesQuery, useGetDistrictsQuery, useGetVillagesQuery } from "../../redux/api/shippingApiSlice";
 
 const Shipping = () => {
   const dispatch = useDispatch();
@@ -26,17 +26,21 @@ const Shipping = () => {
   const [selectedProvince, setSelectedProvince] = useState(shippingAddress?.provinceCode || "");
   const [selectedCity, setSelectedCity] = useState(shippingAddress?.cityCode || "");
   const [selectedDistrict, setSelectedDistrict] = useState(shippingAddress?.districtCode || "");
+  const [selectedVillage, setSelectedVillage] = useState(shippingAddress?.villageCode || "");
 
   const { data: provinces, isLoading: isLoadingProvinces, error: errorProvinces } = useGetProvincesQuery();
   const { data: cities, isLoading: isLoadingCities, error: errorCities } =
     useGetCitiesQuery(selectedProvince || undefined, { skip: !selectedProvince });
   const { data: districts, isLoading: isLoadingDistricts, error: errorDistricts } =
     useGetDistrictsQuery(selectedCity || undefined, { skip: !selectedCity });
+  const { data: villages, isLoading: isLoadingVillages, error: errorVillages } =
+    useGetVillagesQuery(selectedDistrict || undefined, { skip: !selectedDistrict });
 
   useEffect(() => {
     if (selectedProvince) {
       setSelectedCity("");
       setSelectedDistrict("");
+      setSelectedVillage("");
     }
   }, [selectedProvince]);
 
@@ -46,12 +50,31 @@ const Shipping = () => {
     }
   }, [selectedCity]);
 
+  useEffect(() => {
+    if (selectedDistrict) {
+      setSelectedVillage("");
+    }
+  }, [selectedDistrict]);
+
+  useEffect(() => {
+    if (selectedVillage && villages?.data) {
+      const villageData = villages.data.find((v) => v.code === selectedVillage);
+      console.log("Selected Village Data:", villageData); // Debugging
+      setQrisBankDetails((prev) => ({
+        ...prev,
+        postalCode: villageData?.postal_code || ""
+      }));
+    }
+  }, [selectedVillage, villages?.data]);
+
+  console.log("qrisBankDetails:", qrisBankDetails); // Debugging
+
   const handleQrisBankChange = (e) => {
     const { name, value } = e.target;
     setQrisBankDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-  const InputField = ({ label, name, value, onChange, placeholder }) => (
+  const InputField = ({ label, name, value, onChange, placeholder, readOnly = false }) => (
     <div className="mb-4">
       <label className="block text-gray-950 mb-2">{label}</label>
       <input
@@ -62,6 +85,7 @@ const Shipping = () => {
         placeholder={placeholder}
         className="w-full p-2 h-[3rem] border rounded shadow-xl text-white bg-neutral-700"
         required
+        readOnly={readOnly}
       />
     </div>
   );
@@ -71,12 +95,14 @@ const Shipping = () => {
       const selectedProvinceName = provinces?.data.find((province) => province.code === selectedProvince)?.name || "";
       const selectedCityName = cities?.data.find((city) => city.code === selectedCity)?.name || "";
       const selectedDistrictName = districts?.data.find((district) => district.code === selectedDistrict)?.name || "";
+      const selectedVillageName = villages?.data.find((village) => village.code === selectedVillage)?.name || "";
 
       const shippingDetails = {
         address: selectedProvinceName,
         city: selectedCityName,
-        postalCode: qrisBankDetails.postalCode,
-        // district: selectedDistrictName,
+        postalCode: qrisBankDetails.postalCode, 
+        district: selectedDistrictName,
+        village: selectedVillageName
       };
 
       dispatch(saveShippingAddress(shippingDetails));
@@ -176,12 +202,21 @@ const Shipping = () => {
                 isLoading={isLoadingDistricts}
                 error={errorDistricts}
               />
+              <DropdownField
+                label="Village"
+                name="village"
+                value={selectedVillage}
+                onChange={(e) => setSelectedVillage(e.target.value)}
+                options={villages?.data || []}
+                isLoading={isLoadingVillages}
+                error={errorVillages}
+              />
               <InputField
                 label="Postal Code"
                 name="postalCode"
                 value={qrisBankDetails.postalCode}
-                onChange={handleQrisBankChange}
-                placeholder="Enter postal code"
+                placeholder="Postal code will be set automatically"
+                readOnly
               />
               <button
                 className="bg-orange-600 text-gray-100 py-2 px-4 rounded-lg w-full mt-4"
@@ -211,7 +246,7 @@ const DropdownField = ({ label, name, value, onChange, options = [], isLoading, 
       disabled={isLoading || error}
       aria-busy={isLoading}
     >
-      <option value="" selected={!value}>Select {label}</option>
+      <option value="">Select {label}</option>
       {isLoading && <option disabled>Loading...</option>}
       {error && <option disabled>Error loading {label}</option>}
       {Array.isArray(options) && options.map((option) => (

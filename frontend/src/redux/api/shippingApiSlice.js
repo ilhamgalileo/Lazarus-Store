@@ -14,7 +14,11 @@ export const shippingApiSlice = apiSlice.injectEndpoints({
         query: (cityId) => `${SHIPPING_URL}/districts/${cityId}`,
         skip: (cityId) => !cityId,
       }),
+      getVillages: builder.query({
+        query: (districtId) => `${SHIPPING_URL}/villages/${districtId}`,
+        skip: (districtId) => !districtId,
+      }),
     }),
   });
   
-  export const { useGetProvincesQuery, useGetCitiesQuery, useGetDistrictsQuery } = shippingApiSlice;
+  export const { useGetProvincesQuery, useGetCitiesQuery, useGetDistrictsQuery, useGetVillagesQuery } = shippingApiSlice;

@@ -37,3 +37,19 @@ export const getDistricts = asyncHandler(async (req, res) => {
     });
   }
 });
+
+export const getVillages = asyncHandler(async (req, res) => {
+  const { districtId } = req.params;
+  try {
+    const response = await fetch(
+      `${WILAYAH_API_BASE}/villages/${districtId}.json`
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed get villages",
+      error: error.message,
+    });
+  }
+});
