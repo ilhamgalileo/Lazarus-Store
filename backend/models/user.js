@@ -1,53 +1,66 @@
-import mongoose from 'mongoose'
-import bcrypt from 'bcrypt'
-const userSchema = new mongoose.Schema({
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+const userSchema = new mongoose.Schema(
+  {
     username: {
-        type: String, required: [true, 'Nama harus diisi'],
-        trim: true,
-        minlength: [3, 'Nama harus memiliki setidaknya 3 karakter']
+      type: String,
+      required: [true, "Nama harus diisi"],
+      trim: true,
+      minlength: [3, "Nama harus memiliki setidaknya 3 karakter"],
     },
     email: {
-        type: String,
-        required: [true, 'Email harus diisi'],
-        unique: true,
-        lowercase: true,
-        trim: true,
-        validate: {
-            validator: function (value) {
-                return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
-            },
-            message: props => `${props.value} bukan format email yang valid`
-        }
+      type: String,
+      required: [true, "Email harus diisi"],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      validate: {
+        validator: function (value) {
+          return /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
+        },
+        message: (props) => `${props.value} bukan format email yang valid`,
+      },
     },
     password: {
-        type: String,
-        required: [true],
-        minlength: [6],
-        select: false 
+      type: String,
+      required: [true],
+      minlength: [6],
+      select: false,
     },
     isAdmin: {
-        type: Boolean,
-        default: null,
+      type: Boolean,
+      default: null,
     },
 
     superAdmin: {
-        type: Boolean,
-        default: null
-    }
-}, { timestamps: true })
+      type: Boolean,
+      default: null,
+    },
 
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
-        return next()
-    }
-    try {
-        const salt = await bcrypt.genSalt(10)
-        this.password = await bcrypt.hash(this.password, salt)
-        next()
-    } catch (error) {
-        next(error)
-    }
-})
+    shippingAddress: [
+      {
+        address: String,
+        city: String,
+        postalCode: String,
+        country: String,
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-const User = mongoose.model("User", userSchema)
-export default User
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+const User = mongoose.model("User", userSchema);
+export default User;
