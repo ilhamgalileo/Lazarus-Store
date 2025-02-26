@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ProgressSteps from "../../components/ProgressSteps";
 import { toast } from "react-toastify";
 import { saveShippingAddress, savePaymentMethod } from "../../redux/features/cart/cartSlice";
+import { useGetProvincesQuery, useGetCitiesQuery, useGetDistrictsQuery } from "../../redux/api/shippingApiSlice";
 
 const Shipping = () => {
   const dispatch = useDispatch();
@@ -15,36 +16,80 @@ const Shipping = () => {
   const [paymentMethod, setPaymentMethod] = useState(
     userInfo?.user?.isAdmin ? "" : "qris/bank"
   );
+
   const [qrisBankDetails, setQrisBankDetails] = useState({
-    address: shippingAddress?.address || "",
-    city: shippingAddress?.city || "",
+    address: shippingAddress?.province || "",
+    city: shippingAddress?.cityCode || "",
     postalCode: shippingAddress?.postalCode || "",
-    country: shippingAddress?.country || "",
   });
 
+  const [selectedProvince, setSelectedProvince] = useState(shippingAddress?.provinceCode || "");
+  const [selectedCity, setSelectedCity] = useState(shippingAddress?.cityCode || "");
+  const [selectedDistrict, setSelectedDistrict] = useState(shippingAddress?.districtCode || "");
+
+  const { data: provinces, isLoading: isLoadingProvinces, error: errorProvinces } = useGetProvincesQuery();
+  const { data: cities, isLoading: isLoadingCities, error: errorCities } =
+    useGetCitiesQuery(selectedProvince || undefined, { skip: !selectedProvince });
+  const { data: districts, isLoading: isLoadingDistricts, error: errorDistricts } =
+    useGetDistrictsQuery(selectedCity || undefined, { skip: !selectedCity });
+
   useEffect(() => {
-  }, [shippingAddress]);
+    if (selectedProvince) {
+      setSelectedCity("");
+      setSelectedDistrict("");
+    }
+  }, [selectedProvince]);
+
+  useEffect(() => {
+    if (selectedCity) {
+      setSelectedDistrict("");
+    }
+  }, [selectedCity]);
 
   const handleQrisBankChange = (e) => {
     const { name, value } = e.target;
     setQrisBankDetails((prev) => ({ ...prev, [name]: value }));
-    console.log(`Updating ${name} to ${value}`);
   };
 
-  const handleContinue = () => {
+  const InputField = ({ label, name, value, onChange, placeholder }) => (
+    <div className="mb-4">
+      <label className="block text-gray-950 mb-2">{label}</label>
+      <input
+        type="text"
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className="w-full p-2 h-[3rem] border rounded shadow-xl text-white bg-neutral-700"
+        required
+      />
+    </div>
+  );
 
+  const handleContinue = () => {
     if (paymentMethod === "qris/bank") {
-      dispatch(saveShippingAddress(qrisBankDetails));
+      const selectedProvinceName = provinces?.data.find((province) => province.code === selectedProvince)?.name || "";
+      const selectedCityName = cities?.data.find((city) => city.code === selectedCity)?.name || "";
+      const selectedDistrictName = districts?.data.find((district) => district.code === selectedDistrict)?.name || "";
+
+      const shippingDetails = {
+        address: selectedProvinceName,
+        city: selectedCityName,
+        postalCode: qrisBankDetails.postalCode,
+        // district: selectedDistrictName,
+      };
+
+      dispatch(saveShippingAddress(shippingDetails));
       dispatch(savePaymentMethod(paymentMethod));
       navigate("/placeorder");
     } else if (paymentMethod === "cash") {
       navigate("/placeorder/cash");
     } else if (paymentMethod === "store-transfer") {
-      navigate("/placeorder/store-transfer")
+      navigate("/placeorder/store-transfer");
     } else {
       toast.error("Please select a payment method.");
     }
-  }
+  };
 
   return (
     <div className="container mx-auto">
@@ -104,19 +149,32 @@ const Shipping = () => {
 
           {paymentMethod === "qris/bank" && (
             <>
-              <InputField
-                label="Address"
-                name="address"
-                value={qrisBankDetails.address}
-                onChange={handleQrisBankChange}
-                placeholder="Enter address"
+              <DropdownField
+                label="Province"
+                name="province"
+                value={selectedProvince}
+                onChange={(e) => setSelectedProvince(e.target.value)}
+                options={provinces?.data || []}
+                isLoading={isLoadingProvinces}
+                error={errorProvinces}
               />
-              <InputField
+              <DropdownField
                 label="City"
                 name="city"
-                value={qrisBankDetails.city}
-                onChange={handleQrisBankChange}
-                placeholder="Enter city"
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+                options={cities?.data || []}
+                isLoading={isLoadingCities}
+                error={errorCities}
+              />
+              <DropdownField
+                label="District"
+                name="district"
+                value={selectedDistrict}
+                onChange={(e) => setSelectedDistrict(e.target.value)}
+                options={districts?.data || []}
+                isLoading={isLoadingDistricts}
+                error={errorDistricts}
               />
               <InputField
                 label="Postal Code"
@@ -124,13 +182,6 @@ const Shipping = () => {
                 value={qrisBankDetails.postalCode}
                 onChange={handleQrisBankChange}
                 placeholder="Enter postal code"
-              />
-              <InputField
-                label="Country"
-                name="country"
-                value={qrisBankDetails.country}
-                onChange={handleQrisBankChange}
-                placeholder="Enter country"
               />
               <button
                 className="bg-orange-600 text-gray-100 py-2 px-4 rounded-lg w-full mt-4"
@@ -141,49 +192,32 @@ const Shipping = () => {
               </button>
             </>
           )}
-
-          {paymentMethod === "cash" && (
-            <div className="text-center mt-4">
-              <p className="text-gray-500">You will be redirected to the cash order page.</p>
-              <button
-                className="bg-green-700 text-white py-2 px-4 rounded-lg w-full mt-4"
-                type="button"
-                onClick={handleContinue}
-              >
-                Continue
-              </button>
-            </div>
-          )}
-          {paymentMethod === "store-transfer" && (
-            <div className="text-center mt-4">
-              <p className="text-gray-500">You will be redirected to the store transfer page.</p>
-              <button
-                className="bg-green-700 text-white py-2 px-4 rounded-lg w-full mt-4"
-                type="button"
-                onClick={handleContinue}
-              >
-                Continue
-              </button>
-            </div>
-          )}
         </form>
       </div>
     </div>
   );
 };
 
-const InputField = ({ label, name, value, onChange, placeholder, type = "text" }) => (
+const DropdownField = ({ label, name, value, onChange, options = [], isLoading, error }) => (
   <div className="mb-4">
     <label className="block text-gray-950 mb-2">{label}</label>
-    <input
-      type={type}
+    <select
       name={name}
-      className="w-full p-2 h-[3rem] border rounded shadow-xl text-white bg-neutral-700"
-      placeholder={placeholder}
+      className={`w-full p-2 h-[3rem] border rounded shadow-xl text-white bg-neutral-700 
+        ${isLoading || error ? "opacity-50 cursor-not-allowed" : ""}`}
       value={value}
       required
       onChange={onChange}
-    />
+      disabled={isLoading || error}
+      aria-busy={isLoading}
+    >
+      <option value="" selected={!value}>Select {label}</option>
+      {isLoading && <option disabled>Loading...</option>}
+      {error && <option disabled>Error loading {label}</option>}
+      {Array.isArray(options) && options.map((option) => (
+        <option key={option.code} value={option.code}>{option.name}</option>
+      ))}
+    </select>
   </div>
 );
 

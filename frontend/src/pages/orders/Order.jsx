@@ -136,7 +136,7 @@ const Order = () => {
               <div className="text-gray-950 text-sm">
                 <p className="mb-1">Buyer: <strong>{order.user.username}</strong></p>
                 <p className="mb-1">Email: <strong>{order.user.email}</strong></p>
-                <p className="mb-1">Address: <strong>{order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}</strong></p>
+                <p className="mb-1">Address: <strong>{order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.postalCode}</strong></p>
               </div>
             </div>
           </div>
