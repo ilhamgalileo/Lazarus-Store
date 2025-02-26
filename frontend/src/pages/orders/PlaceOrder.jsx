@@ -29,24 +29,6 @@ const PlaceOrder = () => {
 
   const dispatch = useDispatch()
 
-  const placeOrderHandler = async () => {
-    try {
-      if (!window.snap) {
-        const script = document.createElement('script')
-        script.src = 'https://app.sandbox.midtrans.com/snap/snap.js'
-        script.async = true
-        script.onload = async () => {
-          await handlePaymentProcess()
-        }
-        document.body.appendChild(script)
-      } else {
-        await handlePaymentProcess()
-      }
-    } catch (error) {
-      toast.error(error.message || 'Payment failed. Please try again.');
-    }
-  }
-
   const handlePaymentProcess = async () => {
     const res = await createOrder({
       orderItems: cart.cartItems,
@@ -90,6 +72,24 @@ const PlaceOrder = () => {
       })
     } else {
       throw new Error('Payment token not found');
+    }
+  }
+
+  const placeOrderHandler = async () => {
+    try {
+      if (!window.snap) {
+        const script = document.createElement('script')
+        script.src = 'https://app.sandbox.midtrans.com/snap/snap.js'
+        script.async = true
+        script.onload = async () => {
+          await handlePaymentProcess()
+        }
+        document.body.appendChild(script)
+      } else {
+        await handlePaymentProcess()
+      }
+    } catch (error) {
+      toast.error(error.message || 'Payment failed. Please try again.');
     }
   }
 

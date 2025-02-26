@@ -9,7 +9,7 @@ function calcPrice(orderItems) {
   const itemsPrice = orderItems.reduce(
     (acc, item) => acc + item.price * item.qty,
     0
-  )
+  );
 
   const totalWeight = orderItems.reduce(
     (acc, item) => acc + (item.weight || 0) * item.qty,
@@ -519,7 +519,6 @@ export const markOrderIsPay = asyncHandler(async (req, res) => {
         }
       })
     );
-
     const updatedOrder = await order.save();
     res.json(updatedOrder);
   } else {
