@@ -1,33 +1,28 @@
-import ProductCarousel from "../pages/Products/ProductCarousel"
-import SmallProduct from "../pages/Products/SmallProduct"
-import { useGetNewProductsQuery } from "../redux/api/productApiSlice"
-import Loader from "./loader"
-
+import ProductCarousel from "../pages/Products/ProductCarousel";
+import SmallProduct from "../pages/Products/SmallProduct";
+import { useGetNewProductsQuery } from "../redux/api/productApiSlice";
+import Loader from "./loader";
 
 const Header = () => {
-    const { data, isLoading, error } = useGetNewProductsQuery()
+  const { data, isLoading, error } = useGetNewProductsQuery();
 
-    if (isLoading) {
-        return <Loader />
-    }
+  if (isLoading) {
+    return <Loader />;
+  }
 
-    if (error) {
-        return <h1>Error</h1>
-    }
-    return <>
-        <div className="flex ml-[10rem]">
-            <div className="xl:block lg:hidden mf:hidden sm:hidden text-gray-950">
-                <div className="grid grid-cols-2">
-                    {data.map((product) => (
-                        <div key={product._id}>
-                            <SmallProduct product={product} />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    </>
+  if (error) {
+    return <h1>Error</h1>;
+  }
 
-}
+  return (
+    <div className="flex ml-[8rem]">
+      <div className="grid grid-cols-2 gap-6">
+        {data.slice(0, 4).map((product) => (
+          <SmallProduct key={product._id} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+};
 
-export default Header
+export default Header;
