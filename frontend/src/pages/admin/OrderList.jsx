@@ -18,7 +18,9 @@ const OrderList = () => {
   const [paymentMethodFilter, setPaymentMethodFilter] = useState('all')
 
   const StatusBadge = ({ isComplete, label }) => (
-    <span className={`px-3 py-1 rounded-full text-sm font-medium ${isComplete ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+    <span className={`px-3 py-1 rounded-full text-sm font-medium ${isComplete ?
+      'bg-green-100 text-green-800' :
+      'bg-red-100 text-red-800'}`}>
       {label}
     </span>
   );
@@ -43,9 +45,9 @@ const OrderList = () => {
       (paymentMethodFilter === 'cash' && order.paymentMethod === 'cash') ||
       (paymentMethodFilter === 'qris' && order.paymentMethod === 'qris') ||
       (paymentMethodFilter === 'cstore' && order.paymentMethod === 'cstore') ||
-      (paymentMethodFilter === 'bank_transfer' && order.paymentMethod === 'bank_transfer');
+      (paymentMethodFilter === 'bank_transfer' && order.paymentMethod === 'bank_transfer') ||
+      (paymentMethodFilter === 'credit_card' && order.paymentMethod === 'credit_card')
 
-    // Jika deliveryFilter aktif, pastikan order memiliki isDelivered
     const shouldIncludeDelivery = deliveryFilter === 'all' || order.isDelivered !== undefined;
 
     return matchesSearchTerm && matchesPaymentFilter && matchesDeliveryFilter && matchesPaymentMethodFilter && shouldIncludeDelivery;
@@ -91,9 +93,9 @@ const OrderList = () => {
       (paymentMethodFilter === 'cash' && order.paymentMethod === 'cash') ||
       (paymentMethodFilter === 'qris' && order.paymentMethod === 'qris') ||
       (paymentMethodFilter === 'cstore' && order.paymentMethod === 'cstore') ||
-      (paymentMethodFilter === 'bank_transfer' && order.paymentMethod === 'bank_transfer');
+      (paymentMethodFilter === 'bank_transfer' && order.paymentMethod === 'bank_transfer') ||
+      (paymentMethodFilter === 'credit_card' && order.paymentMethod === 'credit_card')
 
-    // Jika deliveryFilter aktif, pastikan order memiliki isDelivered
     const shouldIncludeDelivery = deliveryFilter === 'all' || order.isDelivered !== undefined;
 
     return matchesSearchTerm && matchesPaymentFilter && matchesDeliveryFilter && matchesPaymentMethodFilter && shouldIncludeDelivery;
@@ -144,6 +146,7 @@ const OrderList = () => {
           <option value="qris">Qris</option>
           <option value="cstore">CS Store</option>
           <option value="bank_transfer">Bank transfer</option>
+          <option value="credit_card">Credit Card</option>
         </select>
       </div>
 
