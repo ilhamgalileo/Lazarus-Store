@@ -21,7 +21,10 @@ const OrderRecord = () => {
     const [dateFilter, setDateFilter] = useState('all');
 
     const StatusBadge = ({ isComplete, label }) => (
-        <span className={`px-3 py-1 rounded-full text-sm font-medium ${isComplete ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+        <span className={`px-3 py-1 rounded-full text-sm font-medium ${isComplete ?
+            'bg-green-100 text-green-800'
+            : 'bg-red-100 text-red-800'}`}
+        >
             {label}
         </span>
     );
@@ -75,7 +78,8 @@ const OrderRecord = () => {
             (paymentMethodFilter === 'cash' && order.paymentMethod === 'cash') ||
             (paymentMethodFilter === 'qris' && order.paymentMethod === 'qris') ||
             (paymentMethodFilter === 'cstore' && order.paymentMethod === 'cstore') ||
-            (paymentMethodFilter === 'bank_transfer' && order.paymentMethod === 'bank_transfer');
+            (paymentMethodFilter === 'bank_transfer' && order.paymentMethod === 'bank_transfer') ||
+            (paymentMethodFilter === 'credit_card' && order.paymentMethod === 'credit_card')
 
         const matchesDateFilter = filterByDate(order, dateFilter)
 
@@ -119,7 +123,8 @@ const OrderRecord = () => {
             (paymentMethodFilter === 'cash' && order.paymentMethod === 'cash') ||
             (paymentMethodFilter === 'qris' && order.paymentMethod === 'qris') ||
             (paymentMethodFilter === 'cstore' && order.paymentMethod === 'cstore') ||
-            (paymentMethodFilter === 'bank_transfer' && order.paymentMethod === 'bank_transfer')
+            (paymentMethodFilter === 'bank_transfer' && order.paymentMethod === 'bank_transfer') ||
+            (paymentMethodFilter === 'credit_card' && order.paymentMethod === 'credit_card')
 
         const matchesDateFilter = filterByDate(order, dateFilter)
         const shouldIncludeDelivery = deliveryFilter === 'all' || order.isDelivered !== undefined
@@ -212,6 +217,7 @@ const OrderRecord = () => {
                     <option value="qris">Qris</option>
                     <option value="cstore">CS Store</option>
                     <option value="bank_transfer">Bank transfer</option>
+                    <option value="credit_card">Credit Card</option>
                 </select>
 
                 <select
