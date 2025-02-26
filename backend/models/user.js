@@ -21,8 +21,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Password harus diisi'],
-        minlength: [6, 'Password harus memiliki setidaknya 6 karakter'],
+        required: [true],
+        minlength: [6],
         select: false 
     },
     isAdmin: {

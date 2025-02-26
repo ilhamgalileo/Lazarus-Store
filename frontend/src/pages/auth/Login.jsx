@@ -5,7 +5,7 @@ import { useLoginMutation } from "../../redux/api/usersApiSlice";
 import { setCredientials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../../components/loader";
-import logo from '../../assets/1-removebg-preview.png';
+import logo from '../../assets/galileoBlack.png';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -42,7 +42,7 @@ const Login = () => {
     return (
         <div className="fixed inset-0 overflow-hidden h-screen flex items-center justify-center bg-login-regist">
             <div className="w-full max-w-2xl bg-gray-800 bg-opacity-90 rounded-lg shadow-xl p-8 flex items-center">
-                <div className="w-1/3 flex justify-center">
+                <div className="w-1/3 flex mr-[2rem]">
                     <img
                         src={logo}
                         alt="Logo"
