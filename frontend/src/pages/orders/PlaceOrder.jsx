@@ -22,7 +22,7 @@ const PlaceOrder = () => {
   const [payOrder] = usePayOrderMutation()
 
   useEffect(() => {
-    if (!cart.shippingAddress.address) {
+    if (!cart.shippingAddress) {
       navigate("/shipping")
     }
   }, [cart.paymentMethod, cart.shippingAddress.address, navigate])

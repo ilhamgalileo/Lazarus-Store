@@ -53,13 +53,13 @@ const ProductDetail = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="container mx-auto px-4">
             <div className="mb-6">
-                <Link to="/" className="text-black font-semibold hover:underline">Go Back</Link>
+                <Link to="/" className="text-black ml-[5rem] font-semibold hover:underline">Go Back</Link>
             </div>
 
             {isLoading ? <Loader /> : error ? <Message variant="danger">{error?.data?.message || error.message}</Message> : (
-                <div className="flex flex-col lg:flex-row gap-20">
+                <div className="flex flex-col lg:flex-row gap-20 ml-[5rem]">
                     <div className="lg:w-1/2">
                         <div className="relative">
                             <img src={mainImage} alt={product.name}
@@ -75,7 +75,7 @@ const ProductDetail = () => {
                         </div>
                     </div>
 
-                    <div className="lg:w-1/2 space-y-6">
+                    <div className="lg:w-1/2 space-y-6 mr-[5rem]">
                         <h1 className="text-2xl font-bold text-gray-950">{product.name}</h1>
                         <p className="text-3xl font-extrabold text-orange-500">Rp{new Intl.NumberFormat('id-ID').format(product.price)}</p>
                         <p className="text-gray-800 text-sm">{product.description}</p>
@@ -105,7 +105,7 @@ const ProductDetail = () => {
                     </div>
                 </div>
             )}
-            <div className="mt-[2.5rem]">
+            <div className="mt-[2.5rem] ml-[5rem]">
                 <h2 className="text-2xl sticky text-gray-950 bg-[#f0f0ef] py-4 px-6 top-0 z-40 font-bold mb-8 text-center">Recommended Products</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 px-4">
                     {shuffledProducts.slice(0, 9).map((product) => (

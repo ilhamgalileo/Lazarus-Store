@@ -5,6 +5,7 @@ import ProgressSteps from "../../components/ProgressSteps";
 import { toast } from "react-toastify";
 import { saveShippingAddress, savePaymentMethod } from "../../redux/features/cart/cartSlice";
 import { useGetProvincesQuery, useGetCitiesQuery, useGetDistrictsQuery, useGetVillagesQuery } from "../../redux/api/shippingApiSlice";
+import Select from "react-select";
 
 const Shipping = () => {
   const dispatch = useDispatch();
@@ -18,9 +19,13 @@ const Shipping = () => {
   );
 
   const [qrisBankDetails, setQrisBankDetails] = useState({
-    address: shippingAddress?.province || "",
+    recipient: shippingAddress?.recipient || "",
+    province: shippingAddress?.province || "",
     city: shippingAddress?.cityCode || "",
     postalCode: shippingAddress?.postalCode || "",
+    district: shippingAddress?.district || "",
+    village: shippingAddress?.village || "",
+    detailAddress: shippingAddress?.detail_address || "",
   });
 
   const [selectedProvince, setSelectedProvince] = useState(shippingAddress?.provinceCode || "");
@@ -59,15 +64,12 @@ const Shipping = () => {
   useEffect(() => {
     if (selectedVillage && villages?.data) {
       const villageData = villages.data.find((v) => v.code === selectedVillage);
-      console.log("Selected Village Data:", villageData); // Debugging
       setQrisBankDetails((prev) => ({
         ...prev,
         postalCode: villageData?.postal_code || ""
       }));
     }
   }, [selectedVillage, villages?.data]);
-
-  console.log("qrisBankDetails:", qrisBankDetails); // Debugging
 
   const handleQrisBankChange = (e) => {
     const { name, value } = e.target;
@@ -98,11 +100,13 @@ const Shipping = () => {
       const selectedVillageName = villages?.data.find((village) => village.code === selectedVillage)?.name || "";
 
       const shippingDetails = {
-        address: selectedProvinceName,
+        recipient: qrisBankDetails.recipient,
+        province: selectedProvinceName,
         city: selectedCityName,
-        postalCode: qrisBankDetails.postalCode, 
+        postalCode: qrisBankDetails.postalCode,
         district: selectedDistrictName,
-        village: selectedVillageName
+        village: selectedVillageName,
+        detail_address: qrisBankDetails.detailAddress,
       };
 
       dispatch(saveShippingAddress(shippingDetails));
@@ -115,6 +119,13 @@ const Shipping = () => {
     } else {
       toast.error("Please select a payment method.");
     }
+  };
+
+  const formatOptions = (data) => {
+    return data?.map((item) => ({
+      value: item.code,
+      label: item.name,
+    })) || [];
   };
 
   return (
@@ -175,49 +186,92 @@ const Shipping = () => {
 
           {paymentMethod === "qris/bank" && (
             <>
-              <DropdownField
-                label="Province"
-                name="province"
-                value={selectedProvince}
-                onChange={(e) => setSelectedProvince(e.target.value)}
-                options={provinces?.data || []}
-                isLoading={isLoadingProvinces}
-                error={errorProvinces}
-              />
-              <DropdownField
-                label="City"
-                name="city"
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                options={cities?.data || []}
-                isLoading={isLoadingCities}
-                error={errorCities}
-              />
-              <DropdownField
-                label="District"
-                name="district"
-                value={selectedDistrict}
-                onChange={(e) => setSelectedDistrict(e.target.value)}
-                options={districts?.data || []}
-                isLoading={isLoadingDistricts}
-                error={errorDistricts}
-              />
-              <DropdownField
-                label="Village"
-                name="village"
-                value={selectedVillage}
-                onChange={(e) => setSelectedVillage(e.target.value)}
-                options={villages?.data || []}
-                isLoading={isLoadingVillages}
-                error={errorVillages}
-              />
-              <InputField
-                label="Postal Code"
-                name="postalCode"
-                value={qrisBankDetails.postalCode}
-                placeholder="Postal code will be set automatically"
-                readOnly
-              />
+              <div className="mb-4">
+                <label className="block text-gray-950">Recipient Package</label>
+                <input
+                  name="recipient"
+                  value={qrisBankDetails.recipient}
+                  onChange={handleQrisBankChange}
+                  placeholder="Enter package recipient"
+                  className="w-full p-2 border rounded shadow-xl text-white bg-neutral-700"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="mb-4">
+                  <label className="block text-gray-950 mb-2">Province</label>
+                  <Select
+                    options={formatOptions(provinces?.data)}
+                    isLoading={isLoadingProvinces}
+                    isSearchable 
+                    placeholder="Select Province"
+                    value={formatOptions(provinces?.data).find((opt) => opt.value === selectedProvince)}
+                    onChange={(selectedOption) => setSelectedProvince(selectedOption?.value || "")}
+                    className="text-gray-950"
+                    menuPlacement="bottom" 
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-950 mb-2">City</label>
+                  <Select
+                    options={formatOptions(cities?.data)}
+                    isLoading={isLoadingCities}
+                    isSearchable
+                    placeholder="Select City"
+                    value={formatOptions(cities?.data).find((opt) => opt.value === selectedCity)}
+                    onChange={(selectedOption) => setSelectedCity(selectedOption?.value || "")}
+                    className="text-gray-950"
+                    menuPlacement="bottom"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-950 mb-2">District</label>
+                  <Select
+                    options={formatOptions(districts?.data)}
+                    isLoading={isLoadingDistricts}
+                    isSearchable
+                    placeholder="Select District"
+                    value={formatOptions(districts?.data).find((opt) => opt.value === selectedDistrict)}
+                    onChange={(selectedOption) => setSelectedDistrict(selectedOption?.value || "")}
+                    className="text-gray-950"
+                    menuPlacement="bottom"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-950 mb-2">Village</label>
+                  <Select
+                    options={formatOptions(villages?.data)}
+                    isLoading={isLoadingVillages}
+                    isSearchable
+                    placeholder="Select Village"
+                    value={formatOptions(villages?.data).find((opt) => opt.value === selectedVillage)}
+                    onChange={(selectedOption) => setSelectedVillage(selectedOption?.value || "")}
+                    className="text-gray-950"
+                    menuPlacement="bottom"
+                  />
+                </div>
+                <InputField
+                  label="Postal Code"
+                  name="postalCode"
+                  value={qrisBankDetails.postalCode}
+                  placeholder="Postal code will be set automatically"
+                  readOnly
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-950">Detail Address</label>
+                <textarea
+                  name="detailAddress"
+                  value={qrisBankDetails.detailAddress}
+                  onChange={handleQrisBankChange}
+                  placeholder="Enter your detailed address"
+                  className="w-full p-2 h-[5rem] border rounded shadow-xl text-white bg-neutral-700"
+                  required
+                />
+              </div>
+
               <button
                 className="bg-orange-600 text-gray-100 py-2 px-4 rounded-lg w-full mt-4"
                 type="button"
@@ -232,28 +286,5 @@ const Shipping = () => {
     </div>
   );
 };
-
-const DropdownField = ({ label, name, value, onChange, options = [], isLoading, error }) => (
-  <div className="mb-4">
-    <label className="block text-gray-950 mb-2">{label}</label>
-    <select
-      name={name}
-      className={`w-full p-2 h-[3rem] border rounded shadow-xl text-white bg-neutral-700 
-        ${isLoading || error ? "opacity-50 cursor-not-allowed" : ""}`}
-      value={value}
-      required
-      onChange={onChange}
-      disabled={isLoading || error}
-      aria-busy={isLoading}
-    >
-      <option value="">Select {label}</option>
-      {isLoading && <option disabled>Loading...</option>}
-      {error && <option disabled>Error loading {label}</option>}
-      {Array.isArray(options) && options.map((option) => (
-        <option key={option.code} value={option.code}>{option.name}</option>
-      ))}
-    </select>
-  </div>
-);
 
 export default Shipping;

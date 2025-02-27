@@ -17,7 +17,7 @@ const Order = () => {
   const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
   const [returnOrder, { isLoading: loadingReturn }] = useReturnOrderMutation();
   const { userInfo } = useSelector((state) => state.auth);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);    
   const [editedQuantities, setEditedQuantities] = useState({});
   const [selectAll, setSelectAll] = useState(false);
 
@@ -132,19 +132,20 @@ const Order = () => {
             </div>
 
             <div className="text-gray-900 absolute right-[2rem]">
-              <h3 className="font-bold text-xl mb-2.5">Published for: </h3>
+              <h3 className="font-bold text-xl mb-2.5">Published for:</h3>
               <div className="text-gray-950 text-sm">
                 <p className="mb-1">Buyer: <strong>{order.user.username}</strong></p>
                 <p className="mb-1">Email: <strong>{order.user.email}</strong></p>
-                <div className="grid grid-cols-2 gap-2">
-                  <p>Address:</p>
-                  <p></p>
-                  <p>Province:<strong> {order.shippingAddress.address}</strong></p>
-                  <p>District:<strong> {order.shippingAddress.district}</strong></p>
-                  <p>Village:<strong> {order.shippingAddress.village}</strong></p>
-                  <p>City:<strong> {order.shippingAddress.city}</strong></p>
-                  <p>Postal Code:<strong> {order.shippingAddress.postalCode}</strong></p>
-                </div>
+                <p className="mb-1">Recipient Name: <strong>{order.shippingAddress.recipient}</strong></p>
+                <p className="mb-1">
+                  Delivery Address: <strong>
+                    {order.shippingAddress.detail_address}, <br />
+                    {order.shippingAddress.village}, {""}
+                    {order.shippingAddress.district}, {""}
+                    {order.shippingAddress.city}, {order.shippingAddress.postalCode},<br />
+                    {order.shippingAddress.province}
+                  </strong>
+                </p>
               </div>
             </div>
           </div>

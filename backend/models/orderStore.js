@@ -18,12 +18,6 @@ const orderStoreSchema = mongoose.Schema(
       },
     ],
 
-    shippingAddress: {
-      address: { type: String },
-      city: { type: String, },
-      postalCode: { type: String },
-      country: { type: String, },
-    },
     paymentMethod: { type: String, required: true },
     paymentResult: {
       id: { type: String },

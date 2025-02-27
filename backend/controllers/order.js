@@ -92,8 +92,8 @@ export const createOrder = asyncHandler(async (req, res) => {
       },
       shipping_address: {
         first_name: req.user.username,
-        address: shippingAddress.address,
-        city: shippingAddress.city,
+        address: shippingAddress.detail_address,
+        city: `${shippingAddress.city}, ${shippingAddress.province},`,
         postal_code: shippingAddress.postalCode,
       },
     },
