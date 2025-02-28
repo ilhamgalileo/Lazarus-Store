@@ -150,8 +150,7 @@ const Shipping = () => {
         dispatch(savePaymentMethod(paymentMethod));
         navigate("/placeorder");
       } catch (error) {
-        toast.error("Gagal menyimpan alamat pengiriman");
-        console.error("Error saving address:", error);
+        toast.error("Error saving address:");
       }
     } else if (paymentMethod === "cash") {
       navigate("/placeorder/cash");
@@ -197,17 +196,6 @@ const Shipping = () => {
       postalCode: villageData?.postal_code || "",
     }));
   };
-
-  // Debugging
-  useEffect(() => {
-    console.log("Selected Province:", selectedProvince);
-    console.log("Selected City:", selectedCity);
-    console.log("Selected District:", selectedDistrict);
-    console.log("Selected Village:", selectedVillage);
-    console.log("Cities Data:", cities);
-    console.log("Districts Data:", districts);
-    console.log("Villages Data:", villages);
-  }, [selectedProvince, selectedCity, selectedDistrict, selectedVillage, cities, districts, villages]);
 
   if (isLoadingAddress) {
     return <div>Loading...</div>;
