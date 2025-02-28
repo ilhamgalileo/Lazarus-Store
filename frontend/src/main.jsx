@@ -60,15 +60,17 @@ const router = createBrowserRouter(
 
       {/* admin */}
       <Route path='/admin' element={<AdminRoute />}>
-        <Route path='userlist' element={<UserList />} />
-        <Route path='categorylist' element={<CategoryList />} />
+        <Route path='category' element={<CategoryList />} />
         <Route path='productlist' element={<ProductList />} />
         <Route path='orderlist' element={<OrderList />} />
-        <Route path='order-record' element={<OrderRecord />} />
         <Route path='allproductslist' element={<AllProducts />} />
         <Route path='product/update/:id' element={<ProductUpdate />} />
-        <Route path='product-record' element={<ProductsTable />} />
         <Route path='dashboard' element={<AdminDashboard />} />
+      </Route>
+      <Route path='/super-admin' element={<AdminRoute />}>
+        <Route path='product-record' element={<ProductsTable />} />
+        <Route path='order-record' element={<OrderRecord />} />
+        <Route path='userlist' element={<UserList />} />
       </Route>
     </Route>
   )

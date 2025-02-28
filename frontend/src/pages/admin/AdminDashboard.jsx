@@ -14,7 +14,6 @@ import {
 import OrderList from "./OrderList";
 import Loader from "../../components/loader";
 import { FaUser, FaMoneyBill, FaShoppingBag, FaChartLine, FaCalendar, FaCalendarAlt } from "react-icons/fa";
-import AdminMenu from "./AdminMenu";
 
 const StatBox = ({ title, value, icon, loading }) => (
   <div className="rounded-lg bg-neutral-700 shadow-lg p-6 w-full">
@@ -252,7 +251,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen">
-      <AdminMenu />
       <div className="p-6 xl:ml-[4rem] md:ml-[0rem]">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Dashboard Overview</h1>

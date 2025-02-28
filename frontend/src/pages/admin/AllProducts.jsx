@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import moment from "moment";
 import { useAllProductsQuery } from "../../redux/api/productApiSlice";
-import AdminMenu from "./AdminMenu";
 import Loader from "../../components/loader";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 import { useDispatch } from "react-redux";
@@ -110,7 +108,6 @@ const AllProducts = () => {
                         </div>
                     </div>
                     <div className="md:w-1/4 p-3 mt-2">
-                        <AdminMenu />
                     </div>
                 </div>
             </div>

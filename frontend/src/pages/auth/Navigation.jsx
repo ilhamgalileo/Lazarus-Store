@@ -5,8 +5,13 @@ import {
   AiOutlineLogin,
   AiOutlineUserAdd,
   AiOutlineShoppingCart,
+  AiOutlineDashboard,
+  AiOutlineAppstore,
+  AiOutlineProfile,
+  AiOutlineProduct,
+  AiOutlineUser,
 } from "react-icons/ai";
-import { FaHeart, FaUserCircle } from "react-icons/fa";
+import { FaHeart, FaListAlt, FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Navigation.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -61,12 +66,23 @@ const Navigation = () => {
           </div>
         </Link>
 
-        <Link to="/shop" className="flex relative" onClick={closeDropdown}>
-          <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
-            <AiOutlineShopping className="mr-2 mt-[3rem]" size={20} color={getIconColor("/shop")} />
-            <span className="hidden nav-item-name mt-[3rem] text-sm">Shop</span>
-          </div>
-        </Link>
+        {!userInfo?.user?.isAdmin && (
+          <Link to="/shop" className="flex relative" onClick={closeDropdown}>
+            <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
+              <AiOutlineShopping className="mr-2 mt-[3rem]" size={20} color={getIconColor("/shop")} />
+              <span className="hidden nav-item-name mt-[3rem] text-sm">Shop</span>
+            </div>
+          </Link>
+        )}
+
+        {userInfo?.user?.isAdmin && (
+          <Link to="/admin/allproductslist" className="flex relative" onClick={closeDropdown}>
+            <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
+              <AiOutlineAppstore className="mr-2 mt-[3rem]" size={20} color={getIconColor("/admin/allproductslist")} />
+              <span className="hidden nav-item-name mt-[3rem] text-sm">Products</span>
+            </div>
+          </Link>
+        )}
 
         <Link to="/cart" className="flex relative" onClick={closeDropdown}>
           <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
@@ -82,13 +98,61 @@ const Navigation = () => {
           </div>
         </Link>
 
-        <Link to="/favorite" className="flex relative" onClick={closeDropdown}>
-          <div className="flex items-center transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
-            <FaHeart className="mt-[3rem] mr-2" size={20} color={getIconColor("/favorite")} />
-            <span className="hidden nav-item-name text-sm mt-[3rem]">Favorites</span>
-            <FavoritesCount />
-          </div>
-        </Link>
+        {!userInfo?.user?.isAdmin || !userInfo?.user?.superAdmin && (
+          <Link to="/favorite" className="flex relative" onClick={closeDropdown}>
+            <div className="flex items-center transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
+              <FaHeart className="mt-[3rem] mr-2" size={20} color={getIconColor("/favorite")} />
+              <span className="hidden nav-item-name text-sm mt-[3rem]">Favorites</span>
+              <FavoritesCount />
+            </div>
+          </Link>
+        )}
+
+        {userInfo?.user?.isAdmin && (
+          <>
+            <Link to="/admin/dashboard" className="flex relative" onClick={closeDropdown}>
+              <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
+                <AiOutlineDashboard className="mr-2 mt-[3rem]" size={20} color={getIconColor("/admin/dashboard")} />
+                <span className="hidden nav-item-name mt-[3rem] text-sm">Dashboard</span>
+              </div>
+            </Link>
+            <Link to="/admin/category" className="flex relative" onClick={closeDropdown}>
+              <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
+                <FaListAlt className="mr-2 mt-[3rem]" size={20} color={getIconColor("/admin/category")} />
+                <span className="hidden nav-item-name mt-[3rem] text-sm">Category</span>
+              </div>
+            </Link>
+          </>
+        )}
+
+        {userInfo?.user?.superAdmin && (
+          <>
+            <Link to="/super-admin/order-record" className="flex relative" onClick={closeDropdown}>
+              <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
+                <AiOutlineProfile className="mr-2 mt-[3rem]" size={20} color={getIconColor("/super-admin/order-record")} />
+                <span className="hidden nav-item-name mt-[3rem] text-sm">
+                  Order<br />Records
+                </span>
+              </div>
+            </Link>
+            <Link to="/super-admin/product-record" className="flex relative" onClick={closeDropdown}>
+              <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
+                <AiOutlineProduct className="mr-2 mt-[3rem]" size={20} color={getIconColor("/super-admin/product-record")} />
+                <span className="hidden nav-item-name mt-[3rem] text-sm">
+                  Product<br />Records
+                </span>
+              </div>
+            </Link>
+            <Link to="/super-admin/userlist" className="flex relative" onClick={closeDropdown}>
+              <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
+                <AiOutlineUser className="mr-2 mt-[3rem]" size={20} color={getIconColor("/super-admin/userlist")} />
+                <span className="hidden nav-item-name mt-[3rem] text-sm">
+                  User<br />Management
+                </span>
+              </div>
+            </Link>
+          </>
+        )}
       </div>
 
       <div className="relative">
@@ -110,66 +174,9 @@ const Navigation = () => {
                 role="menu"
               >
                 <div className="py-1" role="none">
-                  {userInfo.user?.isAdmin && (
-                    <>
-                      <Link
-                        to="/admin/dashboard"
-                        className="block px-4 py-2 text-sm text-white hover:bg-gray-700 rounded-t-lg"
-                        onClick={closeDropdown}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        to="/admin/allproductslist"
-                        className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
-                        onClick={closeDropdown}
-                      >
-                        Products
-                      </Link>
-                      <Link
-                        to="/admin/categorylist"
-                        className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
-                        onClick={closeDropdown}
-                      >
-                        Category
-                      </Link>
-                      <Link
-                        to="/admin/orderlist"
-                        className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
-                        onClick={closeDropdown}
-                      >
-                        Orders
-                      </Link>
-                    </>
-                  )}
-                  {userInfo.user?.superAdmin && (
-                    <>
-                      <Link
-                        to="/admin/userlist"
-                        className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
-                        onClick={closeDropdown}
-                      >
-                        Users
-                      </Link>
-                      <Link
-                        to="/admin/product-record"
-                        className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
-                        onClick={closeDropdown}
-                      >
-                        Product Record
-                      </Link>
-                      <Link
-                        to="/admin/order-record"
-                        className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
-                        onClick={closeDropdown}
-                      >
-                        Order Record
-                      </Link>
-                    </>
-                  )}
                   <Link
                     to="/profile"
-                    className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
+                    className="block px-4 py-2 text-sm text-white hover:bg-gray-700 rounded-t-lg"
                     onClick={closeDropdown}
                   >
                     Profile

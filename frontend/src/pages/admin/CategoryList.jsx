@@ -8,7 +8,6 @@ import {
 } from "../../redux/api/categoryApiSlice";
 import CategoryForm from "../../components/CategoryForm";
 import Modal from "../../components/Modal";
-import AdminMenu from "./AdminMenu";
 import Loader from "../../components/loader";
 
 const CategoryList = () => {
@@ -99,7 +98,6 @@ const CategoryList = () => {
 
     return (
         <div className="ml-[10rem] flex flex-col md:flex-row">
-            <AdminMenu />
             <div className="md:w-3/4 p-5">
                 <h2 className="text-2xl font-semibold text-orange-500 mb-5 text-center">Manage Categories</h2>
 

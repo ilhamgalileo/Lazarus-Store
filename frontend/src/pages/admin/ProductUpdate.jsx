@@ -9,7 +9,6 @@ import {
 } from "../../redux/api/productApiSlice"
 import { useFetchCateQuery } from "../../redux/api/categoryApiSlice"
 import { toast } from "react-toastify"
-import AdminMenu from "./AdminMenu"
 
 const ProductUpdate = () => {
     const params = useParams()
@@ -163,7 +162,6 @@ const ProductUpdate = () => {
     return (
         <div className="container xl:mx-[9rem] sm:mx-[0]">
             <div className="flex flex-col md:flex-row">
-                <AdminMenu />
                 <div className="md:w-3/4 p-3 text-gray-950">
                     <h2 className="h-12">Update Product</h2>
                     <form onSubmit={submitHandler}>
