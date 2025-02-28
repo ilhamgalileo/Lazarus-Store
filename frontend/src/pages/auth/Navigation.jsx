@@ -19,7 +19,7 @@ const Navigation = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showSidebar] = useState(false);
-  const location = useLocation(); // Mendapatkan lokasi saat ini
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logoutApiCall] = useLogoutMutation();
@@ -42,7 +42,6 @@ const Navigation = () => {
     setDropdownOpen(false);
   };
 
-  // Fungsi untuk menentukan warna ikon berdasarkan rute
   const getIconColor = (path) => {
     return location.pathname === path ? "orange" : "white";
   };

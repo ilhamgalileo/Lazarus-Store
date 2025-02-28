@@ -132,7 +132,6 @@ const Shop = () => {
               />
             </div>
 
-            {/* Filter by Categories */}
             <div className="mb-4">
               <p className="block text-sm font-medium text-gray-300 bg-black px-3 py-2 rounded-full text-center">
                 Filter by Categories
