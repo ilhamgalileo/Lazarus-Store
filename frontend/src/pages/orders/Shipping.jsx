@@ -350,6 +350,31 @@ const Shipping = () => {
               </button>
             </>
           )}
+          
+          {paymentMethod === "cash" && (
+            <div className="text-center mt-4">
+              <p className="text-gray-500">You will be redirected to the cash order page.</p>
+              <button
+                className="bg-green-700 text-white py-2 px-4 rounded-lg w-full mt-4"
+                type="button"
+                onClick={handleContinue}
+              >
+                Continue
+              </button>
+            </div>
+          )}
+          {paymentMethod === "store-transfer" && (
+            <div className="text-center mt-4">
+              <p className="text-gray-500">You will be redirected to the store transfer page.</p>
+              <button
+                className="bg-green-700 text-white py-2 px-4 rounded-lg w-full mt-4"
+                type="button"
+                onClick={handleContinue}
+              >
+                Continue
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

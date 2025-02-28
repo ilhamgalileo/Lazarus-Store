@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,12 +26,6 @@ const PlaceCashOrder = () => {
     receivedAmount: "",
     cust_address: "",
   })
-
-  useEffect(() => {
-    if (!cart.shippingAddress.address) {
-      navigate("/shipping")
-    }
-  }, [cart.shippingAddress.address, navigate])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -77,13 +71,13 @@ const PlaceCashOrder = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto max-w-6xl">
       <ProgressSteps step1 step2 step3 />
 
       {cart.cartItems.length === 0 ? (
         <Message>Your cart is empty</Message>
       ) : (
-        <div className="space-y-6 mt-8">
+        <div className="space-y-5 mt-8">
           <div className="bg-neutral-700 rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold mb-4">Order Items</h2>
             <div className="overflow-x-auto">
@@ -109,8 +103,8 @@ const PlaceCashOrder = () => {
                         </Link>
                       </td>
                       <td className="px-4 py-3">{item.qty}</td>
-                      <td className="px-4 py-3">Rp. {item.price.toLocaleString()}</td>
-                      <td className="px-4 py-3">Rp. {(item.qty * item.price).toLocaleString()}</td>
+                      <td className="px-4 py-3">Rp{item.price.toLocaleString()}</td>
+                      <td className="px-4 py-3">Rp{(item.qty * item.price).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -124,15 +118,15 @@ const PlaceCashOrder = () => {
               <div className="space-y-3">
                 <div className="flex justify-between text-white">
                   <span>Items:</span>
-                  <span>Rp. {itemsPrice.toLocaleString()}</span>
+                  <span>Rp{itemsPrice.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-white">
                   <span>Tax (PPN 11%):</span>
-                  <span>Rp. {taxPrice.toLocaleString()}</span>
+                  <span>Rp{taxPrice.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between font-semibold text-lg pt-3 border-t border-gray-200">
                   <span>Total:</span>
-                  <span>Rp. {totalPrice.toLocaleString()}</span>
+                  <span>Rp{totalPrice.toLocaleString()}</span>
                 </div>
               </div>
             </div>
