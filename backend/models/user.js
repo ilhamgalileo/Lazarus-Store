@@ -39,10 +39,13 @@ const userSchema = new mongoose.Schema(
 
     shippingAddress: [
       {
+        recipient: String,
+        province: String,
         city: String,
         district: String,
+        village: String,
         postalCode: String,
-        detail: String,
+        detail_address: String,
       },
     ],
   },

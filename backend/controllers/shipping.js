@@ -1,4 +1,6 @@
 import asyncHandler from "express-async-handler";
+import User from "../models/user.js";
+import { json } from "express";
 
 const WILAYAH_API_BASE = "https://wilayah.id/api";
 
@@ -53,3 +55,52 @@ export const getVillages = asyncHandler(async (req, res) => {
     });
   }
 });
+
+export const getShippingAddress = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // if (user.shippingAddress?.length === 0) {
+    //   return res.status(404).json({message: "you don't have saving address yet"})
+    // }
+
+    res.status(200).json({ shippingAddress: user.shippingAddress });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching shipping address', error });
+  }
+};
+
+export const saveShippingAddress = asyncHandler(async (req, res) => {
+  const { recipient, province, city, district, village, postalCode, detail_address } = req.body;
+  const userId = req.user._id;
+
+  if (!recipient || !province || !city || !district || !postalCode || !detail_address ||!village) {
+    return res.status(400).json({ message: 'Semua field harus diisi' });
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  const newAddress = { recipient, province, city, district, village,  postalCode, detail_address };
+
+  if (user.shippingAddress.length === 0) {
+    user.shippingAddress.push(newAddress);
+  } else {
+    user.shippingAddress[0] = newAddress;
+  }
+  await user.save();
+
+  res.status(200).json({
+    message: 'Shipping address berhasil disimpan',
+    shippingAddress: user.shippingAddress[0],
+  });
+});
+

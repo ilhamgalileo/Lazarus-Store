@@ -142,7 +142,7 @@ const Order = () => {
                     {order.shippingAddress.detail_address}, <br />
                     {order.shippingAddress.village}, {""}
                     {order.shippingAddress.district}, {""}
-                    {order.shippingAddress.city}, {order.shippingAddress.postalCode},<br />
+                    {order.shippingAddress.postalCode}, {order.shippingAddress.city},<br />
                     {order.shippingAddress.province}
                   </strong>
                 </p>

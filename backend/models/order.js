@@ -21,9 +21,9 @@ const orderSchema = mongoose.Schema(
       recipient : { type: String, required: true },
       province: { type: String, required: true },
       city: { type: String, required: true },
-      postalCode: { type: String, required: true },
       district: { type: String, required: true },
       village: { type: String, required: true },
+      postalCode: { type: String, required: true },
       detail_address: { type: String, required: true },
     },
 

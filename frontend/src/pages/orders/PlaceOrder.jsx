@@ -1,47 +1,61 @@
-import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
-import { useDispatch, useSelector } from "react-redux"
-import Message from "../../components/Message"
-import ProgressSteps from "../../components/ProgressSteps"
-import Loader from "../../components/loader"
-import { useCreateOrderMutation } from "../../redux/api/orderApiSlice"
-import { clearCartItems } from "../../redux/features/cart/cartSlice"
-import { usePayOrderMutation } from "../../redux/api/orderApiSlice"
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import Message from "../../components/Message";
+import ProgressSteps from "../../components/ProgressSteps";
+import Loader from "../../components/loader";
+import { useCreateOrderMutation } from "../../redux/api/orderApiSlice";
+import { clearCartItems } from "../../redux/features/cart/cartSlice";
+import { usePayOrderMutation } from "../../redux/api/orderApiSlice";
+import { useGetAddressQuery } from "../../redux/api/shippingApiSlice"; // Import query untuk mengambil alamat pengiriman
 
 const PlaceOrder = () => {
-  const navigate = useNavigate()
-  const cart = useSelector(state => state.cart)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart);
+  const { userInfo } = useSelector((state) => state.auth);
+
+  // Ambil shippingAddress dari database
+  const { data: userData, isLoading: isLoadingAddress, error: addressError } = useGetAddressQuery(userInfo?.user?._id);
+
+  const shippingAddress = userData?.shippingAddress?.[0]; // Ambil alamat pertama dari array
+
   const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.qty * item.price, 0) || 0;
   const totalWeight = cart.cartItems.reduce((acc, item) => acc + (item.weight || 0) * item.qty, 0);
   const shippingPrice = totalWeight < 1000 ? 0 : Math.ceil(totalWeight / 1000) * 15000;
   const taxPrice = Math.round((itemsPrice + shippingPrice) * 0.11);
   const totalPrice = Math.round(itemsPrice + shippingPrice + taxPrice);
 
-  const [createOrder, { isLoading, error }] = useCreateOrderMutation()
-  const [payOrder] = usePayOrderMutation()
+  const [createOrder, { isLoading, error }] = useCreateOrderMutation();
+  const [payOrder] = usePayOrderMutation();
 
+  // Validasi apakah shippingAddress sudah ada
   useEffect(() => {
-    if (!cart.shippingAddress) {
-      navigate("/shipping")
+    if (!isLoadingAddress && !shippingAddress) {
+      navigate("/shipping");
     }
-  }, [cart.paymentMethod, cart.shippingAddress.address, navigate])
-
-  const dispatch = useDispatch()
+  }, [shippingAddress, isLoadingAddress, navigate]);
 
   const handlePaymentProcess = async () => {
+    if (!shippingAddress) {
+      toast.error("Shipping address is required");
+      return;
+    }
+
     const res = await createOrder({
       orderItems: cart.cartItems,
-      shippingAddress: cart.shippingAddress,
+      shippingAddress: shippingAddress, // Gunakan shippingAddress dari database
       paymentMethod: cart.paymentMethod,
-      itemsPrice: cart.itemsPrice,
-      shippingPrice: cart.shippingPrice,
-      taxPrice: cart.taxPrice,
-      totalPrice: cart.totalPrice,
-    }).unwrap()
+      itemsPrice: itemsPrice,
+      shippingPrice: shippingPrice,
+      taxPrice: taxPrice,
+      totalPrice: totalPrice,
+    }).unwrap();
 
-    const token = res.token
-    dispatch(clearCartItems())
+    const token = res.token;
+    dispatch(clearCartItems());
+
     if (token) {
       window.snap.pay(token, {
         onSuccess: async (details) => {
@@ -49,48 +63,55 @@ const PlaceOrder = () => {
             await payOrder({
               orderId: res.order._id,
               details,
-              payment_type: details.payment_type
-            }).unwrap()
-            toast.success('payment successfully')
+              payment_type: details.payment_type,
+            }).unwrap();
+            toast.success("Payment successful");
             navigate(`/order/${res.order._id}`);
           } catch (error) {
             toast.error(error?.data?.message || error.message);
           }
-          navigate(`/order/${res.order._id}`)
         },
         onPending: function (details) {
-          console.log('Payment pending:', details)
-          navigate(`/order/${res.order._id}`)
+          console.log("Payment pending:", details);
+          navigate(`/order/${res.order._id}`);
         },
         onError: function (details) {
-          toast.error('Payment failed. Please try again.')
+          toast.error("Payment failed. Please try again.");
         },
         onClose: function () {
-          console.log('Customer closed the popup without finishing the payment')
-          toast.warn('Payment cancelled. Please try again.')
-        }
-      })
+          console.log("Customer closed the popup without finishing the payment");
+          toast.warn("Payment cancelled. Please try again.");
+        },
+      });
     } else {
-      throw new Error('Payment token not found');
+      throw new Error("Payment token not found");
     }
-  }
+  };
 
   const placeOrderHandler = async () => {
     try {
       if (!window.snap) {
-        const script = document.createElement('script')
-        script.src = 'https://app.sandbox.midtrans.com/snap/snap.js'
-        script.async = true
+        const script = document.createElement("script");
+        script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+        script.async = true;
         script.onload = async () => {
-          await handlePaymentProcess()
-        }
-        document.body.appendChild(script)
+          await handlePaymentProcess();
+        };
+        document.body.appendChild(script);
       } else {
-        await handlePaymentProcess()
+        await handlePaymentProcess();
       }
     } catch (error) {
-      toast.error(error.message || 'Payment failed. Please try again.');
+      toast.error(error.message || "Payment failed. Please try again.");
     }
+  };
+
+  if (isLoadingAddress) {
+    return <Loader />;
+  }
+
+  if (addressError) {
+    return <Message variant="danger">{addressError.data?.message || "Failed to load shipping address"}</Message>;
   }
 
   return (
@@ -116,10 +137,7 @@ const PlaceOrder = () => {
                 {cart.cartItems.map((item) => (
                   <tr key={item.product}>
                     <td className="flex justify-center items-center">
-                      <img
-                        src={item?.images[0]}
-                        alt={item.name}
-                        className="w-16 h-16 object-cover" />
+                      <img src={item?.images[0]} alt={item.name} className="w-16 h-16 object-cover" />
                     </td>
                     <td>{item.name}</td>
                     <td>{item.qty}</td>
@@ -139,15 +157,13 @@ const PlaceOrder = () => {
             <li>Items: Rp{itemsPrice.toLocaleString()}</li>
             <li>Shipping: Rp{shippingPrice.toLocaleString()}</li>
             <li>Tax: Rp{taxPrice.toLocaleString()}</li>
-            <li
-              className="mt-1 pt-2 border-t border-black w-1/5">
-              Total: Rp{totalPrice.toLocaleString()}</li>
+            <li className="mt-1 pt-2 border-t border-black w-1/5">Total: Rp{totalPrice.toLocaleString()}</li>
           </ul>
         </div>
         <button
           className="bg-orange-500 py-2 px-4 rounded w-[70rem] mt-4 ml-[10rem]"
           onClick={placeOrderHandler}
-          disabled={isLoading}
+          disabled={isLoading || isLoadingAddress}
         >
           {isLoading ? <Loader /> : "Place Order"}
         </button>
@@ -156,6 +172,6 @@ const PlaceOrder = () => {
       </div>
     </>
   );
-}
+};
 
-export default PlaceOrder
+export default PlaceOrder;
