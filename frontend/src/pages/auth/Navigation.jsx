@@ -23,7 +23,6 @@ const Navigation = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showSidebar] = useState(false);
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -54,10 +53,10 @@ const Navigation = () => {
   return (
     <div
       style={{ zIndex: 99 }}
-      className={`${showSidebar ? "hidden" : "flex"} 
-        xl:flex lg:flex md:hidden sm:hidden flex-col justify-between p-4 text-white bg w-[10%] hover:w-[15%] h-[100vh] fixed`}
+      className="flex flex-col justify-between p-4 text-white bg w-[10%] hover:w-[15%] h-[100vh] fixed"
       id="navigation-container"
     >
+  
       <div className="flex flex-col justify-center space-y-4">
         <Link to="/" className="flex relative" onClick={closeDropdown}>
           <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
@@ -98,7 +97,7 @@ const Navigation = () => {
           </div>
         </Link>
 
-        {!userInfo?.user?.isAdmin || !userInfo?.user?.superAdmin && (
+        {!userInfo?.user?.isAdmin && (
           <Link to="/favorite" className="flex relative" onClick={closeDropdown}>
             <div className="flex items-center transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
               <FaHeart className="mt-[3rem] mr-2" size={20} color={getIconColor("/favorite")} />
