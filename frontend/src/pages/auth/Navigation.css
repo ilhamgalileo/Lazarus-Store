@@ -1,4 +1,3 @@
-/* Navigation.css */
 #navigation-container {
   width: 4%;
   transition: width 0.3s ease-in-out;
@@ -16,8 +15,11 @@
 
 .nav-item-name {
   display: none;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
   color: white;
+  white-space: nowrap; /* Tambahkan ini */
+  overflow: hidden; /* Tambahkan ini */
+  text-overflow: ellipsis; /* Tambahkan ini */
 }
 
 #navigation-container:hover .nav-item-name {
@@ -47,10 +49,9 @@
   transition: transform 0.3s ease-in-out;
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
   #navigation-container {
-    width: 60px; /* Lebar default pada mobile */
+    width: 60px;
     height: 100vh;
     position: fixed;
     top: 0;
@@ -61,15 +62,15 @@
   }
 
   #navigation-container:hover {
-    width: 60%; /* Lebar saat dihover pada mobile */
+    width: 60%;
   }
 
   .nav-item-name {
-    display: none; /* Sembunyikan teks navigasi secara default */
+    display: none;
   }
 
   #navigation-container:hover .nav-item-name {
-    display: block; /* Tampilkan teks navigasi saat dihover */
+    display: block;
     opacity: 1;
   }
 

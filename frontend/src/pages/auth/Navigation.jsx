@@ -57,7 +57,7 @@ const Navigation = () => {
       id="navigation-container"
     >
   
-      <div className="flex flex-col justify-center space-y-4">
+      <div className="flex flex-col justify-center space-y-4 ml-2.5">
         <Link to="/" className="flex relative" onClick={closeDropdown}>
           <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
             <AiOutlineHome className="mr-2 mt-[3rem]" size={20} color={getIconColor("/")} />
@@ -130,7 +130,7 @@ const Navigation = () => {
               <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
                 <AiOutlineProfile className="mr-2 mt-[3rem]" size={20} color={getIconColor("/super-admin/order-record")} />
                 <span className="hidden nav-item-name mt-[3rem] text-sm">
-                  Order<br />Records
+                  Order Records
                 </span>
               </div>
             </Link>
@@ -138,7 +138,7 @@ const Navigation = () => {
               <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
                 <AiOutlineProduct className="mr-2 mt-[3rem]" size={20} color={getIconColor("/super-admin/product-record")} />
                 <span className="hidden nav-item-name mt-[3rem] text-sm">
-                  Product<br />Records
+                  Product Records
                 </span>
               </div>
             </Link>
@@ -146,7 +146,7 @@ const Navigation = () => {
               <div className="flex transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
                 <AiOutlineUser className="mr-2 mt-[3rem]" size={20} color={getIconColor("/super-admin/userlist")} />
                 <span className="hidden nav-item-name mt-[3rem] text-sm">
-                  User<br />Management
+                  User Management
                 </span>
               </div>
             </Link>
@@ -196,7 +196,7 @@ const Navigation = () => {
               <Link to="/login" className="flex relative" onClick={closeDropdown}>
                 <div className="flex items-center mt-5 transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
                   <AiOutlineLogin className="mr-2" size={26} color={getIconColor("/login")} />
-                  <span className="hidden nav-item-name text-sm">LOGIN</span>
+                  <span className="hidden nav-item-name text-sm">Login</span>
                 </div>
               </Link>
             </li>
@@ -204,7 +204,7 @@ const Navigation = () => {
               <Link to="/register" className="flex relative" onClick={closeDropdown}>
                 <div className="flex items-center mt-5 transition-transform transform hover:translate-x-2 duration-300 ease-in-out">
                   <AiOutlineUserAdd className="mr-2" size={26} color={getIconColor("/register")} />
-                  <span className="hidden nav-item-name text-sm">REGISTER</span>
+                  <span className="hidden nav-item-name text-sm">Reg</span>
                 </div>
               </Link>
             </li>

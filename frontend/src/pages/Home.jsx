@@ -7,6 +7,7 @@ import Message from "../components/Message"
 import Product from "./Products/Product"
 import logo from '../assets/galileo2.png'
 import ProductCarousel from "./Products/ProductCarousel"
+import SmallProduct from "./Products/SmallProduct"
 
 const Home = () => {
   const { keyword } = useParams()
@@ -20,31 +21,30 @@ const Home = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between px-6 py-4 text-gray-950 top-0 z-50 ml-[4rem]">
-        <div className="flex items-center gap-8">
+      <div className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-[5rem] py-4 text-gray-950 top-0 z-50">
+        <div className="flex items-center gap-7">
           <Link to="/">
             <img
               src={logo}
               alt="Logo"
-              className="w-40 h-40 object-contain"
+              className="w-20 h-25 sm:w-40 sm:h-40 object-contain"
             />
           </Link>
-
           <div className="absolute left-[53rem] top-[4rem]">
             <ProductCarousel />
           </div>
-          <nav className="flex items-center gap-6">
-            <Link to="/shop" className="text-lg font-semibold hover:text-orange-600">
+          <nav className="flex gap-4 sm:gap-6">
+            <Link to="/shop" className="text-sm sm:text-lg font-semibold hover:text-orange-600">
               All Products
             </Link>
-            <Link to="/about" className="text-lg font-semibold hover:text-orange-600">
+            <Link to="/about" className="text-sm sm:text-lg font-semibold hover:text-orange-600">
               About Us
             </Link>
           </nav>
         </div>
       </div>
 
-      <div className="ml-[23rem]">
+      <div className="text-center sm:text-left sm:ml-[23rem] mt-2 sm:mt-0">
         <h1 className="text-xl font-semibold text-gray-950">New Releases</h1>
       </div>
 

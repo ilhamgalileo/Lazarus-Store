@@ -14,8 +14,8 @@ const Header = () => {
   }
 
   return (
-    <div className="flex ml-[8rem]">
-      <div className="grid grid-cols-2 gap-6">
+    <div className="flex flex-row sm:flex-row ml-[5rem] sm:ml-[8rem] mt-8">
+      <div className="grid grid-cols-2 gap-2">
         {data.slice(0, 4).map((product) => (
           <SmallProduct key={product._id} product={product} />
         ))}

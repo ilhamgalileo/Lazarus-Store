@@ -5,22 +5,25 @@ import logo from "./assets/galileo2.png";
 const AboutUs = () => {
     return (
         <div className="flex flex-col min-h-screen ml-[4rem] text-gray-800">
-            {/* Header */}
-            <header className="flex items-center justify-between px-6 py-4 sticky top-0 z-50 bg-[#f0f0ef]">
+            <div className="flex flex-col mr-[4rem]  sm:flex-row items-center justify-between px-4 sm:px-[1rem] py-4 text-gray-950 top-0 z-50">
                 <div className="flex items-center gap-8">
                     <Link to="/">
-                        <img src={logo} alt="Logo" className="w-32 h-32 object-contain" />
+                        <img
+                            src={logo}
+                            alt="Logo"
+                            className="w-20 h-25 sm:w-40 sm:h-40 object-contain"
+                        />
                     </Link>
-                    <nav className="flex items-center gap-6">
-                        <Link to="/shop" className="text-lg font-semibold hover:text-orange-600">
+                    <nav className="flex gap-1 sm:gap-6">
+                        <Link to="/shop" className="text-sm sm:text-lg font-semibold hover:text-orange-600">
                             All Products
                         </Link>
-                        <Link to="/about" className="text-lg font-semibold text-orange-600">
+                        <Link to="/about" className="text-sm sm:text-lg font-semibold hover:text-orange-600">
                             About Us
                         </Link>
                     </nav>
                 </div>
-            </header>
+            </div>
 
             <div className="flex-grow p-8">
                 <div className="max-w-4xl mx-auto text-center">
